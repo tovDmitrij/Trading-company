@@ -1,3 +1,11 @@
+create table Messages(
+	ID serial primary key,
+	Type varchar(100),
+	Time timestamp,
+	CauseOfError varchar(1000),
+	Description varchar(1000)
+);
+
 create table Currencies(
     Cur_Id serial primary key,
     Name varchar(100) not null,

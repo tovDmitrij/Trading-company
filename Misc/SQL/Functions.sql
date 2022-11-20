@@ -6,12 +6,12 @@ create or replace function GetProductQuantity(prodID integer) returns integer as
 			amount integer;
 		begin
 			if productID is null then
-				raise exception 'Идентификатор товара не был определён!';
+				call AddMessage('fail', current_query(), 'Идентификатор товара не был определён!');
 			end if;
 			select count(*) into isValid from Products 
 			where prod_id = productID;
 			if isValid = 0 then
-				raise exception 'Товара с идентификатором % не существует!', productID;
+				call AddMessage('fail', current_query(), 'Товара №'||productID||' не существует!');
 			end if;
 		
 			select Sum(Incoming.Quantify) - Sum(Outgoing.Quantify) into amount from Incoming
@@ -56,12 +56,12 @@ create or replace function GetTaxValue(taxID integer) returns numeric(3,2) as
 			taxValue integer;
 		begin
 			if taxID is null then
-				raise exception 'Идентификатор налога не был определён!';
+				call AddMessage('fail', current_query(), 'Идентификатор налога не был определён!');
 			end if;
 			select count(*) into isValid from Taxes
 			where tax_id = taxID;
 			if isValid = 0 then
-				raise exception 'Налога с идентификатором % не существует!', taxID;
+				call AddMessage('fail', current_query(), 'Налога №'||taxID||' не существует!');
 			end if;
 			
 			select tax_id into taxID from Taxes
@@ -82,7 +82,7 @@ create or replace function GetProductPrice(productID integer, priceDate date) re
 			where prod_id = productID
 				and dayfrom <= priceDate and priceDate <= dateTo;
 			if isValid = 0 then
-				raise exception 'Отсутствует актуальный ценник на дату % для товара %!', priceDate, productID;
+				call AddMessage('fail', current_query(), 'Отсутствует актуальный ценник на дату '||priceDate||' для товара '||productID||'!');
 			end if;
 			
 			select value into price from Prices

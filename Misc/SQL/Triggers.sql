@@ -8,6 +8,7 @@ create or replace trigger InsertManager before insert on Managers for each row
 create or replace function AddNewManager() returns trigger as 
 	$$
 		begin
+			delete from Messages;
 		--Проверка на валидность введённой фио
 			call CheckFullName(new.fullname);
 		--Проверка на валидность введённой почты
@@ -24,10 +25,15 @@ create or replace function AddNewManager() returns trigger as
 			end if;
 		--Прочее
 			new.hire_day = now();
+			
+			if (select count(*) from Messages where type = 'fail') > 0 then
+				raise notice 'Невозможно добавить нового менеджера! См. логи';
+				return null;
+			end if;
 			return new;
 		end;
 	$$ language plpgsql;
-
+	
 --Триггер для подписания контракта между менеджером и контрагентом. Проверяется:
 -- - существует ли такой контрагент (вводится ФИО + идентификатор);
 -- - есть ли действующий банковский аккаунт у введённого контрагента;
@@ -37,6 +43,7 @@ create or replace trigger InsertContract instead of insert on ContractsWithOptio
 create or replace function AddNewContract() returns trigger as 
 	$$
 		begin
+			delete from Messages;
 		--Проверка на валидность введённой ФИО контрагента, идентификатора и на существование активного банковского аккаунта контрагента
 			call CheckFullName(new.ContrFullName);
 			call CheckContragent(new.ContrFullName, new.ContrID);
@@ -49,6 +56,11 @@ create or replace function AddNewContract() returns trigger as
 			end if;
 		--Прочее
 			new.DayFrom = now();
+			if (select count(*) from Messages where type = 'fail') > 0 then
+				raise notice 'Невозможно подписать новый контракт! См. логи';
+				return null;
+			end if;
+			
 			insert into Contracts values(new.ID, new.ContrID, new.ManID, new.DayFrom, new.DayTo);
 			return new;
 		end;
@@ -64,6 +76,7 @@ create or replace trigger InsertIncoming instead of insert on IncomingWithOption
 create or replace function BuyProducts() returns trigger as
 	$$
 		begin		
+			delete from Messages;
 		--Проверка на валидность введённого идентификатора товара и его кол-ва
 			call CheckProductQuantity(new.ProdID, new.Quantity);
 		--Проверка на валидность введённой даты покупки (если была указана) и идентификатора контракта
@@ -74,6 +87,11 @@ create or replace function BuyProducts() returns trigger as
 				new.IncDate = now();
 			end if;
 		--Прочее
+			if (select count(*) from Messages where type = 'fail') > 0 then
+				raise exception 'Невозможно приобрести товары! См. логи';
+				return null;
+			end if;
+			
 			insert into Incoming(prod_id, tax_id, contr_id, man_id, inc_date, quantify, cost)
 			values(new.Prod_ID, 1, GetContragentID(new.ContractID), GetManagerID(new.ContractID), new.IncDate, new.Quantity, CalculateTransactionCost(new.ProdID, new.Quantity, GetTaxValue(1), new.IncDate));
 			return new;
@@ -90,6 +108,7 @@ create or replace trigger InsertOutgoing instead of insert on OutgoingWithOption
 create or replace function SellProducts() returns trigger as
 	$$
 		begin
+			delete from Messages;
 		--Проверка на валидность введённого идентификатора товара и его кол-ва
 			call CheckProductQuantity(new.ProdID, new.Quantity);
 		--Проверка на валидность введённой даты покупки (если была указана) и идентификатора контракта
@@ -100,6 +119,11 @@ create or replace function SellProducts() returns trigger as
 				new.IncDate = now();
 			end if;
 		--Прочее
+			if (select count(*) from Messages where type = 'fail') > 0 then
+				raise exception 'Невозможно продать товары! См. логи';
+				return null;
+			end if;
+			
 			insert into Outgoing(prod_id, tax_id, contr_id, man_id, inc_date, quantify, cost)
 			values(new.Prod_ID, 1, GetContragentID(new.ContractID), GetManagerID(new.ContractID), new.IncDate, new.Quantity, CalculateTransactionCost(new.ProdID, new.Quantity, GetTaxValue(1), new.IncDate));
 			return new;
