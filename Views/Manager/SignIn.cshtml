@@ -1,0 +1,18 @@
+﻿@model Trading_company.Models.ManagerModel
+@{
+    ViewData["Title"] = "Авторизация";
+}
+<form asp-controller="Manager" asp-action="SignIn">
+
+    <p>
+        <label asp-for="email">Почта*</label>
+        <input type="text" asp-for="email" />
+    </p>
+    <p>
+        <label asp-for="password">Пароль*</label>
+        <input type="password" asp-for="password" />
+    </p>
+    <p>
+        <input type="submit" value="Подтвердить" />
+    </p>
+</form>

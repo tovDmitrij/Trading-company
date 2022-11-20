@@ -1,0 +1,64 @@
+﻿@model Trading_company.Models.ManagerModel
+@{
+    ViewData["Title"] = "Личный кабинет";
+}
+
+<div class="row m-5">
+
+    <div class="col-2">
+        <div class="row m-1 bg-secondary bg-opacity-50">
+            <img src="photo.png" width="150px" />
+        </div>
+        <div class="row m-1 bg-secondary bg-opacity-25">
+            <b class="bg-secondary bg-opacity-50">ФИО</b>
+            <div>@Model.fullname#@Model.man_id</div>
+        </div>
+        <div class="row m-1 bg-secondary bg-opacity-25">
+            <b class="bg-secondary bg-opacity-50">Дата найма</b>
+            <div>@Model.hire_day</div>
+        </div>
+        <div class="row m-1 bg-secondary bg-opacity-25">
+            <b class="bg-secondary bg-opacity-50">ФИО руководителя</b>
+            <div>
+                @if(Model.parent_id is null)
+                {
+                    @Model.comments;
+                }
+                else
+                {
+                    @Model.parent_id;
+                }
+            </div>
+        </div>
+        <div class="row m-1 bg-secondary bg-opacity-25">
+            <b class="bg-secondary bg-opacity-50">Зарабатываемый процент</b>
+            <div>@Model.percent%</div>
+        </div>
+    </div>
+
+    <div class="col-2">
+        <b>Действия</b>
+        <div>
+            <button class="btn bg-warning m-1">Подписать контракт</button>
+        </div>
+        <div>
+            <button class="btn bg-warning m-1">Купить товары</button>
+        </div>
+        <div>
+            <button class="btn bg-warning m-1">Продать товары</button>
+        </div>
+    </div>
+
+    <div class="col-2">
+        <b class="">Статистика</b>
+        <div>
+            <button class="btn bg-danger m-1">Список контрактов</button>
+        </div>
+        <div>
+            <button class="btn bg-danger m-1">Склад</button>
+        </div>
+        <div>
+            <button class="btn bg-danger m-1">Статистика продаж</button>
+        </div>
+    </div>
+</div>
