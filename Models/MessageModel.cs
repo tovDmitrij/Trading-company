@@ -4,7 +4,7 @@ namespace Trading_company.Models
     /// <summary>
     /// Сообщения, содержащие информацию об удачно или неудачно выполненных операциях
     /// </summary>
-    public class MessageModel
+    public sealed class MessageModel
     {
         /// <summary>
         /// Идентификатор сообщения

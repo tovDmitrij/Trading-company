@@ -1,3 +1,9 @@
+--Представление, в котором хранится дополнительная информация о менеджерах, а именно фио руководителя, если тот, конечно, имеется
+create or replace view ManagersWithOptionalInfo as
+	select m.fullname, m.Man_ID, m.email, m.password, m.percent, m.hire_day, m.comments, m.d_id,
+		(select fullname from Managers where man_id = m.parent_id) leadfullname, m.parent_id
+	from Managers m;
+	
 --Представление, в котором хранится дополнительная информация о подписанных контрактах между менеджерами и контрагентами
 create or replace view ContractsWithOptionalInfo as
 	select Contracts.id "ID", Contracts.contr_id "ContrID", Contragents.name "ContrFullName", Contracts.man_id "ManID", Contracts.dayfrom "DayFrom", Contracts.dayto "DayTo"

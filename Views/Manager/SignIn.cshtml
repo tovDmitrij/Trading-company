@@ -2,17 +2,44 @@
 @{
     ViewData["Title"] = "Авторизация";
 }
-<form asp-controller="Manager" asp-action="SignIn">
-
-    <p>
-        <label asp-for="email">Почта*</label>
-        <input type="text" asp-for="email" />
-    </p>
-    <p>
-        <label asp-for="password">Пароль*</label>
-        <input type="password" asp-for="password" />
-    </p>
-    <p>
-        <input type="submit" value="Подтвердить" />
-    </p>
-</form>
+<div class="container d-flex justify-content-center">
+    <div class="col-4">
+        <form asp-controller="Manager" asp-action="SignIn">
+            <div class="row">
+                <label class="d-flex justify-content-center">@ViewData["Title"]</label>
+            </div>
+            <div class="row">
+                <table>
+                    <tr>
+                        <td>
+                            <label asp-for="email">Почта*</label>
+                        </td>
+                        <td>
+                            <input type="text" asp-for="email" value=@ViewData["Man_email"] />
+                        </td>
+                        <td>
+                            <label class="bg-danger">@ViewData["Error_email"]</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label asp-for="password">Пароль*</label>
+                        </td>
+                        <td>
+                            <input type="password" asp-for="password" value=@ViewData["Man_password"] />
+                        </td>
+                        <td>
+                            <label class="bg-danger">@ViewData["Error_password"]</label>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="row">
+                <input type="submit" value="Подтвердить" />
+            </div>
+            <div class="row bg-danger">
+                @ViewData["Error"]
+            </div>
+        </form>
+    </div>
+</div>

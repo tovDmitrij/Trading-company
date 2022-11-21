@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+
 namespace Trading_company.Models
 {
     /// <summary>
-    /// Аккаунт менеджера
+    /// Подробная информация о менеджере
     /// </summary>
-    public sealed class ManagerModel
+    public sealed class ManagerOptionalModel 
     {
         /// <summary>
         /// Идентификатор менеджера
@@ -48,6 +49,11 @@ namespace Trading_company.Models
         public string? comments { get; set; }
 
         /// <summary>
+        /// ФИО руководителя
+        /// </summary>
+        public string? leadfullname { get; set; }
+
+        /// <summary>
         /// Идентификатор руководителя
         /// </summary>
         public int? parent_id { get; set; }
@@ -55,12 +61,13 @@ namespace Trading_company.Models
         /// <param name="man_id">Идентификатор менеджера</param>
         /// <param name="email">Логин</param>
         /// <param name="password">Пароль</param>
-        /// <param name="fullname">ФИО</param>
+        /// <param name="fullname">ФИО менеджера</param>
         /// <param name="percent">Получаемый процент с продаж</param>
         /// <param name="hire_day">Дата найма</param>
         /// <param name="comments">Дополнительная информация</param>
+        /// <param name="leadfullname">ФИО руководителя</param>
         /// <param name="parent_id">Идентификатор руководителя</param>
-        public ManagerModel(int man_id, string email, string password, string fullname, double percent, DateTime hire_day, string? comments, int? parent_id)
+        public ManagerOptionalModel(int man_id, string email, string password, string fullname, double percent, DateTime hire_day, string? comments, string? leadfullname, int? parent_id)
         {
             this.man_id = man_id;
             this.email = email;
@@ -69,9 +76,10 @@ namespace Trading_company.Models
             this.percent = percent;
             this.hire_day = hire_day;
             this.comments = comments;
+            this.leadfullname = leadfullname;
             this.parent_id = parent_id;
         }
 
-        public ManagerModel() { }
+        public ManagerOptionalModel() { }
     }
 }

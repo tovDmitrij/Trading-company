@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body>
+    <form asp-controller="Manager" asp-action="SignUp">
+        <div class="container d-flex justify-content-center">
+            <div class="col-4">
+                <div class="row">
+                    <label class="d-flex justify-content-center">Регистрация</label>
+                </div>
+                <div class="row">
+                    <table>
+                        <tr>
+                            <td>
+                                <label asp-for="fullname">ФИО*</label>
+                            </td>
+                            <td>
+                                <input type="text" asp-for="fullname" value=@ViewData[""] />
+                            </td>
+                            <td>
+                                <label class="bg-danger">@ViewData["Error_fullname"]</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label asp-for="email">Почта*</label>
+                            </td>
+                            <td>
+                                <input type="text" asp-for="email" value=@ViewData[""] />
+                            </td>
+                            <td>
+                                <label class="bg-danger">@ViewData["Error_email"]</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label asp-for="password">Пароль*</label>
+                            </td>
+                            <td>
+                                <input type="password" asp-for="password" value=@ViewData[""] />
+                            </td>
+                            <td>
+                                <label class="bg-danger">@ViewData["Error_password"]</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label asp-for="percent">%*</label>
+                            </td>
+                            <td>
+                                <input type="number" asp-for="percent" value=@ViewData[""] />
+                            </td>
+                            <td>
+                                <label class="bg-danger">@ViewData["Error_percent"]</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label asp-for="parent_id">ID руководителя</label>
+                            </td>
+                            <td>                    
+                                <input type="number" asp-for="parent_id" value=@ViewData[""] />
+                            </td>
+                            <td>
+                                <label class="bg-danger">@ViewData["Error_leadid"]</label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="row">
+                    <input class="centr" type="submit" value="Подтвердить" />
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
