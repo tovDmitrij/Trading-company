@@ -1,6 +1,8 @@
-﻿using System.Text.Json;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 namespace Trading_company.Misc
 {
+    [NonController]
     public static class Extensions
     {
         /// <summary>
