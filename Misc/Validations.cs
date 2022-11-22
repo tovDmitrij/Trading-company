@@ -61,7 +61,7 @@ namespace Trading_company.Misc
         /// </summary>
         /// <param name="email">Почта</param>
         /// <param name="Error">Ошибка, если она есть</param>
-        private static bool IsEmailValid(string email, out string? Error) 
+        private static bool IsEmailValid(string? email, out string? Error) 
         {
             if (email is null)
             {
@@ -73,7 +73,7 @@ namespace Trading_company.Misc
                 Error = "В указанной почте отсутствует символ '@'!";
                 return false;
             }
-            if (email.IndexOf('@') == email.Length)
+            if (email.IndexOf('@') == email.Length - 1)
             {
                 Error = "В указанной почте отсутствует домен после символа '@'!";
                 return false;
@@ -88,7 +88,7 @@ namespace Trading_company.Misc
         /// </summary>
         /// <param name="password">Пароль</param>
         /// <param name="Error">Ошибка, если она есть</param>
-        private static bool IsPasswordValid(string password, out string? Error)
+        private static bool IsPasswordValid(string? password, out string? Error)
         {
             if (password is null)
             {
@@ -111,7 +111,7 @@ namespace Trading_company.Misc
         /// <param name="fullName">ФИО</param>
         /// <param name="Error">Ошибка, если она есть</param>
         /// <returns></returns>
-        private static bool IsFullNameValid(string fullName, out string? Error)
+        private static bool IsFullNameValid(string? fullName, out string? Error)
         {
             if (fullName is null)
             {
@@ -125,7 +125,7 @@ namespace Trading_company.Misc
             }
 
             Error = null;
-            return false;
+            return true;
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace Trading_company.Misc
             }
 
             Error = null;
-            return false;
+            return true;
         }
     }
 }
