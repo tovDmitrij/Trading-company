@@ -7,19 +7,24 @@ namespace Trading_company.Models
     public sealed class DataContext : DbContext
     {
         /// <summary>
-        /// Таблица сообщений о выполненных транзакциях
+        /// Таблица с сообщениями о выполненных транзакциях
         /// </summary>
         public DbSet<MessageModel> messages { get; set; }
 
         /// <summary>
-        /// Таблица менеджеров
+        /// Таблица с контрагентами
         /// </summary>
-        public DbSet<ManagerModel> managers { get; set; }
+        public DbSet<ContragentModel> contragents { get; set; }
 
         /// <summary>
-        /// Таблица менеджеров (подробная информация)
+        /// Таблица с менеджерами с дополнительной информацией
         /// </summary>
-        public DbSet<ManagerOptionalModel> managerswithoptionalinfo { get; set; }
+        public DbSet<ManagerModel> managerswithoptionalinfo { get; set; }
+
+        /// <summary>
+        /// Таблица с контрактами с дополнительной информацией
+        /// </summary>
+        public DbSet<ContractModel> contractswithoptionalinfo { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
     }

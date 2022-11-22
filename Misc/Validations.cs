@@ -12,7 +12,7 @@ namespace Trading_company.Misc
         /// Проверка на валидность данных при регистрации
         /// </summary>
         /// <param name="manager">Данные о менеджере</param>
-        /// <param name="Error">Ошибка, если она есть</param>
+        /// <param name="Error">Ошибка, если она возникнет</param>
         public static bool CheckSignUpValidation(ManagerModel manager, out string? Error)
         {
             if (!IsFullNameValid(manager.fullname, out Error))
@@ -40,7 +40,7 @@ namespace Trading_company.Misc
         /// Процерка на валидность данных при авторизации
         /// </summary>
         /// <param name="manager">Данные о менеджере</param>
-        /// <param name="Error">Ошибка, если она есть</param>
+        /// <param name="Error">Ошибка, если она возникнет</param>
         public static bool CheckSignInValidation(ManagerModel manager, out string? Error)
         {
             if (!IsEmailValid(manager.email, out Error))
@@ -57,10 +57,24 @@ namespace Trading_company.Misc
         }
 
         /// <summary>
+        /// Проверка на валидность данных при подписании контракта
+        /// </summary>
+        /// <param name="contract">Контракт</param>
+        /// <param name="Error">Ошибка, если она возникнет</param>
+        /// <returns></returns>
+        public static bool CheckContractValidation(ContractModel contract, out string? Error)
+        {
+            Error = null;
+            return true;
+        }
+
+
+
+        /// <summary>
         /// Валидна ли введённая почта
         /// </summary>
         /// <param name="email">Почта</param>
-        /// <param name="Error">Ошибка, если она есть</param>
+        /// <param name="Error">Ошибка, если она возникнет</param>
         private static bool IsEmailValid(string? email, out string? Error) 
         {
             if (email is null)
@@ -87,7 +101,7 @@ namespace Trading_company.Misc
         /// Валиден ли введённый пароль
         /// </summary>
         /// <param name="password">Пароль</param>
-        /// <param name="Error">Ошибка, если она есть</param>
+        /// <param name="Error">Ошибка, если она возникнет</param>
         private static bool IsPasswordValid(string? password, out string? Error)
         {
             if (password is null)
@@ -109,7 +123,7 @@ namespace Trading_company.Misc
         /// Валидна ли введённая ФИО
         /// </summary>
         /// <param name="fullName">ФИО</param>
-        /// <param name="Error">Ошибка, если она есть</param>
+        /// <param name="Error">Ошибка, если она возникнет</param>
         /// <returns></returns>
         private static bool IsFullNameValid(string? fullName, out string? Error)
         {
@@ -132,7 +146,7 @@ namespace Trading_company.Misc
         /// Валиден ли введённый процент с продаж
         /// </summary>
         /// <param name="percent">Процент</param>
-        /// <param name="Error">Ошибка, если она есть</param>
+        /// <param name="Error">Ошибка, если она возникнет</param>
         /// <returns></returns>
         private static bool IsPercentValid(double percent, out string? Error)
         {
@@ -151,6 +165,20 @@ namespace Trading_company.Misc
                 Error = "Процент с продаж должен быть меньше 51!";
                 return false;
             }
+
+            Error = null;
+            return true;
+        }
+
+        /// <summary>
+        /// Валидна ли введённая дата
+        /// </summary>
+        /// <param name="date">Дата</param>
+        /// <param name="Error">Ошибка, если она возникнет</param>
+        /// <returns></returns>
+        private static bool IsDateValid(DateTime date, out string? Error)
+        {
+            
 
             Error = null;
             return true;

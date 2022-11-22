@@ -6,7 +6,7 @@ create or replace view ManagersWithOptionalInfo as
 	
 --Представление, в котором хранится дополнительная информация о подписанных контрактах между менеджерами и контрагентами
 create or replace view ContractsWithOptionalInfo as
-	select Contracts.id "ID", Contracts.contr_id "ContrID", Contragents.name "ContrFullName", Contracts.man_id "ManID", Contracts.dayfrom "DayFrom", Contracts.dayto "DayTo"
+	select Contracts.id, (select name from contragents where contr_id = Contracts.contr_id) "ContrFullName", Contracts.contr_id, (select fullname from managers where man_id = Contracts.man_id) "ManFullName" , Contracts.man_id, Contracts.dayfrom, Contracts.dayto
 	from Contracts left join Contragents on Contracts.contr_id = Contragents.contr_id;
 
 --Представление, в котором хранится дополнительная информация о покупках менеджеров: ID контракта, сколько было заплачено и сколько денег "взяли" налоги

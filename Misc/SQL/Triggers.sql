@@ -3,7 +3,7 @@
 -- - зарегистрирована ли введённая почта;
 -- - если процент с продаж был введён больше 50%, то мягко намекнуть неофиту, что он слишком много берёт;
 -- - если был введён желаемый руководитель, то необходимо проверить: сможет ли данный менеджер принять нового подчинённого. В случае, если не может, отправить соответствующее сообщение, чтобы был выбран другой или не выбран вовсе.
-create or replace trigger InsertManager before insert on Managers for each row
+create or replace trigger InsertManager instead of insert on ManagersWithOptionalInfo for each row
 	execute procedure AddNewManager();
 create or replace function AddNewManager() returns trigger as 
 	$$
@@ -30,6 +30,9 @@ create or replace function AddNewManager() returns trigger as
 				raise notice 'Невозможно добавить нового менеджера! См. логи';
 				return null;
 			end if;
+			
+			insert into Managers(email,password,fullname,percent,hire_day,comments,parent_id)
+			values(new.email, new.password, new.fullname, new.percent, new.hire_day, new.comments, new.parent_id);
 			return new;
 		end;
 	$$ language plpgsql;
@@ -39,14 +42,13 @@ create or replace function AddNewManager() returns trigger as
 -- - есть ли действующий банковский аккаунт у введённого контрагента;
 -- - контракт должен подписываться МИНИМУМ на неделю.
 create or replace trigger InsertContract instead of insert on ContractsWithOptionalInfo for each row
-	execute procedure AddNewContract()
+	execute procedure AddNewContract();
 create or replace function AddNewContract() returns trigger as 
 	$$
 		begin
 			delete from Messages;
 		--Проверка на валидность введённой ФИО контрагента, идентификатора и на существование активного банковского аккаунта контрагента
-			call CheckFullName(new.ContrFullName);
-			call CheckContragent(new.ContrFullName, new.ContrID);
+			call CheckContragent(new.Contr_ID);
 		--Проверка на валидность даты подписания контракта
 			if new.DayTo is null then
 				raise exception 'Пожалуйста, введите дату оформление контракта!';
@@ -61,7 +63,8 @@ create or replace function AddNewContract() returns trigger as
 				return null;
 			end if;
 			
-			insert into Contracts values(new.ID, new.ContrID, new.ManID, new.DayFrom, new.DayTo);
+			insert into Contracts(contr_id, man_id, dayfrom, dayto)
+			values(new.Contr_ID, new.Man_ID, new.DayFrom, new.DayTo);
 			return new;
 		end;
 	$$ language plpgsql;

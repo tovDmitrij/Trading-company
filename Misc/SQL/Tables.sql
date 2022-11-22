@@ -1,43 +1,43 @@
 create table Messages(
 	ID serial primary key,
 	Type varchar(100),
-	Time timestamp,
+	Time date,
 	CauseOfError varchar(1000),
 	Description varchar(1000)
 );
 
 create table Currencies(
     Cur_Id serial primary key,
-    Name varchar(100) not null,
-    ShortName varchar(50) not null
+    Name varchar(100),
+    ShortName varchar(50)
 );
 create table Banks(
     Bank_Id serial primary key,
-    Name varchar(100) not null,
-    Address varchar(100) not null 
+    Name varchar(100),
+    Address varchar(100)
 );
 create table Contragents(
     Contr_Id serial primary key,
-    Name varchar(100) not null,
-    Address varchar(150) not null,
-    Phone varchar(100) not null,
+    Name varchar(100),
+    Address varchar(150),
+    Phone varchar(100),
     Comments varchar(150)
 );
 create table Dealers(
     D_Id serial primary key,
-    Name varchar(100) not null,
-    Percent numeric(3,2) not null,
+    Name varchar(100),
+    Percent numeric(3,2),
     Comments varchar(150)
 );
 create table Groups(
     Group_Id serial primary key,
-    Name varchar(100) not null,
+    Name varchar(100),
     Comments varchar(150)
 );
 create table Taxes(
     Tax_Id serial primary key,
-    Name varchar(100) not null,
-    Value numeric(3,2) not null,
+    Name varchar(100),
+    Value numeric(3,2),
     Comments varchar(150)
 );
 create table Cources(
@@ -52,20 +52,20 @@ create table Cources(
 );
 create table Accounts(
     Acc_Id serial primary key,
-    Bank_Id integer not null,
-    Contr_Id integer not null,
-    DayFrom date not null,
-    DayTo date not null,
+    Bank_Id integer,
+    Contr_Id integer,
+    DayFrom date,
+    DayTo date,
     foreign key(Bank_Id) references Banks(Bank_Id),
     foreign key(Contr_Id) references Contragents(Contr_Id)
 );
 create table Managers(
     Man_Id serial primary key,
-	Email varchar(100) not null,
-	Password varchar(300) not null,
+	Email varchar(100),
+	Password varchar(300),
     D_Id integer,
-    FullName varchar(100) not null,
-    Percent numeric(3,2) not null,
+    FullName varchar(100),
+    Percent numeric(3,2),
     Hire_Day date,
     Comments varchar(100),
     Parent_Id integer,
@@ -74,42 +74,41 @@ create table Managers(
     foreign key(Parent_Id) references Managers(Man_Id)
 );
 create table Contracts(
-	ID serial,
+	ID serial primary key,
     Contr_Id integer not null,
     Man_Id integer not null,
-    DayFrom date not null,
-    DayTo date not null,
-	primary key(Contr_Id, Man_Id),
+    DayFrom date,
+    DayTo date,
     foreign key(Contr_Id) references Contragents(Contr_Id),
     foreign key(Man_Id) references Managers(Man_Id)
 );
 create table Products(
     Prod_Id serial primary key,
-    Group_Id integer not null,
-    Name varchar(100) not null,
-    Description varchar(250) not null,
-    Expire_Time date not null,
+    Group_Id integer,
+    Name varchar(100),
+    Description varchar(250),
+    Expire_Time date,
     foreign key(Group_Id) references Groups(Group_Id)
 );
 create table Prices(
     Prod_Id integer not null,
     DayFrom date not null,
-    Cur_Id integer not null,
-    DateTo date not null,
-    Value numeric(10,2) not null,
+    Cur_Id integer,
+    DateTo date,
+    Value numeric(10,2),
 	primary key(Prod_Id, DayFrom),
     foreign key(Prod_Id) references Products(Prod_Id),
     foreign key(Cur_Id) references Currencies(Cur_Id)
 );
 create table Outgoing(
     Out_Id serial primary key,
-    Prod_Id integer not null,
-    Tax_Id integer not null,
-    Contr_Id integer not null,
-    Man_Id integer not null,
-    Out_Date date not null,
-    Quantify integer not null,
-    Cost numeric(10,2) not null,
+    Prod_Id integer,
+    Tax_Id integer,
+    Contr_Id integer,
+    Man_Id integer,
+    Out_Date date,
+    Quantify integer,
+    Cost numeric(10,2),
     foreign key(Prod_Id) references Products(Prod_Id),
     foreign key(Tax_Id) references Taxes(Tax_Id),
     foreign key(Contr_Id) references Contragents(Contr_Id),
@@ -117,13 +116,13 @@ create table Outgoing(
 );
 create table Incoming(
     Inc_Id serial primary key,
-    Prod_Id integer not null,
-    Tax_Id integer not null,
-    Contr_Id integer not null,
-    Man_Id integer not null,
-    Inc_Date date not null,
-    Quantify integer not null,
-    Cost numeric(10,2) not null,
+    Prod_Id integer,
+    Tax_Id integer,
+    Contr_Id integer,
+    Man_Id integer,
+    Inc_Date date,
+    Quantify integer,
+    Cost numeric(10,2),
     foreign key(Prod_Id) references Products(Prod_Id),
     foreign key(Tax_Id) references Taxes(Tax_Id),
     foreign key(Contr_Id) references Contragents(Contr_Id),

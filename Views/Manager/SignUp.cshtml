@@ -12,7 +12,7 @@
                 <table>
                     <tr>
                         <td>
-                            <label asp-for="fullname">ФИО*</label>
+                            <label>ФИО*</label>
                         </td>
                         <td>
                             <input type="text" asp-for="fullname" value=@ViewData["Man_fullname"] />
@@ -20,7 +20,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <label asp-for="email">Почта*</label>
+                            <label>Почта*</label>
                         </td>
                         <td>
                             <input type="text" asp-for="email" value=@ViewData["Man_email"] />
@@ -28,7 +28,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <label asp-for="password">Пароль*</label>
+                            <label>Пароль*</label>
                         </td>
                         <td>
                             <input type="password" asp-for="password" value=@ViewData["Man_password"] />
@@ -36,7 +36,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <label asp-for="percent">%*</label>
+                            <label>%*</label>
                         </td>
                         <td>
                             <input type="number" min="0" max="50" asp-for="percent" value=@ViewData["Man_percent"] />
@@ -44,7 +44,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <label asp-for="parent_id">ID руководителя</label>
+                            <label>ID руководителя</label>
                         </td>
                         <td>
                             <input type="number" asp-for="parent_id" value=@ViewData["Man_leadid"] />

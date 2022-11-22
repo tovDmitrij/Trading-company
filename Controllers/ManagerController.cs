@@ -17,7 +17,10 @@ namespace Trading_company.Controllers
         /// <param name="context">БД "Торговое предприятие"</param>
         public ManagerController(DataContext context) => _db = context;
 
+
+
         #region Страницы
+
         /// <summary>
         /// Страница с регистрацией менеджера
         /// </summary>
@@ -39,14 +42,18 @@ namespace Trading_company.Controllers
             }
 
             var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
-            ManagerOptionalModel manager = _db.managerswithoptionalinfo.FirstOrDefault(man =>
+            ManagerModel manager = _db.managerswithoptionalinfo.FirstOrDefault(man =>
                 man.email == managerInfo.email && man.password == managerInfo.password);
 
             return View(manager);
         }
+
         #endregion
 
+
+
         #region Действия на страницах
+
         /// <summary>
         /// Регистрация менеджера
         /// </summary>
@@ -55,32 +62,44 @@ namespace Trading_company.Controllers
         [HttpPost]
         public IActionResult SignUp(ManagerModel manager)
         {
-            if (manager.parent_id is not null)
-            {
-                if (_db.managers.FirstOrDefault(leader => leader.man_id == manager.parent_id) is null)
-                {
-                    SetInfo(manager, $"Руководителя с ID {manager.parent_id} не существует!");
-                    return View();
-                }
-                if (_db.managers.Count(leader => leader.parent_id == manager.parent_id) > 3)
-                {
-                    SetInfo(manager, $"Руководитель с ID {manager.parent_id} не может иметь больше трёх менеджеров. Пожалуйста, выберите другого или не выбирайте вовсе!");
-                    return View();
-                }
-            }
-
             string? error = "";
             if (Validations.CheckSignUpValidation(manager, out error))
             {
+                if (_db.managerswithoptionalinfo.FirstOrDefault(man => man.email == manager.email) is not null)
+                {
+                    SetInfo(manager, "Почта уже занята!");
+                    return View();
+                }
+
+                if (manager.parent_id is not null)
+                {
+                    if (_db.managerswithoptionalinfo.FirstOrDefault(leader => leader.man_id == manager.parent_id) is null)
+                    {
+                        SetInfo(manager, $"Руководителя с id {manager.parent_id} не существует!");
+                        return View();
+                    }
+                    if (_db.managerswithoptionalinfo.Count(leader => leader.parent_id == manager.parent_id) > 3)
+                    {
+                        SetInfo(manager, $"Руководитель с id {manager.parent_id} не может иметь больше трёх менеджеров. Пожалуйста, выберите другого или не выбирайте вовсе!");
+                        return View();
+                    }
+                }
+
                 try
                 {
-                    _db.managers.Add(manager);
+                    _db.managerswithoptionalinfo.Add(manager);
                     _db.SaveChanges();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    SetInfo(manager, ex.Message);
-                    return View();
+                    string message = "";
+                    List<MessageModel> errorList = _db.messages.ToList();
+                    foreach (var item in errorList)
+                    {
+                        message += item.ToString() + "\n";
+                    }
+                    //SetInfo(manager, $"{ex.InnerException}\n{message}");
+                    //return View();
                 }
             }
             else
@@ -89,15 +108,7 @@ namespace Trading_company.Controllers
                 return View();
             }
 
-            var list = _db.messages.ToList();
-            if (list.Count > 0)
-            {
-                SetInfo(manager, list.ToString());
-                return View();
-            }
-
             HttpContext.Session.Set("manager", manager);
-
             return Redirect("~/Manager/PersonalArea");
         }
 
@@ -116,17 +127,22 @@ namespace Trading_company.Controllers
                 return View();
             }
 
-            if (_db.managers.FirstOrDefault(man =>
+            if (_db.managerswithoptionalinfo.FirstOrDefault(man =>
                 man.email == manager.email && man.password == manager.password) is null)
             {
                 SetInfo(manager, $"Менеджера с такой почтой и паролем не существует!");
                 return View();
             }
 
-            var list = _db.messages.ToList();
-            if (list.Count > 0)
+            List<MessageModel> errorList = _db.messages.ToList();
+            if (errorList.Count > 0)
             {
-                SetInfo(manager, list.ToString());
+                string message = "";
+                foreach (var item in errorList)
+                {
+                    message += item.ToString() + "\n";
+                }
+                SetInfo(manager, $"{message}");
                 return View();
             }
 
@@ -134,9 +150,13 @@ namespace Trading_company.Controllers
 
             return Redirect("~/Manager/PersonalArea");
         }
+        
         #endregion
 
+
+
         #region Прочее
+
         /// <summary>
         /// Отправить на форму введённую информацию о менеджере
         /// </summary>
@@ -152,6 +172,10 @@ namespace Trading_company.Controllers
             ViewData["Man_percent"] = manager.percent;
             ViewData["Man_leadid"] = manager.parent_id;
         }
+
         #endregion
+
+
+
     }
 }

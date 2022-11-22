@@ -1,23 +1,31 @@
-﻿@model Trading_company.Models.ManagerOptionalModel
+﻿@model Trading_company.Models.ManagerModel
 @{
     ViewData["Title"] = "Личный кабинет";
 }
-
 <div class="row m-5">
+
 
     @*ИНФОРМАЦИЯ О МЕНЕДЖЕРЕ*@
     <div class="col-2">
+
+        @*Фото менеджера*@
         <div class="row m-1 bg-secondary bg-opacity-50">
-            <img src="photo.png" width="150px" />
+            <img src="~/images/manager.png" asp-append-version="true" />
         </div>
+
+        @*ФИО + идентификатор менеджера*@
         <div class="row m-1 bg-secondary bg-opacity-25">
             <b class="bg-secondary bg-opacity-50">ФИО менеджера</b>
             <div>@Model.fullname#@Model.man_id</div>
         </div>
+
+        @*Дата найма*@
         <div class="row m-1 bg-secondary bg-opacity-25">
             <b class="bg-secondary bg-opacity-50">Дата найма</b>
             <div>@Model.hire_day</div>
         </div>
+
+        @*ФИО + идентификатор руководителя*@
         <div class="row m-1 bg-secondary bg-opacity-25">
             <b class="bg-secondary bg-opacity-50">ФИО руководителя</b>
             @if (Model.parent_id is null)
@@ -29,37 +37,64 @@
                 <div>@Model.leadfullname#@Model.parent_id</div>
             }
         </div>
+
+        @*Зарабатываемый менеджером процент*@
         <div class="row m-1 bg-secondary bg-opacity-25">
             <b class="bg-secondary bg-opacity-50">Зарабатываемый процент</b>
             <div>@Model.percent%</div>
         </div>
+
     </div>
+
 
     @*ДЕЙСТВИЯ, К-РЫЕ МОЖЕТ СОВЕРШИТЬ МЕНЕДЖЕР*@
     <div class="col-2">
         <b>Действия</b>
+
         <div>
-            <button class="btn bg-warning m-1">Подписать контракт</button>
+            <form method="get" asp-controller="Contract" asp-action="New">
+                <button type="submit" class="btn bg-warning m-1">Подписать контракт</button>
+            </form>
         </div>
+
         <div>
-            <button class="btn bg-warning m-1">Купить товары</button>
+            <form method="get" asp-controller="Transaction" asp-action="Buy">
+                <button type="submit" class="btn bg-warning m-1">Купить товары</button>
+            </form>
         </div>
+
         <div>
-            <button class="btn bg-warning m-1">Продать товары</button>
+            <form method="get" asp-controller="Transaction" asp-action="Sell">
+                <button type="submit" class="btn bg-warning m-1">Продать товары</button>
+            </form>
         </div>
+
     </div>
+
 
     @*СТАТИСТИКА, К-РУЮ МОЖЕТ ПОСМОТРЕТЬ МЕНЕДЖЕР*@
     <div class="col-2">
         <b class="">Статистика</b>
+
         <div>
-            <button class="btn bg-danger m-1">Список контрактов</button>
+            <form method="get" asp-controller="Contract" asp-action="List">
+                <button type="submit" class="btn bg-danger m-1">Список контрактов</button>
+            </form>
         </div>
+
         <div>
-            <button class="btn bg-danger m-1">Склад</button>
+            <form method="get" asp-controller="Warehouse" asp-action="Show">
+                <button type="submit" class="btn bg-danger m-1">Склад</button>
+            </form>
         </div>
+
         <div>
-            <button class="btn bg-danger m-1">Статистика продаж</button>
+            <form method="get" asp-controller="Transaction" asp-action="List">
+                <button type="submit" class="btn bg-danger m-1">Статистика продаж</button>
+            </form>
         </div>
+
     </div>
+
+
 </div>

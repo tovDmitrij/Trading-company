@@ -28,6 +28,7 @@ namespace Trading_company
             #region App
             var app = builder.Build();
 
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             app.UseStaticFiles();
             app.UseRouting();
             app.UseSession();
