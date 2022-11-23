@@ -2,15 +2,10 @@
 namespace Trading_company.Models
 {
     /// <summary>
-    /// Контекс базы данных
+    /// Взаимодействие с БД "Торговое предприятие"
     /// </summary>
     public sealed class DataContext : DbContext
     {
-        /// <summary>
-        /// Таблица с сообщениями о выполненных транзакциях
-        /// </summary>
-        public DbSet<MessageModel> messages { get; set; }
-
         /// <summary>
         /// Таблица с контрагентами
         /// </summary>

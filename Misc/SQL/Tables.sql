@@ -1,11 +1,3 @@
-create table Messages(
-	ID serial primary key,
-	Type varchar(100),
-	Time date,
-	CauseOfError varchar(1000),
-	Description varchar(1000)
-);
-
 create table Currencies(
     Cur_Id serial primary key,
     Name varchar(100),
@@ -66,7 +58,7 @@ create table Managers(
     D_Id integer,
     FullName varchar(100),
     Percent numeric(3,2),
-    Hire_Day date,
+    Hire_Day timestamp,
     Comments varchar(100),
     Parent_Id integer,
 	unique(email),
@@ -106,7 +98,7 @@ create table Outgoing(
     Tax_Id integer,
     Contr_Id integer,
     Man_Id integer,
-    Out_Date date,
+    Out_Date timestamp,
     Quantify integer,
     Cost numeric(10,2),
     foreign key(Prod_Id) references Products(Prod_Id),
@@ -120,7 +112,7 @@ create table Incoming(
     Tax_Id integer,
     Contr_Id integer,
     Man_Id integer,
-    Inc_Date date,
+    Inc_Date timestamp,
     Quantify integer,
     Cost numeric(10,2),
     foreign key(Prod_Id) references Products(Prod_Id),

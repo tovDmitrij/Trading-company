@@ -24,14 +24,14 @@ create or replace view IncomingWithOptionalInfo as
 		left join Managers m on i.man_id = m.man_id
 		left join Contracts c on m.man_id = c.man_id
 	where Prices.DayFrom <= i.Inc_Date and i.Inc_Date <= Prices.DateTo;
-
+	
 --Представление, в котором хранится дополнительная информация о продажах менеджеров: ID контракта, сколько было заработано предприятием и менеджером, а также сколько денег "взяли" налоги
 create or replace view OutgoingWithOptionalInfo as
 	select i.out_id "OutID", 
 		c.id "ContractID", 
 		i.prod_id "ProdID", 
 		i.quantify "Quantity", 
-		i.out_date "IncDate", 
+		i.out_date "OutDate", 
 		i.Quantify * Prices.Value "Earned",
 		m.percent * i.Quantify * Prices.Value  "ManEarn",  
 		i.cost "Cost"

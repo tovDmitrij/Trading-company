@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Trading_company.ViewModels;
 using Trading_company.Misc;
 using Trading_company.Models;
 namespace Trading_company.Controllers
@@ -24,7 +26,14 @@ namespace Trading_company.Controllers
         /// <summary>
         /// Страница с регистрацией менеджера
         /// </summary>
-        public IActionResult SignUp() => View();
+        public IActionResult SignUp()
+        {
+            var freeLeaders = _db.managerswithoptionalinfo.FromSql(
+                $"select * from ManagersWithOptionalInfo where man_id not in (select distinct parent_id from Managers where parent_id is not null group by parent_id having count(parent_id) > 3)").ToList();
+            ManagerViewModel mvm = new();
+            mvm.FreeLeaders = freeLeaders;
+            return View(mvm);
+        }
 
         /// <summary>
         /// Страница с авторизацией менеджера
@@ -60,55 +69,32 @@ namespace Trading_company.Controllers
         /// <param name="manager">Информация о менеджере</param>
         /// <returns>Редирект на профиль менеджера</returns>
         [HttpPost]
-        public IActionResult SignUp(ManagerModel manager)
+        public IActionResult SignUp(ManagerViewModel manager)
         {
-            string? error = "";
-            if (Validations.CheckSignUpValidation(manager, out error))
+            if (_db.managerswithoptionalinfo.FirstOrDefault(man => man.email == manager.CurrentManager.email) is not null)
             {
-                if (_db.managerswithoptionalinfo.FirstOrDefault(man => man.email == manager.email) is not null)
-                {
-                    SetInfo(manager, "Почта уже занята!");
-                    return View();
-                }
-
-                if (manager.parent_id is not null)
-                {
-                    if (_db.managerswithoptionalinfo.FirstOrDefault(leader => leader.man_id == manager.parent_id) is null)
-                    {
-                        SetInfo(manager, $"Руководителя с id {manager.parent_id} не существует!");
-                        return View();
-                    }
-                    if (_db.managerswithoptionalinfo.Count(leader => leader.parent_id == manager.parent_id) > 3)
-                    {
-                        SetInfo(manager, $"Руководитель с id {manager.parent_id} не может иметь больше трёх менеджеров. Пожалуйста, выберите другого или не выбирайте вовсе!");
-                        return View();
-                    }
-                }
-
-                try
-                {
-                    _db.managerswithoptionalinfo.Add(manager);
-                    _db.SaveChanges();
-                }
-                catch (Exception ex)
-                {
-                    string message = "";
-                    List<MessageModel> errorList = _db.messages.ToList();
-                    foreach (var item in errorList)
-                    {
-                        message += item.ToString() + "\n";
-                    }
-                    //SetInfo(manager, $"{ex.InnerException}\n{message}");
-                    //return View();
-                }
-            }
-            else
-            {
-                SetInfo(manager, error);
-                return View();
+                SetInfo(manager.CurrentManager, "Почта уже занята!");
+                return SignUp();
             }
 
-            HttpContext.Session.Set("manager", manager);
+            if (manager.CurrentManager.parent_id is null)
+            {
+                manager.CurrentManager.comments = "Отсутствует руководитель";
+            }
+            manager.CurrentManager.hire_day = DateTime.Now;
+
+            try
+            {
+                _db.managerswithoptionalinfo.Add(manager.CurrentManager);
+                _db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                //SetInfo(manager, $"{ex.InnerException}");
+                //return View();
+            }
+
+            HttpContext.Session.Set("manager", manager.CurrentManager);
             return Redirect("~/Manager/PersonalArea");
         }
 
@@ -120,29 +106,10 @@ namespace Trading_company.Controllers
         [HttpPost]
         public IActionResult SignIn(ManagerModel manager)
         {
-            string? error = "";
-            if (!Validations.CheckSignInValidation(manager, out error))
-            {
-                SetInfo(manager, error);
-                return View();
-            }
-
             if (_db.managerswithoptionalinfo.FirstOrDefault(man =>
                 man.email == manager.email && man.password == manager.password) is null)
             {
                 SetInfo(manager, $"Менеджера с такой почтой и паролем не существует!");
-                return View();
-            }
-
-            List<MessageModel> errorList = _db.messages.ToList();
-            if (errorList.Count > 0)
-            {
-                string message = "";
-                foreach (var item in errorList)
-                {
-                    message += item.ToString() + "\n";
-                }
-                SetInfo(manager, $"{message}");
                 return View();
             }
 

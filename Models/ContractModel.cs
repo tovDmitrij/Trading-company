@@ -48,13 +48,6 @@ namespace Trading_company.Models
         [Required]
         public DateTime dayto { get; set; }
 
-        /// <param name="id">Идентификатор контракта</param>
-        /// <param name="ContrFullName">ФИО контрагента</param>
-        /// <param name="contr_id">Идентификатор контрагента</param>
-        /// <param name="ManFullName">ФИО менеджера</param>
-        /// <param name="man_id">Идентификатор менеджера</param>
-        /// <param name="dayfrom">Дата подписания контракта</param>
-        /// <param name="dayto'">Дата окончания контракта</param>
         public ContractModel(int id, string ContrFullName, int contr_id, string ManFullName, int man_id, DateTime dayfrom, DateTime dayto)
         {
             this.id = id;

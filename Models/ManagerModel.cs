@@ -56,15 +56,6 @@ namespace Trading_company.Models
         /// </summary>
         public int? parent_id { get; set; }
 
-        /// <param name="man_id">Идентификатор менеджера</param>
-        /// <param name="email">Логин</param>
-        /// <param name="password">Пароль</param>
-        /// <param name="fullname">ФИО менеджера</param>
-        /// <param name="percent">Получаемый процент с продаж</param>
-        /// <param name="hire_day">Дата найма</param>
-        /// <param name="comments">Дополнительная информация</param>
-        /// <param name="leadfullname">ФИО руководителя</param>
-        /// <param name="parent_id">Идентификатор руководителя</param>
         public ManagerModel(int man_id, string email, string password, string fullname, double percent, DateTime hire_day, string? comments, string? leadfullname, int? parent_id)
         {
             this.man_id = man_id;
