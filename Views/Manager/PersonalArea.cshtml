@@ -2,10 +2,8 @@
 @{
     ViewData["Title"] = "Личный кабинет";
 }
-<div class="row m-5">
 
-
-    @*ИНФОРМАЦИЯ О МЕНЕДЖЕРЕ*@
+<div class="d-flex justify-content-center">
     <div class="col-2">
 
         @*Фото менеджера*@
@@ -46,7 +44,6 @@
 
     </div>
 
-
     @*ДЕЙСТВИЯ, К-РЫЕ МОЖЕТ СОВЕРШИТЬ МЕНЕДЖЕР*@
     <div class="col-2">
         <b>Действия</b>
@@ -71,7 +68,6 @@
 
     </div>
 
-
     @*СТАТИСТИКА, К-РУЮ МОЖЕТ ПОСМОТРЕТЬ МЕНЕДЖЕР*@
     <div class="col-2">
         <b class="">Статистика</b>
@@ -94,7 +90,11 @@
             </form>
         </div>
 
+        <div>
+            <form method="get" asp-controller="Cource" asp-action="List">
+                <button type="submit" class="btn bg-danger m-1">Курс валют</button>
+            </form>
+        </div>
+
     </div>
-
-
 </div>

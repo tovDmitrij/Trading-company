@@ -1,0 +1,106 @@
+﻿@model Trading_company.Models.IncomingModel
+@{
+    ViewData["Title"] = "Покупка";
+}
+
+<div class="d-flex justify-content-center bg-light">
+    <div class="col-5">
+
+        <form asp-controller="Transaction" asp-action="Buy">
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <h1 class="d-flex justify-content-center">@ViewData["Title"]</h1>
+            </div>
+
+            @*ID товара*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">ID товара*</b>
+                <div>
+                    <input class="w-100" type="text" asp-for="prod_id" value=@ViewData["Man_email"] />
+                </div>
+            </div>
+
+            @*Кол-во товара*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">Кол-во товара*</b>
+                <div>
+                    <input class="w-100" type="text" asp-for="quantity" value=@ViewData["Man_email"] />
+                </div>
+            </div>
+
+            @*Дата транзакции*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">Дата транзакции*</b>
+                <div>
+                    <input type="date" asp-for="inc_date" value=@ViewData["Man_email"] />
+                </div>
+            </div>
+
+            @*Итог*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">Дата транзакции*</b>
+                <div>
+                    <input type="date" asp-for="inc_date" value=@ViewData["Man_email"] />
+                </div>
+            </div>
+
+             <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">Дата транзакции*</b>
+                <div>
+                    <input type="date" asp-for="inc_date" value=@ViewData["Man_email"] />
+                </div>
+            </div>
+
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">Дата транзакции*</b>
+                <div>
+                    <input type="date" asp-for="inc_date" value=@ViewData["Man_email"] />
+                </div>
+            </div>
+
+
+        </form>
+
+        <div class="row m-1 bg-info">
+            <label>Чек</label>
+        </div>
+
+        <div class="row m-1 bg-info">
+            <table>
+                <tr>
+                    <td>
+                        <label>Цена</label>
+                    </td>
+                    <td>
+                        <label>3000</label>
+                    </td>
+                    <td>
+                        <label>руб.</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Налог (НДС)</label>
+                    </td>
+                    <td>
+                        <label>500</label>
+                    </td>
+                    <td>
+                        <label>руб.</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Итог</label>
+                    </td>
+                    <td>
+                        <label>3500</label>
+                    </td>
+                    <td>
+                        <label>руб.</label>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>

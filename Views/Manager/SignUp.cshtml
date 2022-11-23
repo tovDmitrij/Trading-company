@@ -2,62 +2,61 @@
 @{
     ViewData["Title"] = "Регистрация";
 }
-<div class="container d-flex justify-content-center">
+
+<div class="d-flex justify-content-center">
     <div class="col-4">
+
+        @*РЕГИСТРАЦИЯ МЕНЕДЖЕРА*@
         <form asp-controller="Manager" asp-action="SignUp">
-            <div class="row">
-                <label class="d-flex justify-content-center">@ViewData["Title"]</label>
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <h1 class="d-flex justify-content-center">@ViewData["Title"]</h1>
             </div>
-            <div class="row">
-                <table>
-                    <tr>
-                        <td>
-                            <label>ФИО*</label>
-                        </td>
-                        <td>
-                            <input type="text" asp-for="fullname" value=@ViewData["Man_fullname"] />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Почта*</label>
-                        </td>
-                        <td>
-                            <input type="text" asp-for="email" value=@ViewData["Man_email"] />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Пароль*</label>
-                        </td>
-                        <td>
-                            <input type="password" asp-for="password" value=@ViewData["Man_password"] />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>%*</label>
-                        </td>
-                        <td>
-                            <input type="number" min="0" max="50" asp-for="percent" value=@ViewData["Man_percent"] />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>ID руководителя</label>
-                        </td>
-                        <td>
-                            <input type="number" asp-for="parent_id" value=@ViewData["Man_leadid"] />
-                        </td>
-                    </tr>
-                </table>
+
+            @*ФИО менеджера*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">ФИО*</b>
+                <div>
+                    <input class="w-100" type="text" asp-for="fullname" value=@ViewData["Man_fullname"] />
+                </div>
             </div>
-            <div class="row">
+
+            @*Почта*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">Почта*</b>
+                <div>
+                    <input class="w-100" type="text" asp-for="email" value=@ViewData["Man_email"] />
+                </div>
+            </div>
+
+            @*Пароль*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">Пароль*</b>
+                <div>
+                    <input class="w-100" type="password" asp-for="password" value=@ViewData["Man_password"] />
+                </div>
+            </div>
+
+            @*Процент с продаж*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">%*</b>
+                <div>
+                    <input class="w-100" type="number" min="0" max="50" asp-for="percent" value=@ViewData["Man_percent"] />
+                </div>
+            </div>
+
+            @*Идентификатор руководителя*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">ID руководителя</b>
+                <div>
+                    <input class="w-100" type="number" asp-for="parent_id" value=@ViewData["Man_leadid"] />
+                </div>
+            </div>
+
+            <div class="row m-1 bg-secondary bg-opacity-25">
                 <input type="submit" value="Подтвердить" />
             </div>
-            <div class="row bg-danger">
-                @ViewData["Error"]
-            </div>
+
+            <h4 class="row m-1 text-light bg-dark">@ViewData["Error"]</h4>
         </form>
     </div>
 </div>

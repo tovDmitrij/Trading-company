@@ -64,6 +64,11 @@ namespace Trading_company.Misc
         /// <returns></returns>
         public static bool CheckContractValidation(ContractModel contract, out string? Error)
         {
+            if (!IsFullNameValid(contract.ContrFullName, out Error))
+            {
+                return false;
+            }
+
             Error = null;
             return true;
         }
@@ -165,20 +170,6 @@ namespace Trading_company.Misc
                 Error = "Процент с продаж должен быть меньше 51!";
                 return false;
             }
-
-            Error = null;
-            return true;
-        }
-
-        /// <summary>
-        /// Валидна ли введённая дата
-        /// </summary>
-        /// <param name="date">Дата</param>
-        /// <param name="Error">Ошибка, если она возникнет</param>
-        /// <returns></returns>
-        private static bool IsDateValid(DateTime date, out string? Error)
-        {
-            
 
             Error = null;
             return true;
