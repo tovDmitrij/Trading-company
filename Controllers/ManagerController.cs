@@ -117,6 +117,40 @@ namespace Trading_company.Controllers
 
             return Redirect("~/Manager/PersonalArea");
         }
+
+        /// <summary>
+        /// Выход из аккаунта менеджера
+        /// </summary>
+        public IActionResult Exit()
+        {
+            HttpContext.Session.Clear();
+            return Redirect("SignIn");
+        }
+
+        /// <summary>
+        /// Удалить аккаунт менеджера
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult Delete()
+        {
+            var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
+            ManagerModel manager = _db.managerswithoptionalinfo.FirstOrDefault(man =>
+                man.email == managerInfo.email && man.password == managerInfo.password);
+
+            try
+            {
+                _db.managerswithoptionalinfo.Remove(manager);
+                _db.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                //SetInfo(manager, $"{ex.InnerException}");
+                //return Redirect("PersonalArea");
+            }
+
+            HttpContext.Session.Clear();
+            return Redirect("SignIn");
+        }
         
         #endregion
 

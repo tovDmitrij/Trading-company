@@ -11,6 +11,23 @@ create or replace function AddNewManager() returns trigger as
 	$$ language plpgsql;
 	
 	
+create or replace trigger DeleteManager instead of delete on ManagersWithOptionalInfo for each row
+	execute procedure DeleteCurrentManager();
+create or replace function DeleteCurrentManager() returns trigger as
+	$$
+		begin
+			delete from Incoming where man_id = old.man_id;
+			delete from Outgoing where man_id = old.man_id;
+			delete from Contracts where man_id = old.man_id;
+			update Managers set comments = 'Отсутствует руководитель' where parent_id = old.man_id;
+			update Managers set parent_id = null where parent_id = old.man_id;
+			delete from Managers where man_id = old.man_id;
+			
+			return new;
+		end;
+	$$ language plpgsql;
+	
+	
 create or replace trigger InsertContract instead of insert on ContractsWithOptionalInfo for each row
 	execute procedure AddNewContract();
 create or replace function AddNewContract() returns trigger as 

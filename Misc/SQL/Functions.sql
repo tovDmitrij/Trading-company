@@ -2,18 +2,8 @@
 create or replace function GetProductQuantity(prodID integer) returns integer as
 	$$
 		declare
-			isValid integer;
 			amount integer;
 		begin
-			if productID is null then
-				call AddMessage('fail', current_query(), 'Идентификатор товара не был определён!');
-			end if;
-			select count(*) into isValid from Products 
-			where prod_id = productID;
-			if isValid = 0 then
-				call AddMessage('fail', current_query(), 'Товара №'||productID||' не существует!');
-			end if;
-		
 			select Sum(Incoming.Quantify) - Sum(Outgoing.Quantify) into amount from Incoming
 				left join Products on Incoming.Prod_ID = Products.Prod_ID
 				right join Outgoing on Outgoing.Prod_ID = Products.Prod_ID
@@ -28,7 +18,6 @@ create or replace function GetContragentID(contractID integer) returns integer a
 		declare
 			contrID integer;
 		begin
-			call CheckContract(contractID);
 			select contr_id into contrID from Contracts
 			where id = contractID;
 			return contrID;
@@ -41,7 +30,6 @@ create or replace function GetManagerID(contractID integer) returns integer as
 		declare
 			manID integer;
 		begin
-			call CheckContract(contractID);
 			select man_id into manID from Cntracts
 			where id = contractID;
 			return manID;
@@ -52,18 +40,8 @@ create or replace function GetManagerID(contractID integer) returns integer as
 create or replace function GetTaxValue(taxID integer) returns numeric(3,2) as
 	$$
 		declare
-			isValid integer;
 			taxValue integer;
 		begin
-			if taxID is null then
-				call AddMessage('fail', current_query(), 'Идентификатор налога не был определён!');
-			end if;
-			select count(*) into isValid from Taxes
-			where tax_id = taxID;
-			if isValid = 0 then
-				call AddMessage('fail', current_query(), 'Налога №'||taxID||' не существует!');
-			end if;
-			
 			select tax_id into taxID from Taxes
 			where tax_id = taxID;
 			return taxValue;
@@ -75,16 +53,7 @@ create or replace function GetProductPrice(productID integer, priceDate date) re
 	$$
 		declare
 			price numeric(10,2);
-			isValid integer;
 		begin
-			call CheckProductQuantity(productID);
-			select count(*) into isValid from Prices
-			where prod_id = productID
-				and dayfrom <= priceDate and priceDate <= dateTo;
-			if isValid = 0 then
-				call AddMessage('fail', current_query(), 'Отсутствует актуальный ценник на дату '||priceDate||' для товара '||productID||'!');
-			end if;
-			
 			select value into price from Prices
 			where prod_id = productID
 				and dayfrom <= priceDate and priceDate <= dateTo;

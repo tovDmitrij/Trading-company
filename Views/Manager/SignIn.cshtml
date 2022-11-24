@@ -16,7 +16,7 @@
 
             @*Почта*@
             <div class="row m-1 bg-secondary bg-opacity-25">
-                <b class="bg-secondary bg-opacity-50">Почта*</b>
+                <b class="bg-secondary bg-opacity-50 required">Почта</b>
                 <div>
                     <input required class="w-100 m-1" type="email" asp-for="email" value=@ViewData["Man_email"] />
                 </div>
@@ -25,7 +25,7 @@
 
             @*Пароль*@
             <div class="row m-1 bg-secondary bg-opacity-25">
-                <b class="bg-secondary bg-opacity-50">Пароль*</b>
+                <b class="bg-secondary bg-opacity-50 required">Пароль</b>
                 <div>
                     <input required minlength="8" pattern="\S+" title="Пароль должен быть не меньше 8 символов и без пробелов" class="w-100 m-1" type="password" asp-for="password" value=@ViewData["Man_password"] />
                 </div>

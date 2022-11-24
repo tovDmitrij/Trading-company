@@ -85,6 +85,11 @@ namespace Trading_company.Controllers
 
             contract.CurrentContract.man_id = currentManager.man_id;
             contract.CurrentContract.dayfrom = System.DateTime.Now;
+            if(contract.CurrentContract.contr_id == 0)
+            {
+                SetInfo(contract.CurrentContract, "Выберите контрагента!");
+                return New();
+            }
             if ((contract.CurrentContract.dayto - contract.CurrentContract.dayfrom).Days < 7)
             {
                 SetInfo(contract.CurrentContract, "Контракт должен оформляться минимум на неделю!");
