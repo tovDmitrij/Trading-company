@@ -14,12 +14,17 @@ namespace Trading_company.Models
         /// <summary>
         /// Таблица с менеджерами с дополнительной информацией
         /// </summary>
-        public DbSet<ManagerModel> managerswithoptionalinfo { get; set; }
+        public DbSet<ManagerModel> managers_with_optional_info { get; set; }
 
         /// <summary>
         /// Таблица с контрактами с дополнительной информацией
         /// </summary>
-        public DbSet<ContractModel> contractswithoptionalinfo { get; set; }
+        public DbSet<ContractModel> contracts_with_optional_info { get; set; }
+
+        /// <summary>
+        /// Таблица с транзакциями на покупку товаров
+        /// </summary>
+        public DbSet<IncomingModel> incoming_with_optional_info { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
     }

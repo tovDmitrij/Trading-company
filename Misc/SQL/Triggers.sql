@@ -1,19 +1,19 @@
-create or replace trigger InsertManager instead of insert on ManagersWithOptionalInfo for each row
-	execute procedure AddNewManager();
-create or replace function AddNewManager() returns trigger as 
+create or replace trigger insert_manager instead of insert on managers_with_optional_info for each row
+	execute procedure add_new_manager();
+create or replace function add_new_manager() returns trigger as 
 	$$
 		begin
 			insert into Managers(email,password,fullname,percent,hire_day,comments,parent_id)
-			values(new.email, new.password, new.fullname, new.percent, new.hire_day, new.comments, new.parent_id);
+			values(new.email, new.password, new.man_fullname, new.percent, new.hire_day, new.comments, new.lead_id);
 			
 			return new;
 		end;
 	$$ language plpgsql;
 	
 	
-create or replace trigger DeleteManager instead of delete on ManagersWithOptionalInfo for each row
-	execute procedure DeleteCurrentManager();
-create or replace function DeleteCurrentManager() returns trigger as
+create or replace trigger delete_manager instead of delete on managers_with_optional_info for each row
+	execute procedure delete_current_manager();
+create or replace function delete_current_manager() returns trigger as
 	$$
 		begin
 			delete from Incoming where man_id = old.man_id;
@@ -28,9 +28,9 @@ create or replace function DeleteCurrentManager() returns trigger as
 	$$ language plpgsql;
 	
 	
-create or replace trigger InsertContract instead of insert on ContractsWithOptionalInfo for each row
-	execute procedure AddNewContract();
-create or replace function AddNewContract() returns trigger as 
+create or replace trigger insert_contract instead of insert on contracts_with_optional_info for each row
+	execute procedure add_new_contract();
+create or replace function add_new_contract() returns trigger as 
 	$$
 		begin
 			insert into Contracts(contr_id, man_id, dayfrom, dayto)
@@ -42,13 +42,13 @@ create or replace function AddNewContract() returns trigger as
 
 
 
-create or replace trigger InsertIncoming instead of insert on IncomingWithOptionalInfo for each row
-	execute procedure BuyProducts();
-create or replace function BuyProducts() returns trigger as
+create or replace trigger insert_incoming instead of insert on incoming_with_optional_info for each row
+	execute procedure buy_product();
+create or replace function buy_product() returns trigger as
 	$$
 		begin
 			insert into Incoming(prod_id, tax_id, contr_id, man_id, inc_date, quantify, cost)
-			values(new.Prod_ID, 1, GetContragentID(new.ContractID), GetManagerID(new.ContractID), new.IncDate, new.Quantity, CalculateTransactionCost(new.ProdID, new.Quantity, GetTaxValue(1), new.IncDate));
+			values(new.Prod_ID, 1, GetContragentID(new.Contract_ID), GetManagerID(new.Contract_ID), new.Inc_Date, new.Quantity, CalculateTransactionCost(new.Prod_ID, new.Quantity, GetTaxValue(1), new.Inc_Date));
 			
 			return new;
 		end;
@@ -56,13 +56,13 @@ create or replace function BuyProducts() returns trigger as
 
 
 
-create or replace trigger InsertOutgoing instead of insert on OutgoingWithOptionalInfo for each row
-	execute procedure SellProducts();
-create or replace function SellProducts() returns trigger as
+create or replace trigger insert_outgoing instead of insert on outgoing_with_optional_info for each row
+	execute procedure sell_product();
+create or replace function sell_product() returns trigger as
 	$$
 		begin
 			insert into Outgoing(prod_id, tax_id, contr_id, man_id, inc_date, quantify, cost)
-			values(new.Prod_ID, 1, GetContragentID(new.ContractID), GetManagerID(new.ContractID), new.IncDate, new.Quantity, CalculateTransactionCost(new.ProdID, new.Quantity, GetTaxValue(1), new.IncDate));
+			values(new.Prod_ID, 1, GetContragentID(new.Contract_ID), GetManagerID(new.Contract_ID), new.Inc_Date, new.Quantity, CalculateTransactionCost(new.Prod_ID, new.Quantity, GetTaxValue(1), new.Inc_Date));
 			
 			return new;
 		end;

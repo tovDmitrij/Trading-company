@@ -36,13 +36,13 @@ namespace Trading_company.Controllers
             }
 
             var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
-            ManagerModel currentManager = _db.managerswithoptionalinfo.FirstOrDefault(man =>
+            ManagerModel currentManager = _db.managers_with_optional_info.FirstOrDefault(man =>
                 man.email == managerInfo.email && man.password == managerInfo.password);
 
             var freeContragents = _db.contragents.FromSqlInterpolated(
                 $"select * from Contragents except select cg.* from Contracts cr left join Contragents cg on cr.Contr_ID = cg.Contr_ID where cr.man_id = {currentManager.man_id} and cr.dayto >= now();").ToList();
             ContractViewModel cvm = new();
-            cvm.FreeContragents = freeContragents;
+            cvm.Contragents = freeContragents;
             return View(cvm);
         }
 
@@ -57,7 +57,7 @@ namespace Trading_company.Controllers
             }
             ManagerModel currentManager = HttpContext.Session.Get<ManagerModel>("manager");
 
-            var contractList = _db.contractswithoptionalinfo.FromSql($"select* from contractswithoptionalinfo where man_id == {currentManager.man_id}");
+            var contractList = _db.contracts_with_optional_info.FromSql($"select* from contracts_with_optional_info where man_id == {currentManager.man_id}");
             return View(contractList);
         }
         
@@ -72,7 +72,7 @@ namespace Trading_company.Controllers
         /// </summary>
         /// <param name="contract">Котрнакт</param>
         [HttpPost]
-        public IActionResult New(ContractViewModel contract)
+        public IActionResult New(ContractModel contract)
         {
             if (!HttpContext.Session.Keys.Contains("manager"))
             {
@@ -80,30 +80,30 @@ namespace Trading_company.Controllers
             }
 
             var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
-            ManagerModel currentManager = _db.managerswithoptionalinfo.FirstOrDefault(man =>
+            ManagerModel currentManager = _db.managers_with_optional_info.FirstOrDefault(man =>
                 man.email == managerInfo.email && man.password == managerInfo.password);
 
-            contract.CurrentContract.man_id = currentManager.man_id;
-            contract.CurrentContract.dayfrom = System.DateTime.Now;
-            if(contract.CurrentContract.contr_id == 0)
+            contract.man_id = currentManager.man_id;
+            contract.dayfrom = System.DateTime.Now;
+            if(contract.contr_id == 0)
             {
-                SetInfo(contract.CurrentContract, "Выберите контрагента!");
+                SetInfo(contract, "Выберите контрагента!");
                 return New();
             }
-            if ((contract.CurrentContract.dayto - contract.CurrentContract.dayfrom).Days < 7)
+            if ((contract.dayto - contract.dayfrom).Days < 7)
             {
-                SetInfo(contract.CurrentContract, "Контракт должен оформляться минимум на неделю!");
+                SetInfo(contract, "Контракт должен оформляться минимум на неделю!");
                 return New();
             }
 
             try
             {
-                _db.contractswithoptionalinfo.Add(contract.CurrentContract);
+                _db.contracts_with_optional_info.Add(contract);
                 _db.SaveChanges();
             }
             catch (Exception ex)
             {
-                //SetInfo(contract.CurrentContract, $"{ex.InnerException}");
+                //SetInfo(contract, $"{ex.InnerException}");
                 //return New();
             }
 

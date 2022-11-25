@@ -18,7 +18,7 @@
 
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50">ФИО менеджера</b>
-                <div>@Model.fullname#@Model.man_id</div>
+                <div>@Model.man_fullname#@Model.man_id</div>
             </div>
 
 
@@ -30,13 +30,13 @@
 
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50">ФИО руководителя</b>
-                @if (Model.parent_id is null)
+                @if (Model.lead_id is null)
                 {
                     <div>@Model.comments</div>
                 }
                 else
                 {
-                    <div>@Model.leadfullname#@Model.parent_id</div>
+                    <div>@Model.lead_fullname#@Model.lead_id</div>
                 }
             </div>
 

@@ -1,5 +1,4 @@
-﻿@*@model Trading_company.Models.ManagerModel*@
-@model Trading_company.ViewModels.ManagerViewModel
+﻿@model Trading_company.ViewModels.ManagerViewModel
 @{
     ViewData["Title"] = "Регистрация";
     int leadID = Convert.ToInt32(ViewData["Man_leadid"]);
@@ -20,7 +19,7 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">ФИО</b>
                 <div>
-                    <input required pattern="^[А-ЯЁ][а-яё]*([-][А-ЯЁ][а-яё]*)?\s[А-ЯЁ][а-яё]*\s[А-ЯЁ][а-яё]*$" maxlength="150" class="w-100 m-1" type="text" asp-for="CurrentManager.fullname" value=@ViewData["Man_fullname"] />
+                    <input required pattern="^[А-ЯЁ][а-яё]*([-][А-ЯЁ][а-яё]*)?\s[А-ЯЁ][а-яё]*\s[А-ЯЁ][а-яё]*$" maxlength="150" class="w-100 m-1" type="text" asp-for="Manager.man_fullname" value=@ViewData["Man_fullname"] />
                 </div>
             </div>
 
@@ -29,7 +28,7 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">Почта</b>
                 <div>
-                    <input required class="w-100 m-1" type="email" asp-for="CurrentManager.email" value=@ViewData["Man_email"] />
+                    <input required class="w-100 m-1" type="email" asp-for="Manager.email" value=@ViewData["Man_email"] />
                 </div>
             </div>
 
@@ -38,7 +37,7 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">Пароль</b>
                 <div>
-                    <input required minlength="8" pattern="\S+" title="Пароль должен быть не меньше 8 символов и без пробелов" class="w-100 m-1" type="password" asp-for="CurrentManager.password" value=@ViewData["Man_password"] />
+                    <input required minlength="8" pattern="\S+" title="Пароль должен быть не меньше 8 символов и без пробелов" class="w-100 m-1" type="password" asp-for="Manager.password" value=@ViewData["Man_password"] />
                 </div>
             </div>
 
@@ -47,7 +46,7 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">Процент с продаж</b>
                 <div>
-                    <input required class="w-100 m-1" type="number" min="0" max="50" asp-for="CurrentManager.percent" value=@ViewData["Man_percent"] />
+                    <input required class="w-100 m-1" type="number" min="0" max="50" asp-for="Manager.percent" value=@ViewData["Man_percent"] />
                 </div>
             </div>
 
@@ -56,17 +55,17 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50">Руководитель</b>
                 <div>
-                    <select class="m-1" asp-for="CurrentManager.parent_id">
+                    <select class="m-1" asp-for="Manager.lead_id">
                         <option disabled selected>Выберите из доступных</option>
-                        @foreach (var lead in Model.FreeLeaders)
+                        @foreach (var lead in Model.Leaders)
                         {
                             if (lead.man_id == leadID)
                             {
-                                <option selected value="@lead.man_id">@lead.fullname#@lead.man_id</option>
+                                <option selected value="@lead.man_id">@lead.man_fullname#@lead.man_id</option>
                             }
                             else
                             {
-                                <option value="@lead.man_id">@lead.fullname#@lead.man_id</option>
+                                <option value="@lead.man_id">@lead.man_fullname#@lead.man_id</option>
                             }
                         }
                     </select>

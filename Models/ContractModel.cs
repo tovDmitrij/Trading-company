@@ -16,7 +16,7 @@ namespace Trading_company.Models
         /// ФИО контрагента
         /// </summary>
         [Required]
-        public string ContrFullName { get; set; }
+        public string contr_fullname { get; set; }
 
         /// <summary>
         /// Идентификатор контрагента
@@ -28,7 +28,7 @@ namespace Trading_company.Models
         /// ФИО менеджера
         /// </summary>
         [Required]
-        public string ManFullName { get; set; }
+        public string man_fullname { get; set; }
 
         /// <summary>
         /// Идентификатор менеджера
@@ -51,9 +51,9 @@ namespace Trading_company.Models
         public ContractModel(int id, string ContrFullName, int contr_id, string ManFullName, int man_id, DateTime dayfrom, DateTime dayto)
         {
             this.id = id;
-            this.ContrFullName = ContrFullName;
+            this.contr_fullname = ContrFullName;
             this.contr_id = contr_id;
-            this.ManFullName = ManFullName;
+            this.man_fullname = ManFullName;
             this.man_id = man_id;
             this.dayfrom = dayfrom;
             this.dayto = dayto;

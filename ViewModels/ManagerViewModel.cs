@@ -9,11 +9,11 @@ namespace Trading_company.ViewModels
         /// <summary>
         /// Регистрируемый менеджер
         /// </summary>
-        public ManagerModel CurrentManager { get; set; } = new();
+        public ManagerModel Manager { get; set; } = new();
 
         /// <summary>
         /// Список доступных руководителей
         /// </summary>
-        public List<ManagerModel> FreeLeaders { get; set; } = new();
+        public List<ManagerModel> Leaders { get; set; } = new();
     }
 }

@@ -28,7 +28,7 @@ namespace Trading_company.Models
         /// ФИО
         /// </summary>
         [Required]
-        public string fullname { get; set; }
+        public string man_fullname { get; set; }
 
         /// <summary>
         /// Получаемый процент с продаж
@@ -39,6 +39,7 @@ namespace Trading_company.Models
         /// <summary>
         /// Дата найма
         /// </summary>
+        [Required]
         public DateTime hire_day { get; set; }
 
         /// <summary>
@@ -49,24 +50,24 @@ namespace Trading_company.Models
         /// <summary>
         /// ФИО руководителя
         /// </summary>
-        public string? leadfullname { get; set; }
+        public string? lead_fullname { get; set; }
 
         /// <summary>
         /// Идентификатор руководителя
         /// </summary>
-        public int? parent_id { get; set; }
+        public int? lead_id { get; set; }
 
-        public ManagerModel(int man_id, string email, string password, string fullname, double percent, DateTime hire_day, string? comments, string? leadfullname, int? parent_id)
+        public ManagerModel(int man_id, string email, string password, string fullname, double percent, DateTime hire_day, string comments, string leadfullname, int parent_id)
         {
             this.man_id = man_id;
             this.email = email;
             this.password = password;
-            this.fullname = fullname;
+            this.man_fullname = fullname;
             this.percent = percent;
             this.hire_day = hire_day;
             this.comments = comments;
-            this.leadfullname = leadfullname;
-            this.parent_id = parent_id;
+            this.lead_fullname = leadfullname;
+            this.lead_id = parent_id;
         }
 
         public ManagerModel() { }

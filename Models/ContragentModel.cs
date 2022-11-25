@@ -31,9 +31,9 @@ namespace Trading_company.Models
         /// <summary>
         /// Доп. информация
         /// </summary>
-        public string? comments { get; set; }
+        public string comments { get; set; }
 
-        public ContragentModel(int contr_id, string name, string address, string phone, string? comments)
+        public ContragentModel(int contr_id, string name, string address, string phone, string comments)
         {
             this.contr_id = contr_id;
             this.name = name;

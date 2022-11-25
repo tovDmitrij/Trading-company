@@ -9,11 +9,11 @@ namespace Trading_company.ViewModels
         /// <summary>
         /// Оформляемый контракт
         /// </summary>
-        public ContractModel CurrentContract { get; set; } = new();
+        public ContractModel Contract { get; set; } = new();
 
         /// <summary>
         /// Доступные для подписания контракта контрагенты
         /// </summary>
-        public List<ContragentModel> FreeContragents { get; set; } = new();
+        public List<ContragentModel> Contragents { get; set; } = new();
     }
 }
