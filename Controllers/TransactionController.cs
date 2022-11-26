@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Trading_company.Misc;
 using Trading_company.Models;
+using Trading_company.ViewModels;
 namespace Trading_company.Controllers
 {
     /// <summary>
@@ -29,7 +32,17 @@ namespace Trading_company.Controllers
                 return Redirect("~/Manager/SignIn");
             }
 
-            return View();
+            var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
+            ManagerModel manager = _db.managers_with_optional_info.FirstOrDefault(man =>
+                man.email == managerInfo.email && man.password == managerInfo.password);
+
+            IncomingViewModel ivm = new()
+            {
+                Contracts = _db.contracts_with_optional_info.FromSqlInterpolated($"select* from contracts_with_optional_info where man_id = {manager.man_id} and dayto >= {DateTime.Now}").ToList(),
+                Products = _db.products_with_optional_info.FromSqlInterpolated($"select* from products_with_optional_info").ToList()
+            };
+
+            return View(ivm);
         }
 
         /// <summary>
@@ -61,7 +74,17 @@ namespace Trading_company.Controllers
                 return Redirect("~/Manager/SignIn");
             }
 
-
+            try
+            {
+                _db.incoming_with_optional_info.Add(transaction);
+                _db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                /*
+                 Здесь та же ошибка, что и при добавлении менеджера или контракта (см. ManagerController/SignUp)
+                 */
+            }
 
             return Redirect("~/Manager/PersonalArea");
         }

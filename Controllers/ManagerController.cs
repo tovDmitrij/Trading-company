@@ -34,6 +34,7 @@ namespace Trading_company.Controllers
             {
                 Leaders = freeLeaders
             };
+
             return View(mvm);
         }
 
@@ -75,7 +76,7 @@ namespace Trading_company.Controllers
         {
             if (_db.managers_with_optional_info.FirstOrDefault(man => man.email == manager.email) is not null)
             {
-                SetInfo(manager, "Почта уже занята!");
+                SetInfo(manager, "Почта уже занята");
                 return SignUp();
             }
 
@@ -92,8 +93,11 @@ namespace Trading_company.Controllers
             }
             catch (Exception ex)
             {
-                //SetInfo(manager, $"{ex.InnerException}");
-                //return View();
+                /*
+                Единственная ошибка, которая здесь возникает - column man_id is null.
+                Проблема в том, что данный атрибут имеет PK и автоинкрементится в БД и, соответственно, не может быть nullable.
+                Это EntityFramework выделывается.
+                 */
             }
 
             HttpContext.Session.Set("manager", manager);
@@ -111,7 +115,7 @@ namespace Trading_company.Controllers
             if (_db.managers_with_optional_info.FirstOrDefault(man =>
                 man.email == manager.email && man.password == manager.password) is null)
             {
-                SetInfo(manager, $"Менеджера с такой почтой и паролем не существует!");
+                SetInfo(manager, $"Менеджера с такой почтой и паролем не существует");
                 return View();
             }
 
@@ -146,8 +150,9 @@ namespace Trading_company.Controllers
             }
             catch(Exception ex)
             {
-                //SetInfo(manager, $"{ex.InnerException}");
-                //return Redirect("PersonalArea");
+                /*
+                 Здесь также С# выделывается: на самом деле менеджер удаляется из БД...
+                 */
             }
 
             HttpContext.Session.Clear();

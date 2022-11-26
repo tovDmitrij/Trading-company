@@ -41,7 +41,19 @@ create or replace function add_new_contract() returns trigger as
 	$$ language plpgsql;
 
 
-
+create or replace trigger update_contract instead of update on contracts_with_optional_info for each row
+	execute procedure update_current_contract();
+create or replace function update_current_contract() returns trigger as
+	$$
+		begin
+			update Contracts set dayto = new.dayto, comments = new.comments
+			where id = new.id;
+		
+			return new;
+		end;
+	$$ language plpgsql;
+	
+--ПЕРЕДЕЛАТЬ!!!!----
 create or replace trigger insert_incoming instead of insert on incoming_with_optional_info for each row
 	execute procedure buy_product();
 create or replace function buy_product() returns trigger as
@@ -54,8 +66,7 @@ create or replace function buy_product() returns trigger as
 		end;
 	$$ language plpgsql;
 
-
-
+--ПЕРЕДЕЛАТЬ!!!!----
 create or replace trigger insert_outgoing instead of insert on outgoing_with_optional_info for each row
 	execute procedure sell_product();
 create or replace function sell_product() returns trigger as

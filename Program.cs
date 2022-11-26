@@ -1,7 +1,4 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Trading_company.Models;
 namespace Trading_company
 {
@@ -9,6 +6,8 @@ namespace Trading_company
     {
         public static void Main(string[] args)
         {
+
+
             #region Builder
             var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +24,7 @@ namespace Trading_company
             });
             #endregion
 
+
             #region App
             var app = builder.Build();
 
@@ -32,12 +32,9 @@ namespace Trading_company
             app.UseStaticFiles();
             app.UseRouting();
             app.UseSession();
-
-            #region Маршруты (настрою когда-нибудь потом)
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Manager}/{action=SignUp}");
-            #endregion
 
             app.Run();
             #endregion

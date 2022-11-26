@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.Contracts;
-
 using Trading_company.Misc;
 using Trading_company.Models;
 using Trading_company.ViewModels;
@@ -40,9 +38,12 @@ namespace Trading_company.Controllers
                 man.email == managerInfo.email && man.password == managerInfo.password);
 
             var freeContragents = _db.contragents.FromSqlInterpolated(
-                $"select * from Contragents except select cg.* from Contracts cr left join Contragents cg on cr.Contr_ID = cg.Contr_ID where cr.man_id = {currentManager.man_id} and cr.dayto >= now();").ToList();
+                $"select * from Contragents except select cg.* from Contracts cr left join Contragents cg on cr.Contr_ID = cg.Contr_ID where cr.man_id = {currentManager.man_id} and cr.dayto >= now()").OrderBy(contragent => contragent.contr_id).ToList();
             ContractViewModel cvm = new();
             cvm.Contragents = freeContragents;
+
+            ViewData["Contract_MinDate"] = DateTime.Now.AddDays(7).ToString("yyyy-MM-dd");
+
             return View(cvm);
         }
 
@@ -55,12 +56,16 @@ namespace Trading_company.Controllers
             {
                 return Redirect("~/Manager/SignIn");
             }
-            ManagerModel currentManager = HttpContext.Session.Get<ManagerModel>("manager");
 
-            var contractList = _db.contracts_with_optional_info.FromSql($"select* from contracts_with_optional_info where man_id == {currentManager.man_id}");
+            var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
+            ManagerModel manager = _db.managers_with_optional_info.FirstOrDefault(man =>
+                man.email == managerInfo.email && man.password == managerInfo.password);
+
+            var contractList = _db.contracts_with_optional_info.FromSql($"select* from contracts_with_optional_info where man_id = {manager.man_id}");
+
             return View(contractList);
         }
-        
+
         #endregion
 
 
@@ -84,17 +89,7 @@ namespace Trading_company.Controllers
                 man.email == managerInfo.email && man.password == managerInfo.password);
 
             contract.man_id = currentManager.man_id;
-            contract.dayfrom = System.DateTime.Now;
-            if(contract.contr_id == 0)
-            {
-                SetInfo(contract, "Выберите контрагента!");
-                return New();
-            }
-            if ((contract.dayto - contract.dayfrom).Days < 7)
-            {
-                SetInfo(contract, "Контракт должен оформляться минимум на неделю!");
-                return New();
-            }
+            contract.dayfrom = DateTime.Now;
 
             try
             {
@@ -103,29 +98,34 @@ namespace Trading_company.Controllers
             }
             catch (Exception ex)
             {
-                //SetInfo(contract, $"{ex.InnerException}");
-                //return New();
+                /*
+                Единственная ошибка, которая здесь возникает - column id is null.
+                Проблема в том, что данный атрибут имеет PK и автоинкрементится в БД и, соответственно, не может быть nullable.
+                Это EntityFramework выделывается. 
+                 */
             }
 
-            return Redirect("~/Manager/PersonalArea");
+            return Redirect("~/Contract/List");
         }
 
-        #endregion
-
-
-
-        #region Прочее
-
         /// <summary>
-        /// Отправить на форму введённую информацию о контракте
+        /// Удалить действующий контракт
         /// </summary>
-        /// <param name="contract">Контракт</param>
-        /// <param name="error">Ошибка, если она есть</param>
-        private void SetInfo(ContractModel contract, string? error)
+        /// <param name="id">Идентификатор контракта</param>
+        [HttpPost]
+        public IActionResult Delete(string id)
         {
-            ViewData["Error"] = error;
-            ViewData["Contract_ContrID"] = contract.contr_id;
-            ViewData["Contract_Date"] = contract.dayto.ToString("yyyy-MM-dd");
+            if (!HttpContext.Session.Keys.Contains("manager"))
+            {
+                return Redirect("~/Manager/SignIn");
+            }
+
+            var contract = _db.contracts_with_optional_info.FirstOrDefault(contr => contr.id == Convert.ToInt32(id));
+            contract.dayto = DateTime.Now;
+            contract.comments = "Завершён досрочно менеджером";
+            _db.SaveChanges();
+
+            return Redirect("~/Contract/List");
         }
 
         #endregion

@@ -11,23 +11,27 @@
         <div class="col-4">
 
 
+            @*Фото менеджера (ну типо)*@
             <div class="row m-1 bg-secondary bg-opacity-50">
                 <img src="~/images/manager.png" asp-append-version="true" />
             </div>
 
 
+            @*ФИО + ID манагера*@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50">ФИО менеджера</b>
                 <div>@Model.man_fullname#@Model.man_id</div>
             </div>
 
 
+            @*Дата найма менеджера*@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50">Дата найма</b>
                 <div>@Model.hire_day</div>
             </div>
 
 
+            @*ФИО + ID руководителя (если есть)*@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50">ФИО руководителя</b>
                 @if (Model.lead_id is null)
@@ -41,12 +45,14 @@
             </div>
 
 
+            @*Зарабатываемый менеджером процент с продаж*@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50">Зарабатываемый процент</b>
                 <div>@Model.percent%</div>
             </div>
 
 
+            @*ВЫЙТИ ИЗ АККАУНТА*@
             <div class="row m-1">
                 <form asp-controller="Manager" asp-action="Exit" class="d-flex justify-content-center">
                     <button type="submit" class="btn bg-warning m-1">Выйти из аккаунта</button>
@@ -54,6 +60,7 @@
             </div>
 
 
+            @*УДАЛИТЬ АККАУНТ*@
             <div class="row m-1 d-flex justify-content-center">
                 <form asp-controller="Manager" asp-action="Delete" class="d-flex justify-content-center">
                     <button type="submit" class="btn bg-danger m-1">Удалить аккаунт</button>

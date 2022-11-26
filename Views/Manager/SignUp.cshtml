@@ -19,7 +19,7 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">ФИО</b>
                 <div>
-                    <input required pattern="^[А-ЯЁ][а-яё]*([-][А-ЯЁ][а-яё]*)?\s[А-ЯЁ][а-яё]*\s[А-ЯЁ][а-яё]*$" maxlength="150" class="w-100 m-1" type="text" asp-for="Manager.man_fullname" value=@ViewData["Man_fullname"] />
+                    <input oninvalid="this.setCustomValidity('Пожалуйста, введите ФИО полностью и корректно')" oninput="setCustomValidity('')" required pattern="^[А-ЯЁ][а-яё]*([-][А-ЯЁ][а-яё]*)?\s[А-ЯЁ][а-яё]*\s[А-ЯЁ][а-яё]*$" maxlength="150" class="w-100 m-1" type="text" asp-for="Manager.man_fullname" value=@ViewData["Man_fullname"] />
                 </div>
             </div>
 
@@ -28,7 +28,7 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">Почта</b>
                 <div>
-                    <input required class="w-100 m-1" type="email" asp-for="Manager.email" value=@ViewData["Man_email"] />
+                    <input oninvalid="this.setCustomValidity('Пожалуйста, введите почту')" oninput="setCustomValidity('')" required class="w-100 m-1" type="email" asp-for="Manager.email" value=@ViewData["Man_email"] />
                 </div>
             </div>
 
@@ -37,7 +37,7 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">Пароль</b>
                 <div>
-                    <input required minlength="8" pattern="\S+" title="Пароль должен быть не меньше 8 символов и без пробелов" class="w-100 m-1" type="password" asp-for="Manager.password" value=@ViewData["Man_password"] />
+                    <input oninvalid="this.setCustomValidity('Пожалуйста, введите пароль')" oninput="setCustomValidity('')" required minlength="8" pattern="\S+" title="Пароль должен быть не меньше 8 символов и без пробелов" class="w-100 m-1" type="password" asp-for="Manager.password" value=@ViewData["Man_password"] />
                 </div>
             </div>
 
@@ -46,7 +46,7 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">Процент с продаж</b>
                 <div>
-                    <input required class="w-100 m-1" type="number" min="0" max="50" asp-for="Manager.percent" value=@ViewData["Man_percent"] />
+                    <input oninvalid="this.setCustomValidity('Пожалуйста, введите Ваш желаемый процент с продаж')" oninput="setCustomValidity('')" required class="w-100 m-1" type="number" min="0" max="50" asp-for="Manager.percent" value=@ViewData["Man_percent"] />
                 </div>
             </div>
 
@@ -56,7 +56,7 @@
                 <b class="bg-secondary bg-opacity-50">Руководитель</b>
                 <div>
                     <select class="m-1" asp-for="Manager.lead_id">
-                        <option disabled selected>Выберите из доступных</option>
+                        <option value="">Выберите из доступных</option>
                         @foreach (var lead in Model.Leaders)
                         {
                             if (lead.man_id == leadID)

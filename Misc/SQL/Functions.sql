@@ -1,4 +1,3 @@
---Функция, к-рая возвращает кол-во товара на складе
 create or replace function GetProductQuantity(prodID integer) returns integer as
 	$$
 		declare
@@ -12,7 +11,7 @@ create or replace function GetProductQuantity(prodID integer) returns integer as
 		end;
 	$$ language plpgsql;
 
---Функция, к-рая возвращает идентификатор контрагента по идентификатору контракта
+
 create or replace function GetContragentID(contractID integer) returns integer as
 	$$
 		declare
@@ -24,32 +23,32 @@ create or replace function GetContragentID(contractID integer) returns integer a
 		end;
 	$$ language plpgsql;
 
---Функция, к-рая возвращает идентификатор менеджера по идентификатору контракта
+
 create or replace function GetManagerID(contractID integer) returns integer as
 	$$
 		declare
 			manID integer;
 		begin
-			select man_id into manID from Cntracts
+			select man_id into manID from Contracts
 			where id = contractID;
 			return manID;
 		end;
 	$$ language plpgsql;
+
 	
---Функция, к-рая возвращает процент налога по его идентификатору
 create or replace function GetTaxValue(taxID integer) returns numeric(3,2) as
 	$$
 		declare
-			taxValue integer;
+			taxValue numeric(3,2);
 		begin
-			select tax_id into taxID from Taxes
+			select value into taxValue from Taxes
 			where tax_id = taxID;
 			return taxValue;
 		end;
 	$$ language plpgsql;
 	
---Функция, к-рая возвращает цену товара по его идентификатору и дате
-create or replace function GetProductPrice(productID integer, priceDate date) returns numeric(10,2) as
+	
+create or replace function GetProductPrice(productID integer, priceDate timestamp) returns numeric(10,2) as
 	$$
 		declare
 			price numeric(10,2);
@@ -60,9 +59,9 @@ create or replace function GetProductPrice(productID integer, priceDate date) re
 			return price;
 		end;
 	$$ language plpgsql;
+	
 
---Функция, к-рая подсчитывает сумму расходов при совершении транзакции (в рамках проекта рассматриваются только налоги)
-create or replace function CalculateTransactionCost(productID integer, quantity integer, taxValue integer, transactionDate date) returns numeric(10,2) as
+create or replace function CalculateTransactionCost(productID integer, quantity integer, taxValue numeric(3,2), transactionDate timestamp) returns numeric(10,2) as
 	$$
 		declare
 			summ numeric(10,2);

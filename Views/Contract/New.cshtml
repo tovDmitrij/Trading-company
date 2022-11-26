@@ -16,9 +16,9 @@
              <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">Контрагент</b>
                 <div>
-                     <select class="m-1" asp-for="Contract.contr_id">
-                        <option disabled selected>Выберите из доступных</option>
-                        @foreach (var lead in Model.Contragents) 
+                    <select oninvalid="this.setCustomValidity('Пожалуйста, выберите контрагента')" oninput="setCustomValidity('')" required class="m-1" asp-for="Contract.contr_id">
+                        <option value="">Выберите из доступных</option>
+                        @foreach (var lead in Model.Contragents)
                         {
                             if (lead.contr_id == contrID)
                             {
@@ -38,7 +38,7 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">Дата окончания</b>
                 <div>
-                    <input class="m-1" type="date" asp-for="Contract.dayto" value=@ViewData["Contract_Date"] />
+                    <input oninvalid="this.setCustomValidity('Контракт должен оформляться минимум на неделю: (@ViewData["Contract_MinDate"])')" oninput="setCustomValidity('')" required min=@ViewData["Contract_MinDate"] class="m-1" type="date" asp-for="Contract.dayto" value=@ViewData["Contract_Date"] />
                 </div>
             </div>
             

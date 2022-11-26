@@ -26,6 +26,11 @@ namespace Trading_company.Models
         /// </summary>
         public DbSet<IncomingModel> incoming_with_optional_info { get; set; }
 
+        /// <summary>
+        /// Таблица с существующими товарами
+        /// </summary>
+        public DbSet<ProductModel> products_with_optional_info { get; set; }
+
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
     }
 }

@@ -71,6 +71,7 @@ create table Contracts(
     Man_Id integer not null,
     DayFrom date,
     DayTo date,
+	Comments varchar(250),
     foreign key(Contr_Id) references Contragents(Contr_Id),
     foreign key(Man_Id) references Managers(Man_Id)
 );

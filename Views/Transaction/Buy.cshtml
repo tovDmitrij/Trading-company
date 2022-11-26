@@ -1,10 +1,12 @@
-﻿@model Trading_company.Models.IncomingModel
+﻿@model Trading_company.ViewModels.IncomingViewModel
 @{
     ViewData["Title"] = "Покупка";
 }
 
 <div class="d-flex justify-content-center">
-    <div class="col-5">
+    <div class="col-2">
+
+
         <form asp-controller="Transaction" asp-action="Buy">
             <div class="row">
                 <div class="row m-1 bg-secondary bg-opacity-25">
@@ -13,32 +15,57 @@
                 <div class="row m-1 bg-secondary bg-opacity-25">
                     <b class="d-flex justify-content-center">Оформление заказа</b>
                 </div>
-    
-                    <div class="row m-1 bg-secondary bg-opacity-25">
-                        <b class="bg-secondary bg-opacity-50">ID товара*</b>
-                        <div>
-                            <input class="w-100 m-1" type="text" asp-for="prod_id" value=@ViewData["ProdID"] />
-                        </div>
-            
-                        <b class="bg-secondary bg-opacity-50">Кол-во товара*</b>
-                        <div>
-                            <input class="w-100 m-1" type="text" asp-for="quantity" value=@ViewData["Quantify"] />
-                        </div>
-            
-                        <b class="bg-secondary bg-opacity-50">Дата транзакции*</b>
-                        <div>
-                            <input class="m-1" type="date" asp-for="inc_date" value=@ViewData["Date"] />
-                        </div>
+                <div class="row m-1 bg-secondary bg-opacity-25">
+
+
+                    @*Список доступных контрактов*@
+                    <b class="bg-secondary bg-opacity-50 required">Выберите контракт</b>
+                    <div>
+                        <select style="width:100%;max-width:100%;" class="m-1" asp-for="Transaction.contract_id">
+                            <option disabled selected>Выберите из доступных</option>
+                            @foreach (var contract in Model.Contracts)
+                            {
+                                <option value="@contract.id">Контракт#@contract.id - @contract.contr_fullname#@contract.contr_id</option>
+                            }
+                        </select>
                     </div>
 
+
+                    @*Список товаров*@
+                    <b class="bg-secondary bg-opacity-50 required">Выберите товар</b>
+                    <div>
+                        <select style="width:100%;max-width:100%;" class="m-1" asp-for="Transaction.prod_id">
+                            <option disabled selected>Выберите из доступных</option>
+                            @foreach (var product in Model.Products)
+                            {
+                                <option value="@product.prod_id">@product.group_name#@product.group_id - @product.prod_name#@product.prod_id</option>
+                            }
+                        </select>
+                    </div>
+
+
+                    @*Количество товара*@
+                    <b class="bg-secondary bg-opacity-50 required">Кол-во товара</b>
+                    <div>
+                        <input required class="w-100 m-1" type="number" min="1" asp-for="Transaction.quantity" value=@ViewData["Quantify"] />
+                    </div>
+
+
+                    @*Дата транзакции*@
+                    <b class="bg-secondary bg-opacity-50 required">Дата транзакции</b>
+                    <div>
+                        <input required class="m-1" type="date" asp-for="Transaction.inc_date" value=@ViewData["Date"] />
+                    </div>
+                </div>
+
             </div>
-                       
+
             <div class="row">
                 <div class="row m-1 bg-secondary bg-opacity-25">
                     <b class="d-flex justify-content-center">Чек</b>
                 </div>
             </div>
-                    
+
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <div class="row row-cols-3">
                     <div class="col">
@@ -54,27 +81,29 @@
                         <b class="bg-secondary bg-opacity-50">Налог(НДС)</b>
                     </div>
                     <div class="col">
-                    <p>@ViewData["Cost"]</p>
-                </div>
-                <div class="col">
-                    <p>руб.</p>
-                </div>
-                <div class="col">
-                    <b class="bg-secondary bg-opacity-50">Итог</b>
-                </div>
-                <div class="col">
-                    <p>@ViewData["TheEnd"]</p>
-                </div>
-                <div class="col">
-                    <p>руб.</p>
+                        <p>@ViewData["Cost"]</p>
+                    </div>
+                    <div class="col">
+                        <p>руб.</p>
+                    </div>
+                    <div class="col">
+                        <b class="bg-secondary bg-opacity-50">Итог</b>
+                    </div>
+                    <div class="col">
+                        <p>@ViewData["TheEnd"]</p>
+                    </div>
+                    <div class="col">
+                        <p>руб.</p>
+                    </div>
                 </div>
             </div>
-            </div>
-                
+
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <input type="submit" value="Подтвердить" />
             </div>
         </form>
-        <h4 class="row m-1 text-light bg-dark">@ViewData["Error"]</h4> 
+
+
+        <h4 class="row m-1 text-light bg-dark">@ViewData["Error"]</h4>
     </div>
 </div>
