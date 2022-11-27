@@ -38,6 +38,14 @@
                     </thead>
 
                     <tbody>
+                        @{
+                            if (Model.Count() == 0)
+                            {
+                                <tr>
+                                    <td colspan="6">Отсутствуют контракты</td>
+                                </tr>
+                            }
+                        }
                         @foreach (var contract in Model)
                         {
                             if (contract.dayto < DateTime.Now)
@@ -59,7 +67,7 @@
                                     <td>@contract.dayfrom.ToString("dd-MM-yyyy")</td>
                                     <td>@contract.dayto.ToString("dd-MM-yyyy")</td>
                                     <td>---</td>
-                                    <td><button type="submit" name="id" value=@contract.id>Завершить</button></td>
+                                    <td><button type="submit" class="btn bg-warning bg-opacity-50" name="id" value=@contract.id>Завершить</button></td>
                                 </tr>
                             }
                         }

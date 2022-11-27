@@ -6,7 +6,7 @@ namespace Trading_company.Models
     /// Информация о товаре
     /// </summary>
     [Keyless]
-    public class ProductModel
+    public sealed class ProductModel
     {
         /// <summary>
         /// Наименование группы товара

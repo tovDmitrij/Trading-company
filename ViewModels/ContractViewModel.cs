@@ -4,7 +4,7 @@ namespace Trading_company.ViewModels
     /// <summary>
     /// Модельное представление нового контракта и доступных контрагентов
     /// </summary>
-    public class ContractViewModel
+    public sealed class ContractViewModel
     {
         /// <summary>
         /// Оформляемый контракт

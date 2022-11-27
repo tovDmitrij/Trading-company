@@ -4,7 +4,7 @@ namespace Trading_company.Models
     /// <summary>
     /// Контракт
     /// </summary>
-    public class ContractModel
+    public sealed class ContractModel
     {
         /// <summary>
         /// Идентификатор контракта

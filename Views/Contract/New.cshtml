@@ -16,8 +16,19 @@
              <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">Контрагент</b>
                 <div>
-                    <select oninvalid="this.setCustomValidity('Пожалуйста, выберите контрагента')" oninput="setCustomValidity('')" required class="m-1" asp-for="Contract.contr_id">
-                        <option value="">Выберите из доступных</option>
+                    <select style="width:100%;max-width:100%;" oninvalid="this.setCustomValidity('Пожалуйста, выберите контрагента')" oninput="setCustomValidity('')" required class="m-1" asp-for="Contract.contr_id">
+                        <option value="">
+                            @{
+                                if (Model.Contragents.Count == 0)
+                                {
+                                    <div>Отсутствуют свободные контрагенты</div>;
+                                }
+                                else
+                                {
+                                    <div>Выберите из доступных</div>;
+                                }
+                            }
+                        </option>
                         @foreach (var lead in Model.Contragents)
                         {
                             if (lead.contr_id == contrID)
@@ -43,8 +54,8 @@
             </div>
             
 
-            <div class="row m-1 bg-secondary bg-opacity-25">
-                <input type="submit" value="Подтвердить" />
+            <div class="row m-3">
+                <input class="btn bg-secondary bg-opacity-50" type="submit" value="Подтвердить" />
             </div>
             <h4 class="row m-1 text-light bg-dark">@ViewData["Error"]</h4>
         </form>

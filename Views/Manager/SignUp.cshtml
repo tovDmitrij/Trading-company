@@ -55,8 +55,19 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50">Руководитель</b>
                 <div>
-                    <select class="m-1" asp-for="Manager.lead_id">
-                        <option value="">Выберите из доступных</option>
+                    <select style="width:100%;max-width:100%;" class="m-1" asp-for="Manager.lead_id">
+                        <option value="">
+                            @{
+                                if (Model.Leaders.Count == 0)
+                                {
+                                    <div>Отсутствуют свободные руководители</div>;
+                                }
+                                else
+                                {
+                                    <div>Выберите из доступных</div>;
+                                }
+                            }
+                        </option>
                         @foreach (var lead in Model.Leaders)
                         {
                             if (lead.man_id == leadID)
@@ -73,8 +84,8 @@
             </div>
 
 
-            <div class="row m-1 bg-secondary bg-opacity-25">
-                <input type="submit" value="Подтвердить" />
+            <div class="row m-3">
+                <input class="btn bg-secondary bg-opacity-50" type="submit" value="Подтвердить" />
             </div>
             <h4 class="row m-1 text-light bg-dark">@ViewData["Error"]</h4>
         </form>

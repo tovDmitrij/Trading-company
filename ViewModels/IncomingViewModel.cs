@@ -4,7 +4,7 @@ namespace Trading_company.ViewModels
     /// <summary>
     /// Модельное представление оформления новой транзакции (покупка) и доступных товаров с контрактами для его подтверждения
     /// </summary>
-    public class IncomingViewModel
+    public sealed class IncomingViewModel
     {
         /// <summary>
         /// Информация о новой транзакции

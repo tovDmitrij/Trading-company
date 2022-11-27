@@ -4,7 +4,7 @@ namespace Trading_company.ViewModels
     /// <summary>
     /// Модельное представление нового менеджера и свободных руководителей
     /// </summary>
-    public class ManagerViewModel
+    public sealed class ManagerViewModel
     {
         /// <summary>
         /// Регистрируемый менеджер

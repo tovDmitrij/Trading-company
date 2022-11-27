@@ -1,4 +1,4 @@
-﻿//#region Поиск чего-либо по поисковой строке (https://www.w3schools.com/howto/howto_js_filter_table.asp)
+﻿//#region Поиск чего-либо по поисковой строке (основано на https://www.w3schools.com/howto/howto_js_filter_table.asp)
 function searchContract(input, table, index) {
     document.getElementById("checkboxFilter").checked = false;
 
@@ -20,7 +20,7 @@ function searchContract(input, table, index) {
 }
 //#endregion
 
-//#region Фильтрация списка по чекбоксу (https://codepen.io/carl_was_here/pen/QoGRBp)
+//#region Фильтрация списка по чекбоксу (основано на https://codepen.io/carl_was_here/pen/QoGRBp)
 function filter_type(box) {
     document.getElementById("textFilter").value = "";
 

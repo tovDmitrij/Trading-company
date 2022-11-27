@@ -4,7 +4,7 @@ namespace Trading_company.ViewModels
     /// <summary>
     /// Модельное представление всех транзакций менеджера
     /// </summary>
-    public class TransactionViewModel
+    public sealed class TransactionViewModel
     {
         /// <summary>
         /// Список покупок менеджера

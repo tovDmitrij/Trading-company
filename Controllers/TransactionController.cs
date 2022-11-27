@@ -9,7 +9,7 @@ namespace Trading_company.Controllers
     /// Оформление транзакции
     /// </summary>
     [Controller]
-    public class TransactionController : Controller
+    public sealed class TransactionController : Controller
     {
         /// <summary>
         /// БД "Торговое предприятие"
@@ -75,7 +75,7 @@ namespace Trading_company.Controllers
             TransactionViewModel tvm = new()
             {
                 purchaseTransactions = _db.incoming_with_optional_info.FromSqlInterpolated($"select i.* from incoming_with_optional_info i left join Contracts c on i.contract_id = c.id where c.man_id = {manager.man_id}").ToList(),
-                sellTransactions = _db.outgoing_with_optional_info.FromSqlInterpolated($"select o.* from outgoing_with_optional_info o left join Contracts c on o.contract_id = o.id where c.man_id = {manager.man_id}").ToList()
+                sellTransactions = _db.outgoing_with_optional_info.FromSqlInterpolated($"select o.* from outgoing_with_optional_info o left join Contracts c on o.contract_id = c.id where c.man_id = {manager.man_id}").ToList()
             };
 
             return View(tvm);
@@ -109,7 +109,48 @@ namespace Trading_company.Controllers
                  */
             }
 
-            return Redirect("~/Manager/PersonalArea");
+            return Redirect("~/Transaction/List");
+        }
+
+        /// <summary>
+        /// Продажа товара
+        /// </summary>
+        /// <param name="transaction">Информация и транзакции</param>
+        [HttpPost]
+        public IActionResult Sell(OutgoingModel transaction)
+        {
+            if (!HttpContext.Session.Keys.Contains("manager"))
+            {
+                return Redirect("~/Manager/SignIn");
+            }
+
+            try
+            {
+                _db.outgoing_with_optional_info.Add(transaction);
+                _db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                /*
+                 Здесь та же ошибка, что и при добавлении менеджера или контракта (см. ManagerController/SignUp)
+                 */
+            }
+
+            return Redirect("~/Transaction/List");
+
+        }
+
+        /// <summary>
+        /// Напечатать чек перед покупкой товара
+        /// </summary>
+        /// <param name="transaction">Оформляемая транзакция</param>
+        [HttpPost]
+        public IActionResult Check(IncomingModel transaction)
+        {
+            ViewData["Price"] = "ПИДОР";
+            ViewData["Cost"] = "ХУЙ";
+            ViewData["TheEnd"] = "ПИЗДЕЦ";
+            return Redirect("~/Transaction/Buy");
         }
         #endregion
 

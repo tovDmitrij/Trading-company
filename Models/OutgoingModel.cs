@@ -4,7 +4,7 @@ namespace Trading_company.Models
     /// <summary>
     /// Транзакция на продажу товара
     /// </summary>
-    public class OutgoingModel
+    public sealed class OutgoingModel
     {
         /// <summary>
         /// Идентификатор транзакции
