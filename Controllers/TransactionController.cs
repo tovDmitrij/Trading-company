@@ -57,6 +57,29 @@ namespace Trading_company.Controllers
 
             return View();
         }
+
+        /// <summary>
+        /// Список транзакций
+        /// </summary>
+        public IActionResult List()
+        {
+            if (!HttpContext.Session.Keys.Contains("manager"))
+            {
+                return Redirect("~/Manager/SignIn");
+            }
+
+            var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
+            ManagerModel manager = _db.managers_with_optional_info.FirstOrDefault(man =>
+                man.email == managerInfo.email && man.password == managerInfo.password);
+
+            TransactionViewModel tvm = new()
+            {
+                purchaseTransactions = _db.incoming_with_optional_info.FromSqlInterpolated($"select i.* from incoming_with_optional_info i left join Contracts c on i.contract_id = c.id where c.man_id = {manager.man_id}").ToList(),
+                sellTransactions = _db.outgoing_with_optional_info.FromSqlInterpolated($"select o.* from outgoing_with_optional_info o left join Contracts c on o.contract_id = o.id where c.man_id = {manager.man_id}").ToList()
+            };
+
+            return View(tvm);
+        }
         #endregion
 
 
@@ -92,8 +115,5 @@ namespace Trading_company.Controllers
 
 
 
-        #region Прочее
-
-        #endregion
     }
 }

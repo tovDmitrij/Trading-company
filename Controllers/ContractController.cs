@@ -37,10 +37,11 @@ namespace Trading_company.Controllers
             ManagerModel currentManager = _db.managers_with_optional_info.FirstOrDefault(man =>
                 man.email == managerInfo.email && man.password == managerInfo.password);
 
-            var freeContragents = _db.contragents.FromSqlInterpolated(
-                $"select * from Contragents except select cg.* from Contracts cr left join Contragents cg on cr.Contr_ID = cg.Contr_ID where cr.man_id = {currentManager.man_id} and cr.dayto >= now()").OrderBy(contragent => contragent.contr_id).ToList();
-            ContractViewModel cvm = new();
-            cvm.Contragents = freeContragents;
+            ContractViewModel cvm = new()
+            {
+                Contragents = _db.contragents.FromSqlInterpolated(
+                $"select * from Contragents except select cg.* from Contracts cr left join Contragents cg on cr.Contr_ID = cg.Contr_ID where cr.man_id = {currentManager.man_id} and cr.dayto >= now()").OrderBy(contragent => contragent.contr_id).ToList()
+            };
 
             ViewData["Contract_MinDate"] = DateTime.Now.AddDays(7).ToString("yyyy-MM-dd");
 

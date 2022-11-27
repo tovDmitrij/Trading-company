@@ -27,6 +27,11 @@ namespace Trading_company.Models
         public DbSet<IncomingModel> incoming_with_optional_info { get; set; }
 
         /// <summary>
+        /// Таблица с транзакциями на продажу товаров
+        /// </summary>
+        public DbSet<OutgoingModel> outgoing_with_optional_info { get; set; }
+
+        /// <summary>
         /// Таблица с существующими товарами
         /// </summary>
         public DbSet<ProductModel> products_with_optional_info { get; set; }

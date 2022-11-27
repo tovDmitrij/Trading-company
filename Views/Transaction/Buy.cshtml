@@ -47,14 +47,14 @@
                     @*Количество товара*@
                     <b class="bg-secondary bg-opacity-50 required">Кол-во товара</b>
                     <div>
-                        <input required class="w-100 m-1" type="number" min="1" asp-for="Transaction.quantity" value=@ViewData["Quantify"] />
+                        <input required class="w-100 m-1" type="number" min="1" asp-for="Transaction.prod_quantity" value=@ViewData["Quantify"] />
                     </div>
 
 
                     @*Дата транзакции*@
                     <b class="bg-secondary bg-opacity-50 required">Дата транзакции</b>
                     <div>
-                        <input required class="m-1" type="date" asp-for="Transaction.inc_date" value=@ViewData["Date"] />
+                        <input required class="m-1" type="date" asp-for="Transaction.transaction_date" value=@ViewData["Date"] />
                     </div>
                 </div>
 

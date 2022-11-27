@@ -25,6 +25,7 @@ create or replace view contracts_with_optional_Info as
 		left join Contragents on Contracts.contr_id = Contragents.contr_id
 	order by Contracts.id;
 
+
 create or replace view products_with_optional_info as
 	select g.name group_name, 
 		g.group_id,

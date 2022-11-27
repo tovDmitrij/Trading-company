@@ -2,9 +2,9 @@
 namespace Trading_company.Models
 {
     /// <summary>
-    /// Транзакция на покупку товара
+    /// Транзакция на продажу товара
     /// </summary>
-    public class IncomingModel
+    public class OutgoingModel
     {
         /// <summary>
         /// Идентификатор транзакции
@@ -45,25 +45,31 @@ namespace Trading_company.Models
         /// <summary>
         /// Потрачено на транзакцию
         /// </summary>
-        public double transaction_paid { get; set; }
+        public double transaction_earn { get; set; }
+
+        /// <summary>
+        /// Сколько менеджер заработал за совершённую транзакцию
+        /// </summary>
+        public double manager_earn { get; set; }
 
         /// <summary>
         /// Потрачено на налоги
         /// </summary>
         public double cost { get; set; }
 
-        public IncomingModel(int transaction_id, int contract_id, string prod_name, int prod_id, int prod_quantity, DateTime transaction_date, double transaction_paid, double cost)
+        public OutgoingModel(int transaction_id, int contract_id, DateTime transaction_date, string prod_name, int prod_id, int prod_quantity, double transaction_earn, double manager_earn, double cost)
         {
             this.transaction_id = transaction_id;
             this.contract_id = contract_id;
+            this.transaction_date = transaction_date;
             this.prod_name = prod_name;
             this.prod_id = prod_id;
             this.prod_quantity = prod_quantity;
-            this.transaction_date = transaction_date;
-            this.transaction_paid = transaction_paid;
+            this.transaction_earn = transaction_earn;
+            this.manager_earn = manager_earn;
             this.cost = cost;
         }
 
-        public IncomingModel() { }
+        public OutgoingModel() { }
     }
 }
