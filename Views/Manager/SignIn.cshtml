@@ -18,7 +18,7 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">Почта</b>
                 <div>
-                    <input id="email" oninvalid="this.setCustomValidity('Пожалуйста, введите почту')" oninput="setCustomValidity('')" required class="w-100 m-1" type="email" asp-for="email" value=@ViewData["Man_email"] />
+                    <input id="email" oninvalid="this.setCustomValidity('Пожалуйста, введите корректно почту')" oninput="setCustomValidity('')" required class="w-100 m-1" type="email" asp-for="email" />
                 </div>
             </div>
 
@@ -27,43 +27,50 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">Пароль</b>
                 <div>
-                    <input id="password" oninvalid="this.setCustomValidity('Пожалуйста, введите пароль')" oninput="setCustomValidity('')" required minlength="8" pattern="\S+" title="Пароль должен быть не меньше 8 символов и без пробелов" class="w-100 m-1" type="password" asp-for="password" value=@ViewData["Man_password"] />
+                    <input id="password" oninvalid="this.setCustomValidity('Пожалуйста, введите корректно пароль')" oninput="setCustomValidity('')" required minlength="8" pattern="\S+" title="Пароль должен быть не меньше 8 символов и без пробелов" class="w-100 m-1" type="password" asp-for="password" />
                 </div>
             </div>
 
 
             <div class="row m-3">
-                <input id="acceptBtn" class="btn bg-secondary bg-opacity-50" type="submit" value="Подтвердить" />
+                <input id="acceptBtn" class="btn bg-secondary bg-opacity-50" type="button" value="Подтвердить" />
             </div>            
-            <h4 id="Message" class="row m-1 text-light bg-dark">@ViewData["Error"]</h4>
+            <h4 id="Message" class="row m-1 text-light bg-dark" />
         </form>
 
 
     </div>
 </div>
 
-@*<script>
+<script>
     const hubConnection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
 
-    document.getElementById("signInForm").onsubmit = function() {
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+    document.getElementById("acceptBtn").onclick = function () {
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
 
-        hubConnection.invoke("SignInCheck", email, password)
-
-        var err = $('#Message').html();
-        if (err == "") {
-            return true;
+        if (!email.checkValidity()) {
+            email.reportValidity();
+            return false;
         }
-        return false;
+        if (!password.checkValidity()) {
+            password.reportValidity();
+            return false;
+        }
+
+        hubConnection.invoke("SignInCheck", email.value, password.value)
     }
 
     hubConnection.on("Message", function (err) {
         document.getElementById("Message").innerHTML = err;
     });
 
+    hubConnection.on("Submit", function () {
+        document.getElementById("signInForm").submit();
+    });
+
     hubConnection.start()
         .catch(function (err) {
             return console.error(err.toString());
         });
-</script>*@
+</script>

@@ -4,7 +4,7 @@ using Trading_company.Models;
 namespace Trading_company.Hubs
 {
     /// <summary>
-    /// Хаб для обработки запросов в режиме реального времени
+    /// Хаб для обработки различных запросов в режиме реального времени
     /// </summary>
     public class TradingCompanyHub : Hub
     {
@@ -13,7 +13,6 @@ namespace Trading_company.Hubs
         /// </summary>
         private readonly DataContext _db;
 
-        /// <param name="dbContext">БД "Торговое предприятие</param>
         public TradingCompanyHub(DataContext dbContext) => _db = dbContext;
 
         /// <summary>
@@ -25,6 +24,10 @@ namespace Trading_company.Hubs
             if (_db.managers_with_optional_info.FirstOrDefault(man => man.email == email) is not null)
             {
                 Clients.Caller.SendAsync("Message", "Почта уже занята другим пользователем");
+            }
+            else
+            {
+                Clients.Caller.SendAsync("Submit");
             }
         }
 
@@ -39,6 +42,10 @@ namespace Trading_company.Hubs
             {
                 Clients.Caller.SendAsync("Message", "Менеджера с такой почтой и паролем не существует");
             }
+            else
+            {
+                Clients.Caller.SendAsync("Submit");
+            }
         }
 
         /// <summary>
@@ -49,14 +56,8 @@ namespace Trading_company.Hubs
         /// <param name="transaction_date">Дата продажи товара</param>
         public void GetCheck(string prod_id, string quantity, string transaction_date)
         {
-            //Стоимость транзакции
-            double cost = 0.0;
-            //Сколько заберут налоги
-            double tax;
-            //Стоимость + налоги
-            double totalCost;
-
             DateTime date = DateTime.Parse(transaction_date);
+
             var transactionCost = _db.some_model.FromSqlInterpolated($"select {Convert.ToInt32(quantity)} * pc.value * (select value from cources where cur_idfrom = crc.cur_id and cur_idto = 1 and dayfrom <= {DateTime.Now} and {DateTime.Now} <= dayto) cost from Products pd left join Prices pc on pd.prod_id = pc.prod_id left join Currencies crc on pc.cur_id = crc.cur_id left join Cources cr on crc.cur_id = cr.cur_idfrom where pd.prod_id = {Convert.ToInt32(prod_id)} and pc.dayfrom <= {date} and  pc.dateto >= {date}").ToList().FirstOrDefault();
 
             if (transactionCost is null)
@@ -65,11 +66,14 @@ namespace Trading_company.Hubs
                 return;
             }
 
-            cost = transactionCost.value;
+            //Стоимость транзакции
+            double cost = transactionCost.value;
 
-            tax = _db.some_model.FromSqlInterpolated($"select value from Taxes where Tax_Id = 1").ToList()[0].value * cost;
+            //Сколько заберут налоги
+            double tax = _db.some_model.FromSqlInterpolated($"select value from Taxes where Tax_Id = 1").ToList()[0].value * cost;
 
-            totalCost = cost + tax;
+            //Стоимость + налоги
+            double totalCost = cost + tax;
 
             if (date > DateTime.Now)
             {
@@ -82,5 +86,23 @@ namespace Trading_company.Hubs
             }
         }
 
+        /// <summary>
+        /// Подтверждение транзакции (покупка товара)
+        /// </summary>
+        /// <param name="prod_id">Идентификатор товара</param>
+        /// <param name="transaction_date">Дата совершения транзакции</param>
+        public void SubmitBuy(string prod_id, string transaction_date)
+        {
+            DateTime transactionDate = DateTime.Parse(transaction_date);
+
+            if (_db.some_model.FromSqlInterpolated($"select value from Prices where prod_id = {Convert.ToInt32(prod_id)} and dayfrom <= {transactionDate} and {transactionDate} <= dateto").ToList().FirstOrDefault() is null)
+            {
+                Clients.Caller.SendAsync("Message", "Отсутствует действующий ценник на заданную дату");
+            }
+            else
+            {
+                Clients.Caller.SendAsync("Submit");
+            }
+        }
     }
 }

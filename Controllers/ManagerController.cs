@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Trading_company.Misc;
-using Trading_company.Hubs;
 using Trading_company.Models;
 using Trading_company.ViewModels;
 namespace Trading_company.Controllers
@@ -18,7 +16,6 @@ namespace Trading_company.Controllers
         /// </summary>
         private readonly DataContext _db;
 
-        /// <param name="dbContext">БД "Торговое предприятие"</param>
         public ManagerController(DataContext dbContext) => _db = dbContext;
 
 
@@ -76,12 +73,6 @@ namespace Trading_company.Controllers
         [HttpPost]
         public IActionResult SignUp(ManagerModel manager)
         {
-            if (_db.managers_with_optional_info.FirstOrDefault(man => man.email == manager.email) is not null)
-            {
-                SetInfo(manager, "Почта уже занята");
-                return SignUp();
-            }
-
             if (manager.lead_id is null)
             {
                 manager.comments = "Отсутствует руководитель";
@@ -93,7 +84,7 @@ namespace Trading_company.Controllers
                 _db.managers_with_optional_info.Add(manager);
                 _db.SaveChanges();
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 /*
                 Единственная ошибка, которая здесь возникает - column man_id is null.
@@ -114,14 +105,7 @@ namespace Trading_company.Controllers
         [HttpPost]
         public IActionResult SignIn(ManagerModel manager)
         {
-            if (_db.managers_with_optional_info.FirstOrDefault(man => man.email == manager.email && man.password == manager.password) is null)
-            {
-                SetInfo(manager, $"Менеджера с такой почтой и паролем не существует");
-                return View();
-            }
-
             HttpContext.Session.Set("manager", manager);
-
             return Redirect("~/Manager/PersonalArea");
         }
 
@@ -149,37 +133,10 @@ namespace Trading_company.Controllers
                 _db.managers_with_optional_info.Remove(manager);
                 _db.SaveChanges();
             }
-            catch(Exception ex)
-            {
-                /*
-                 Здесь также С# выделывается: на самом деле менеджер удаляется из БД...
-                 */
-            }
+            catch(Exception ex) { }
 
             HttpContext.Session.Clear();
             return Redirect("SignIn");
-        }
-
-        #endregion
-
-
-
-        #region Прочее
-
-        /// <summary>
-        /// Отправить на форму введённую информацию о менеджере
-        /// </summary>
-        /// <param name="manager">Менеджер</param>
-        /// <param name="error">Ошибка, если она есть</param>
-        [NonAction]
-        private void SetInfo(ManagerModel manager, string? error)
-        {
-            ViewData["error"] = error;
-            ViewData["Man_fullname"] = manager.man_fullname;
-            ViewData["Man_email"] = manager.email;
-            ViewData["Man_password"] = manager.password;
-            ViewData["Man_percent"] = manager.percent;
-            ViewData["Man_leadid"] = manager.lead_id;
         }
 
         #endregion

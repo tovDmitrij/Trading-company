@@ -16,7 +16,6 @@ namespace Trading_company.Controllers
         /// </summary>
         private readonly DataContext _db;
 
-        /// <param name="context">БД "Торговое предприятие"</param>
         public TransactionController(DataContext context) => _db = context;
 
 
@@ -102,24 +101,12 @@ namespace Trading_company.Controllers
                 return Redirect("~/Manager/SignIn");
             }
 
-            if (_db.some_model.FromSqlInterpolated($"select value from Prices where prod_id = {transaction.prod_id} and dayfrom <= {transaction.transaction_date} and {transaction.transaction_date} <= dateto").ToList().FirstOrDefault() is null)
-            {
-                SetInfo(transaction, "Отсутствует действующий ценник на заданную дату");
-                return Buy();
-            }
-
-
             try
             {
                 _db.incoming_with_optional_info.Add(transaction);
                 _db.SaveChanges();
             }
-            catch (Exception ex)
-            {
-                /*
-                 Здесь та же ошибка, что и при добавлении менеджера или контракта (см. ManagerController/SignUp)
-                 */
-            }
+            catch (Exception ex) { }
 
             return Redirect("~/Transaction/List");
         }
@@ -141,36 +128,56 @@ namespace Trading_company.Controllers
                 _db.outgoing_with_optional_info.Add(transaction);
                 _db.SaveChanges();
             }
-            catch (Exception ex)
-            {
-                /*
-                 Здесь та же ошибка, что и при добавлении менеджера или контракта (см. ManagerController/SignUp)
-                 */
-            }
+            catch (Exception ex) { }
 
             return Redirect("~/Transaction/List");
-
         }
 
-        #endregion
+        /// <summary>
+        /// Отменить транзакцию покупки товара
+        /// </summary>
+        /// <param name="id">Идентификатор транзакции</param>
+        [HttpPost]
+        public IActionResult DeleteBought(string id)
+        {
+            if (!HttpContext.Session.Keys.Contains("manager"))
+            {
+                return Redirect("~/Manager/SignIn");
+            }
 
+            var transaction = _db.incoming_with_optional_info.FirstOrDefault(trans => trans.transaction_id == Convert.ToInt32(id));
+            try
+            {
+                _db.incoming_with_optional_info.Remove(transaction);
+                _db.SaveChanges();
+            }
+            catch(Exception ex) { }
 
-
-        #region Прочее
+            return Redirect("~/Transaction/List");
+        }
 
         /// <summary>
-        /// Отправить на форму введённую информацию о транзакции
+        /// Отменить транзакцию продажи товара
         /// </summary>
-        /// <param name="transaction">Менеджер</param>
-        /// <param name="error">Ошибка, если она есть</param>
-        [NonAction]
-        private void SetInfo(IncomingModel transaction, string? error)
+        /// <param name="id">Идентификатор транзакции</param>
+        [HttpPost]
+        public IActionResult DeleteSold(string id)
         {
-            ViewData["Error"] = error;
-            ViewData["Transaction_date"] = transaction.transaction_date.ToString("yyyy-MM-dd");
-            ViewData["Transaction_quantity"] = transaction.prod_quantity;
-            ViewData["Transaction_contrID"] = transaction.contract_id;
-            ViewData["Transaction_productID"] = transaction.prod_id;
+            if (!HttpContext.Session.Keys.Contains("manager"))
+            {
+                return Redirect("~/Manager/SignIn");
+            }
+
+            var transaction = _db.outgoing_with_optional_info.FirstOrDefault(trans => trans.transaction_id == Convert.ToInt32(id));
+
+            try
+            {
+                _db.outgoing_with_optional_info.Remove(transaction);
+                _db.SaveChanges();
+            }
+            catch(Exception ex) { }
+
+            return List();
         }
 
         #endregion

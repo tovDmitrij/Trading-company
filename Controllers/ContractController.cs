@@ -16,7 +16,6 @@ namespace Trading_company.Controllers
         /// </summary>
         private readonly DataContext _db;
 
-        /// <param name="context">БД "Торговое предприятие"</param>
         public ContractController(DataContext context) => _db = context;
 
 

@@ -23,40 +23,76 @@
                     <th class="col-2">Наименование товара</th>
                     <th class="col-1">Количество товара</th>
                     <th class="col-2">Заплачено/заработано предприятием без учёта налогов (руб.)</th>
-                    <th class="col-2">Заработано менеджером</th>
+                    <th class="col-1">Заработано менеджером</th>
                     <th class="col-1">Налоги (руб.)</th>
+                    <th class="col-1">Возм. действия</th>
                 </tr>
             </thead>
 
             <tbody>
-                @foreach (var transaction in Model.purchaseTransactions)
-                {
-                    <tr>
-                        <td>Покупка</td>
-                        <td>@transaction.transaction_id</td>
-                        <td>@transaction.transaction_date.ToString("dd-MM-yyyy")</td>
-                        <td>@transaction.contract_id</td>
-                        <td>@transaction.prod_name#@transaction.prod_id</td>
-                        <td>@transaction.prod_quantity</td>
-                        <td>@transaction.transaction_paid.ToString("0.00")</td>
-                        <td>---</td>
-                        <td>@transaction.cost.ToString("0.00")</td>
+                <form asp-controller="Transaction" asp-action="DeleteBought">
+                    @foreach (var transaction in Model.purchaseTransactions)
+                    {
+                        string transactionType = "";
+                        if (transaction.transaction_date <= DateTime.Now)
+                        {
+                            transactionType = "bg-success bg-opacity-50";
+                        }
+
+                        <tr class=@transactionType>
+                            <td>Покупка</td>
+                            <td>@transaction.transaction_id</td>
+                            <td>@transaction.transaction_date.ToString("dd-MM-yyyy")</td>
+                            <td>@transaction.contract_id</td>
+                            <td>@transaction.prod_name#@transaction.prod_id</td>
+                            <td>@transaction.prod_quantity</td>
+                            <td>@transaction.transaction_paid.ToString("0.00")</td>
+                            <td>---</td>
+                            <td>@transaction.cost.ToString("0.00")</td>
+                            @switch (transaction.transaction_date > DateTime.Now)
+                            {
+                                case true:
+                                    <td><button name="id" value=@transaction.transaction_id type="submit" class="btn bg-danger">Отменить</button></td>
+                                    break;
+                                case false:
+                                    <td>---</td>
+                                    break;
+                            }
+                        </tr>
+                    }
+                </form>
+
+                <form asp-controller="Transaction" asp-action="DeleteSold">
+                    @foreach (var transaction in Model.sellTransactions)
+                    {
+                        string transactionType = "";
+                        if (transaction.transaction_date <= DateTime.Now)
+                        {
+                            transactionType = "bg-success bg-opacity-50";
+                        }
+
+                        <tr class=@transactionType>
+                            <td>Продажа</td>
+                            <td>@transaction.transaction_id</td>
+                            <td>@transaction.transaction_date.ToString("dd-MM-yyyy")</td>
+                            <td>@transaction.contract_id</td>
+                            <td>@transaction.prod_name#@transaction.prod_id</td>
+                            <td>@transaction.prod_quantity</td>
+                            <td>@transaction.transaction_earn.ToString("0.00")</td>
+                            <td>@transaction.manager_earn.ToString("0.00")</td>
+                            <td>@transaction.cost.ToString("0.00")</td>
+                            @switch (transaction.transaction_date > DateTime.Now)
+                            {
+                                case true:
+                                    <td><button name="id" value=@transaction.transaction_id type="submit" class="btn bg-danger">Отменить</button></td>
+                                    break;
+                                case false:
+                                    <td>---</td>
+                                    break;
+                            }
                     </tr>
-                }
-                @foreach (var transaction in Model.sellTransactions)
-                {
-                    <tr>
-                        <td>Покупка</td>
-                        <td>@transaction.transaction_id</td>
-                        <td>@transaction.transaction_date.ToString("dd-MM-yyyy")</td>
-                        <td>@transaction.contract_id</td>
-                        <td>@transaction.prod_name#@transaction.prod_id</td>
-                        <td>@transaction.prod_quantity</td>
-                        <td>@transaction.transaction_earn.ToString("0.00")</td>
-                        <td>@transaction.manager_earn.ToString("0.00")</td>
-                        <td>@transaction.cost.ToString("0.00")</td>
-                    </tr>
-                }
+                    }
+                </form>
             </tbody>
         </table>
     </div>

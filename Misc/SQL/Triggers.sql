@@ -65,6 +65,18 @@ create or replace function buy_product() returns trigger as
 			return new;
 		end;
 	$$ language plpgsql;
+	
+	
+create or replace trigger delete_incoming instead of delete on incoming_with_optional_info for each row
+	execute procedure delete_transaction_buy();
+create or replace function delete_transaction_buy() returns trigger as
+	$$
+		begin
+			delete from Incoming where inc_id = old.transaction_id;
+			
+			return new;
+		end;
+	$$ language plpgsql;
 
 
 create or replace trigger insert_outgoing instead of insert on outgoing_with_optional_info for each row
@@ -74,6 +86,18 @@ create or replace function sell_product() returns trigger as
 		begin
 			insert into Outgoing(prod_id, tax_id, contr_id, man_id, inc_date, quantify, cost)
 			values(new.Prod_ID, 1, GetContragentID(new.Contract_ID), GetManagerID(new.Contract_ID), new.Inc_Date, new.Quantity, CalculateTransactionCost(new.Prod_ID, new.Quantity, GetTaxValue(1), new.Inc_Date));
+			
+			return new;
+		end;
+	$$ language plpgsql;
+	
+
+create or replace trigger delete_outgoing instead of delete on outgoing_with_optional_info for each row
+	execute procedure delete_transaction_sell();
+create or replace function delete_transaction_sell() returns trigger as
+	$$
+		begin
+			delete from Outgoing where out_id = old.transaction_id;
 			
 			return new;
 		end;
