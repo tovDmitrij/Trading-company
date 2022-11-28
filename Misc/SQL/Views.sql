@@ -30,7 +30,7 @@ create or replace view products_with_optional_info as
 	select g.name group_name, 
 		g.group_id,
 		p.name prod_name, 
-		p.prod_id 
+		p.prod_id
 	from Products p
 		left join Groups g on p.group_id = g.group_id
 	order by g.group_id, p.prod_id;

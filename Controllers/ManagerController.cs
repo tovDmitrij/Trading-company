@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Trading_company.ViewModels;
 using Trading_company.Misc;
+using Trading_company.Hubs;
 using Trading_company.Models;
+using Trading_company.ViewModels;
 namespace Trading_company.Controllers
 {
     /// <summary>
@@ -16,8 +18,8 @@ namespace Trading_company.Controllers
         /// </summary>
         private readonly DataContext _db;
 
-        /// <param name="context">БД "Торговое предприятие"</param>
-        public ManagerController(DataContext context) => _db = context;
+        /// <param name="dbContext">БД "Торговое предприятие"</param>
+        public ManagerController(DataContext dbContext) => _db = dbContext;
 
 
 
@@ -112,8 +114,7 @@ namespace Trading_company.Controllers
         [HttpPost]
         public IActionResult SignIn(ManagerModel manager)
         {
-            if (_db.managers_with_optional_info.FirstOrDefault(man =>
-                man.email == manager.email && man.password == manager.password) is null)
+            if (_db.managers_with_optional_info.FirstOrDefault(man => man.email == manager.email && man.password == manager.password) is null)
             {
                 SetInfo(manager, $"Менеджера с такой почтой и паролем не существует");
                 return View();
@@ -158,7 +159,7 @@ namespace Trading_company.Controllers
             HttpContext.Session.Clear();
             return Redirect("SignIn");
         }
-        
+
         #endregion
 
 

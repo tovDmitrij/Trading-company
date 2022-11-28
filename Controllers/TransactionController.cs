@@ -22,6 +22,7 @@ namespace Trading_company.Controllers
 
 
         #region Страницы
+
         /// <summary>
         /// Покупка товара
         /// </summary>
@@ -80,11 +81,13 @@ namespace Trading_company.Controllers
 
             return View(tvm);
         }
+
         #endregion
 
 
 
         #region Действия на страницах
+
         /// <summary>
         /// Покупка товара
         /// </summary>
@@ -140,18 +143,6 @@ namespace Trading_company.Controllers
 
         }
 
-        /// <summary>
-        /// Напечатать чек перед покупкой товара
-        /// </summary>
-        /// <param name="transaction">Оформляемая транзакция</param>
-        [HttpPost]
-        public IActionResult Check(IncomingModel transaction)
-        {
-            ViewData["Price"] = "ПИДОР";
-            ViewData["Cost"] = "ХУЙ";
-            ViewData["TheEnd"] = "ПИЗДЕЦ";
-            return Redirect("~/Transaction/Buy");
-        }
         #endregion
 
 

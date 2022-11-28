@@ -8,7 +8,7 @@
 
 
         @*АВТОРИЗАЦИЯ МЕНЕДЖЕРА*@
-        <form asp-controller="Manager" asp-action="SignIn">
+        <form id="signInForm" asp-controller="Manager" asp-action="SignIn">
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <h1 class="d-flex justify-content-center">@ViewData["Title"]</h1>
             </div>
@@ -18,7 +18,7 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">Почта</b>
                 <div>
-                    <input oninvalid="this.setCustomValidity('Пожалуйста, введите почту')" oninput="setCustomValidity('')" required class="w-100 m-1" type="email" asp-for="email" value=@ViewData["Man_email"] />
+                    <input id="email" oninvalid="this.setCustomValidity('Пожалуйста, введите почту')" oninput="setCustomValidity('')" required class="w-100 m-1" type="email" asp-for="email" value=@ViewData["Man_email"] />
                 </div>
             </div>
 
@@ -27,17 +27,43 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">Пароль</b>
                 <div>
-                    <input oninvalid="this.setCustomValidity('Пожалуйста, введите пароль')" oninput="setCustomValidity('')" required minlength="8" pattern="\S+" title="Пароль должен быть не меньше 8 символов и без пробелов" class="w-100 m-1" type="password" asp-for="password" value=@ViewData["Man_password"] />
+                    <input id="password" oninvalid="this.setCustomValidity('Пожалуйста, введите пароль')" oninput="setCustomValidity('')" required minlength="8" pattern="\S+" title="Пароль должен быть не меньше 8 символов и без пробелов" class="w-100 m-1" type="password" asp-for="password" value=@ViewData["Man_password"] />
                 </div>
             </div>
 
 
             <div class="row m-3">
-                <input class="btn bg-secondary bg-opacity-50" type="submit" value="Подтвердить" />
+                <input id="acceptBtn" class="btn bg-secondary bg-opacity-50" type="submit" value="Подтвердить" />
             </div>            
-            <h4 class="row m-1 text-light bg-dark">@ViewData["Error"]</h4>
+            <h4 id="Message" class="row m-1 text-light bg-dark">@ViewData["Error"]</h4>
         </form>
 
 
     </div>
 </div>
+
+@*<script>
+    const hubConnection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
+
+    document.getElementById("signInForm").onsubmit = function() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        hubConnection.invoke("SignInCheck", email, password)
+
+        var err = $('#Message').html();
+        if (err == "") {
+            return true;
+        }
+        return false;
+    }
+
+    hubConnection.on("Message", function (err) {
+        document.getElementById("Message").innerHTML = err;
+    });
+
+    hubConnection.start()
+        .catch(function (err) {
+            return console.error(err.toString());
+        });
+</script>*@

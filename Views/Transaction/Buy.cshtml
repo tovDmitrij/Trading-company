@@ -21,7 +21,7 @@
 
                         <b class="bg-secondary bg-opacity-50 required">Выберите контракт</b>
                         <div>
-                            <select style="width:100%;max-width:100%;" oninvalid="this.setCustomValidity('Пожалуйста, выберите контракт')" oninput="setCustomValidity('')" required class="m-1" asp-for="Transaction.contract_id">
+                            <select id="selectContract" style="width:100%;max-width:100%;" oninvalid="this.setCustomValidity('Пожалуйста, выберите контракт')" oninput="setCustomValidity('')" required class="m-1" asp-for="Transaction.contract_id">
                                 <option value="">
                                     @{
                                         if (Model.Contracts.Count == 0)
@@ -45,7 +45,7 @@
 
                         <b class="bg-secondary bg-opacity-50 required">Выберите товар</b>
                         <div>
-                            <select style="width:100%;max-width:100%;" oninvalid="this.setCustomValidity('Пожалуйста, выберите товар')" oninput="setCustomValidity('')" required class="m-1" asp-for="Transaction.prod_id">
+                            <select id="selectProdID" style="width:100%;max-width:100%;" oninvalid="this.setCustomValidity('Пожалуйста, выберите товар')" oninput="setCustomValidity('')" required class="m-1" asp-for="Transaction.prod_id">
                                 <option value="">
                                     @{
                                         if (Model.Products.Count == 0)
@@ -69,12 +69,12 @@
 
                         <b class="bg-secondary bg-opacity-50 required">Количество товара</b>
                         <div>
-                            <input oninvalid="this.setCustomValidity('Пожалуйста, введите валидное количество товара')" oninput="setCustomValidity('')" required class="w-100 m-1" type="number" min="1" asp-for="Transaction.prod_quantity" value=@ViewData["Quantity"] />
+                            <input id="inputQuantity" oninvalid="this.setCustomValidity('Пожалуйста, введите валидное количество товара')" oninput="setCustomValidity('')" required class="w-100 m-1" type="number" min="1" asp-for="Transaction.prod_quantity" value=@ViewData["Quantity"] />
                         </div>
 
                         <b class="bg-secondary bg-opacity-50 required">Дата транзакции</b>
                         <div>
-                            <input required class="m-1" type="date" min=@ViewData["Min_Date"] asp-for="Transaction.transaction_date" value=@ViewData["Date"] />
+                            <input id="inputDate" required class="m-1" type="date" min=@ViewData["Min_Date"] asp-for="Transaction.transaction_date" value=@ViewData["Date"] />
                         </div>
 
 
@@ -82,6 +82,7 @@
                     <div class="row m-3">
                         <input class="btn bg-success bg-opacity-50" type="submit" value="Подтвердить транзакцию" />
                     </div>
+                    <h4 class="row m-1 text-light bg-dark">@ViewData["Error"]</h4>
                 </form>
             </div>
 
@@ -91,34 +92,92 @@
                 <div class="row m-1 bg-secondary bg-opacity-25">
                     <b class="d-flex justify-content-center">Чек</b>
                 </div>
-                <form asp-controller="Transaction" asp-action="Check">
-                    <div class="row m-1">
-                        <table class="table table-bordered border-dark">
-                            <tbody>
-                                <tr>
-                                    <th class="col-2 bg-secondary bg-opacity-50">Цена</th>
-                                    <td class="col-9 bg-secondary bg-opacity-25">@ViewData["Price"]</td>
-                                    <td class="col-1 bg-secondary bg-opacity-25">руб.</td>
-                                </tr>
-                                <tr>
-                                    <th class="col-2 bg-secondary bg-opacity-50">Налог(НДС)</th>
-                                    <td class="bg-secondary bg-opacity-25">@ViewData["Cost"]</td>
-                                    <td class="bg-secondary bg-opacity-25">руб.</td>
-                                </tr>
-                                <tr>
-                                    <th class="col-2 bg-secondary bg-opacity-50">Итог</th>
-                                    <td class="bg-secondary bg-opacity-25">@ViewData["TheEnd"]</td>
-                                    <td class="bg-secondary bg-opacity-25">руб.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="row m-3 bg-secondary bg-opacity-25">
-                        <input class="btn bg-danger bg-opacity-50" type="submit" value="Напечатать чек" />
-                    </div>
-                </form>
+                <div class="row m-1">
+                    <table class="table table-bordered border-dark">
+                        <tbody>
+                            <tr>
+                                <th class="col-2 bg-secondary bg-opacity-50">Цена</th>
+                                <td class="col-9 bg-secondary bg-opacity-25">
+                                    <label id="checkCost">
+                                        @ViewData["Cost"]
+                                    </label>
+                                </td>
+                                <td class="col-1 bg-secondary bg-opacity-25">руб.</td>
+                            </tr>
+                            <tr>
+                                <th class="col-2 bg-secondary bg-opacity-50">Налог(НДС)</th>
+                                <td class="bg-secondary bg-opacity-25">
+                                    <label id="checkTax">
+                                        @ViewData["Tax"]
+                                    </label>
+                                </td>
+                                <td class="bg-secondary bg-opacity-25">руб.</td>
+                            </tr>
+                            <tr>
+                                <th class="col-2 bg-secondary bg-opacity-50">Итог</th>
+                                <td class="bg-secondary bg-opacity-25">
+                                    <label id="checkTotalCost">
+                                        @ViewData["TotalCost"]
+                                    </label></td>
+                                <td class="bg-secondary bg-opacity-25">руб.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row m-3 bg-secondary bg-opacity-25">
+                    <input class="btn bg-danger bg-opacity-50" type="button" id="checkBtn" value="Напечатать чек" />
+                </div>
+                <h4 id="checkError" class="row m-1 text-light bg-dark" />
             </div>
         </div>
-        <h4 class="row m-1 text-light bg-dark">@ViewData["Error"]</h4>
     </div>
 </div>
+
+<script>
+    const hubConnection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
+
+    document.getElementById("checkBtn").onclick = function () {
+        const prod_id = document.getElementById("selectProdID").value;
+        const quantity = document.getElementById("inputQuantity").value;
+        const transaction_date = document.getElementById("inputDate").value;
+
+        if (prod_id == "") {
+            document.getElementById("selectProdID").reportValidity();
+            return false;
+        }
+        if (quantity == "") {
+            document.getElementById("inputQuantity").reportValidity();
+            return false;
+        }
+        if (transaction_date == "") {
+            document.getElementById("inputDate").reportValidity();
+            return false;
+        }
+
+        hubConnection.invoke("GetCheck", prod_id, quantity, transaction_date)
+            .catch(function (err) {
+                return console.error(err.toString());
+            });
+
+        return true;
+    }
+
+    hubConnection.on("GiveCheck", function(cost, tax, totalCost) {
+        document.getElementById("checkCost").innerHTML = cost;
+        document.getElementById("checkTax").innerHTML = tax;
+        document.getElementById("checkTotalCost").innerHTML = totalCost;
+        document.getElementById("checkError").innerHTML = "";
+    });
+
+    hubConnection.on("CheckError", function(err) {
+        document.getElementById("checkCost").innerHTML = "---";
+        document.getElementById("checkTax").innerHTML = "---";
+        document.getElementById("checkTotalCost").innerHTML = "---";
+        document.getElementById("checkError").innerHTML = err;
+    });
+
+    hubConnection.start()
+        .catch(function (err) {
+            return console.error(err.toString());
+        });
+</script>
