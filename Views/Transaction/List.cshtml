@@ -22,7 +22,7 @@
                     <th class="col-1">ID контракта</th>
                     <th class="col-2">Наименование товара</th>
                     <th class="col-1">Количество товара</th>
-                    <th class="col-2">Заплачено/заработано предприятием (руб.)</th>
+                    <th class="col-2">Заплачено/заработано предприятием без учёта налогов (руб.)</th>
                     <th class="col-2">Заработано менеджером</th>
                     <th class="col-1">Налоги (руб.)</th>
                 </tr>
@@ -38,9 +38,9 @@
                         <td>@transaction.contract_id</td>
                         <td>@transaction.prod_name#@transaction.prod_id</td>
                         <td>@transaction.prod_quantity</td>
-                        <td>@transaction.transaction_paid</td>
+                        <td>@transaction.transaction_paid.ToString("0.00")</td>
                         <td>---</td>
-                        <td>@transaction.cost</td>
+                        <td>@transaction.cost.ToString("0.00")</td>
                     </tr>
                 }
                 @foreach (var transaction in Model.sellTransactions)
@@ -52,9 +52,9 @@
                         <td>@transaction.contract_id</td>
                         <td>@transaction.prod_name#@transaction.prod_id</td>
                         <td>@transaction.prod_quantity</td>
-                        <td>@transaction.transaction_earn</td>
-                        <td>@transaction.manager_earn</td>
-                        <td>@transaction.cost</td>
+                        <td>@transaction.transaction_earn.ToString("0.00")</td>
+                        <td>@transaction.manager_earn.ToString("0.00")</td>
+                        <td>@transaction.cost.ToString("0.00")</td>
                     </tr>
                 }
             </tbody>

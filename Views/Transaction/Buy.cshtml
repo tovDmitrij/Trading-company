@@ -1,6 +1,8 @@
 ﻿@model Trading_company.ViewModels.IncomingViewModel
 @{
     ViewData["Title"] = "Покупка товара";
+    int contractID = Convert.ToInt32(ViewData["Transaction_contrID"]);
+    int productID = Convert.ToInt32(ViewData["Transaction_productID"]);
 }
 
 <div class="d-flex justify-content-center">
@@ -14,7 +16,7 @@
             @*ОФОРМЛЕНИЕ ЗАКАЗА*@
             <div class="col-8">
                 <div class="row m-1 bg-secondary bg-opacity-25">
-                    <b class="d-flex justify-content-center">Оформление заказа</b>
+                    <h2 class="d-flex justify-content-center">Оформление заказа</h2>
                 </div>
                 <form asp-controller="Transaction" asp-action="Buy">
                     <div class="row m-1 bg-secondary bg-opacity-25">
@@ -26,19 +28,24 @@
                                     @{
                                         if (Model.Contracts.Count == 0)
                                         {
-                                            <div>Отсутствуют действующие контракты</div>
-                                            ;
+                                            <div>Отсутствуют действующие контракты</div>;
                                         }
                                         else
                                         {
-                                            <div>Выберите из доступных</div>
-                                            ;
+                                            <div>Выберите из доступных</div>;
                                         }
                                     }
                                 </option>
                                 @foreach (var contract in Model.Contracts)
                                 {
-                                    <option value="@contract.id">Контракт#@contract.id - @contract.contr_fullname#@contract.contr_id</option>
+                                    if (contract.id == contractID)
+                                    {
+                                        <option selected value="@contract.id">Контракт#@contract.id - @contract.contr_fullname#@contract.contr_id</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@contract.id">Контракт#@contract.id - @contract.contr_fullname#@contract.contr_id</option>
+                                    }
                                 }
                             </select>
                         </div>
@@ -50,31 +57,36 @@
                                     @{
                                         if (Model.Products.Count == 0)
                                         {
-                                            <div>Отсутствуют товары для продажи</div>
-                                            ;
+                                            <div>Отсутствуют товары для продажи</div>;
                                         }
                                         else
                                         {
-                                            <div>Выберите из доступных</div>
-                                            ;
+                                            <div>Выберите из доступных</div>;
                                         }
                                     }
                                 </option>
                                 @foreach (var product in Model.Products)
                                 {
-                                    <option value="@product.prod_id">@product.group_name#@product.group_id - @product.prod_name#@product.prod_id</option>
+                                    if (product.prod_id == productID)
+                                    {
+                                        <option selected value="@product.prod_id">@product.group_name#@product.group_id - @product.prod_name#@product.prod_id</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@product.prod_id">@product.group_name#@product.group_id - @product.prod_name#@product.prod_id</option>
+                                    }
                                 }
                             </select>
                         </div>
 
                         <b class="bg-secondary bg-opacity-50 required">Количество товара</b>
                         <div>
-                            <input id="inputQuantity" oninvalid="this.setCustomValidity('Пожалуйста, введите валидное количество товара')" oninput="setCustomValidity('')" required class="w-100 m-1" type="number" min="1" asp-for="Transaction.prod_quantity" value=@ViewData["Quantity"] />
+                            <input id="inputQuantity" value=@ViewData["Transaction_quantity"] oninvalid="this.setCustomValidity('Пожалуйста, введите валидное количество товара')" oninput="setCustomValidity('')" required class="w-100 m-1" type="number" min="1" asp-for="Transaction.prod_quantity" />
                         </div>
 
                         <b class="bg-secondary bg-opacity-50 required">Дата транзакции</b>
                         <div>
-                            <input id="inputDate" required class="m-1" type="date" min=@ViewData["Min_Date"] asp-for="Transaction.transaction_date" value=@ViewData["Date"] />
+                            <input id="inputDate" value=@ViewData["Transaction_date"] oninvalid="this.setCustomValidity('Введите желаемую дату транзакции')" oninput="setCustomValidity('')" required class="m-1" type="date" min=@ViewData["Min_Date"] asp-for="Transaction.transaction_date" />
                         </div>
 
 
@@ -82,43 +94,39 @@
                     <div class="row m-3">
                         <input class="btn bg-success bg-opacity-50" type="submit" value="Подтвердить транзакцию" />
                     </div>
-                    <h4 class="row m-1 text-light bg-dark">@ViewData["Error"]</h4>
                 </form>
+                <h4 class="row m-1 text-light bg-dark">@ViewData["Error"]</h4>
             </div>
 
 
             @*НАПЕЧАТАТЬ ЧЕК (если нужно)*@
             <div class="col-4">
                 <div class="row m-1 bg-secondary bg-opacity-25">
-                    <b class="d-flex justify-content-center">Чек</b>
+                    <h2 class="d-flex justify-content-center">Чек</h2>
                 </div>
                 <div class="row m-1">
+                    <b id="date_description" class="d-flex justify-content-start m-1 bg-secondaty bg-opacity-50"></b>
                     <table class="table table-bordered border-dark">
                         <tbody>
                             <tr>
                                 <th class="col-2 bg-secondary bg-opacity-50">Цена</th>
                                 <td class="col-9 bg-secondary bg-opacity-25">
-                                    <label id="checkCost">
-                                        @ViewData["Cost"]
-                                    </label>
+                                    <label id="checkCost" />
                                 </td>
                                 <td class="col-1 bg-secondary bg-opacity-25">руб.</td>
                             </tr>
                             <tr>
                                 <th class="col-2 bg-secondary bg-opacity-50">Налог(НДС)</th>
                                 <td class="bg-secondary bg-opacity-25">
-                                    <label id="checkTax">
-                                        @ViewData["Tax"]
-                                    </label>
+                                    <label id="checkTax" />
                                 </td>
                                 <td class="bg-secondary bg-opacity-25">руб.</td>
                             </tr>
                             <tr>
                                 <th class="col-2 bg-secondary bg-opacity-50">Итог</th>
                                 <td class="bg-secondary bg-opacity-25">
-                                    <label id="checkTotalCost">
-                                        @ViewData["TotalCost"]
-                                    </label></td>
+                                    <label id="checkTotalCost" />
+                                </td>
                                 <td class="bg-secondary bg-opacity-25">руб.</td>
                             </tr>
                         </tbody>
@@ -137,24 +145,24 @@
     const hubConnection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
 
     document.getElementById("checkBtn").onclick = function () {
-        const prod_id = document.getElementById("selectProdID").value;
-        const quantity = document.getElementById("inputQuantity").value;
-        const transaction_date = document.getElementById("inputDate").value;
+        const prod_id = document.getElementById("selectProdID");
+        const quantity = document.getElementById("inputQuantity");
+        const transaction_date = document.getElementById("inputDate");
 
-        if (prod_id == "") {
-            document.getElementById("selectProdID").reportValidity();
+        if (!prod_id.checkValidity()) {
+            prod_id.reportValidity();
             return false;
         }
-        if (quantity == "") {
-            document.getElementById("inputQuantity").reportValidity();
+        if (!quantity.checkValidity()) {
+            quantity.reportValidity();
             return false;
         }
-        if (transaction_date == "") {
-            document.getElementById("inputDate").reportValidity();
+        if (!transaction_date.checkValidity()) {
+            transaction_date.reportValidity();
             return false;
         }
 
-        hubConnection.invoke("GetCheck", prod_id, quantity, transaction_date)
+        hubConnection.invoke("GetCheck", prod_id.value, quantity.value, transaction_date.value)
             .catch(function (err) {
                 return console.error(err.toString());
             });
@@ -162,11 +170,12 @@
         return true;
     }
 
-    hubConnection.on("GiveCheck", function(cost, tax, totalCost) {
+    hubConnection.on("GiveCheck", function(cost, tax, totalCost, date_description = "") {
         document.getElementById("checkCost").innerHTML = cost;
         document.getElementById("checkTax").innerHTML = tax;
         document.getElementById("checkTotalCost").innerHTML = totalCost;
         document.getElementById("checkError").innerHTML = "";
+        document.getElementById("date_description").innerHTML = date_description;
     });
 
     hubConnection.on("CheckError", function(err) {

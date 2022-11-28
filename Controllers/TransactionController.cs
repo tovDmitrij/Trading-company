@@ -33,6 +33,8 @@ namespace Trading_company.Controllers
                 return Redirect("~/Manager/SignIn");
             }
 
+            ViewData["Min_Date"] = DateTime.Now.ToString("yyyy-MM-dd");
+
             var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
             ManagerModel manager = _db.managers_with_optional_info.FirstOrDefault(man =>
                 man.email == managerInfo.email && man.password == managerInfo.password);
@@ -100,6 +102,13 @@ namespace Trading_company.Controllers
                 return Redirect("~/Manager/SignIn");
             }
 
+            if (_db.some_model.FromSqlInterpolated($"select value from Prices where prod_id = {transaction.prod_id} and dayfrom <= {transaction.transaction_date} and {transaction.transaction_date} <= dateto").ToList().FirstOrDefault() is null)
+            {
+                SetInfo(transaction, "Отсутствует действующий ценник на заданную дату");
+                return Buy();
+            }
+
+
             try
             {
                 _db.incoming_with_optional_info.Add(transaction);
@@ -141,6 +150,27 @@ namespace Trading_company.Controllers
 
             return Redirect("~/Transaction/List");
 
+        }
+
+        #endregion
+
+
+
+        #region Прочее
+
+        /// <summary>
+        /// Отправить на форму введённую информацию о транзакции
+        /// </summary>
+        /// <param name="transaction">Менеджер</param>
+        /// <param name="error">Ошибка, если она есть</param>
+        [NonAction]
+        private void SetInfo(IncomingModel transaction, string? error)
+        {
+            ViewData["Error"] = error;
+            ViewData["Transaction_date"] = transaction.transaction_date.ToString("yyyy-MM-dd");
+            ViewData["Transaction_quantity"] = transaction.prod_quantity;
+            ViewData["Transaction_contrID"] = transaction.contract_id;
+            ViewData["Transaction_productID"] = transaction.prod_id;
         }
 
         #endregion

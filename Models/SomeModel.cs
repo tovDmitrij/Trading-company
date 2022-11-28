@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 namespace Trading_company.Models
 {
     /// <summary>
@@ -7,12 +8,12 @@ namespace Trading_company.Models
     [Keyless]
     public class SomeModel
     {
-        public double summ { get; set; }
+        /// <summary>
+        /// Некоторое значение
+        /// </summary>
+        public double value { get; set; }
 
-        public SomeModel(double summ) 
-        { 
-            this.summ = summ;
-        }
+        public SomeModel(double value) => this.value = value;
 
         public SomeModel() { }
     }
