@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Trading_company.Areas.Contract.Models;
+using Trading_company.Areas.Transaction.Models;
 namespace Trading_company.Models
 {
     /// <summary>

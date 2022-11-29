@@ -1,0 +1,89 @@
+﻿@model Trading_company.Areas.Manager.ViewModels.ManagerViewModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+<div class="d-flex justify-content-center">
+    <div class="col-4 m-1">
+
+
+        @*РЕГИСТРАЦИЯ МЕНЕДЖЕРА*@
+        <form id="signUpForm" asp-area="Manager" asp-controller="Manager" asp-action="SignUp">
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <h1 class="d-flex justify-content-center">@ViewData["Title"]</h1>
+            </div>
+
+
+            @*ФИО менеджера*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50 required">ФИО</b>
+                <div>
+                    <input id="fullName" oninvalid="this.setCustomValidity('Пожалуйста, введите ФИО полностью и корректно')" oninput="setCustomValidity('')" required pattern="^[А-ЯЁ][а-яё]*([-][А-ЯЁ][а-яё]*)?\s[А-ЯЁ][а-яё]*\s[А-ЯЁ][а-яё]*$" maxlength="150" class="w-100 m-1" type="text" asp-for="Manager.man_fullname" />
+                </div>
+            </div>
+
+         
+            @*Почта*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50 required">Почта</b>
+                <div>
+                    <input id="email" oninvalid="this.setCustomValidity('Пожалуйста, введите корректно почту')" oninput="setCustomValidity('')" required class="w-100 m-1" type="email" asp-for="Manager.email" />
+                </div>
+            </div>
+
+
+            @*Пароль*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50 required">Пароль</b>
+                <div>
+                    <input id="password" oninvalid="this.setCustomValidity('Пожалуйста, введите корректно пароль')" oninput="setCustomValidity('')" required minlength="8" pattern="\S+" title="Пароль должен быть не меньше 8 символов и без пробелов" class="w-100 m-1" type="password" asp-for="Manager.password" />
+                </div>
+            </div>
+
+
+            @*Процент с продаж*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50 required">Процент с продаж</b>
+                <div>
+                    <input id="percent" oninvalid="this.setCustomValidity('Пожалуйста, введите желаемый процент (до 50%)')" oninput="setCustomValidity('')" required class="w-100 m-1" type="number" min="1" max="50" asp-for="Manager.percent" />
+                </div>
+            </div>
+
+
+            @*Руководитель*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">Руководитель</b>
+                <div>
+                    <select style="width:100%;max-width:100%;" class="m-1" asp-for="Manager.lead_id">
+                        <option value="">
+                            @{
+                                if (Model.Leaders.Count == 0)
+                                {
+                                    <div>Отсутствуют свободные руководители</div>;
+                                }
+                                else
+                                {
+                                    <div>Выберите из доступных</div>;
+                                }
+                            }
+                        </option>
+                        @foreach (var lead in Model.Leaders)
+                        {
+                            <option value="@lead.man_id">@lead.man_fullname#@lead.man_id</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="row m-3">
+                <input id="acceptBtn" class="btn bg-secondary bg-opacity-50" type="button" value="Подтвердить" />
+            </div>
+            <h4 id="Message" class="row m-1 text-light bg-dark"></h4>
+        </form>
+
+
+    </div>
+</div>
+
+<script type="text/javascript" src="~/js/manager/signUp/script.js"></script>

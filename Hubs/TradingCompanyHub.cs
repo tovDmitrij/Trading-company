@@ -104,5 +104,29 @@ namespace Trading_company.Hubs
                 Clients.Caller.SendAsync("Submit");
             }
         }
+
+        /// <summary>
+        /// Подтверждение транзакции (продажа товара)
+        /// </summary>
+        /// <param name="prod_id">Идентификатор товара</param>
+        /// <param name="quantity">Количество товара</param>
+        /// <param name="transaction_date">Дата совершения транзакции</param>
+        public void SubmitSell(string prod_id, string quantity, string transaction_date)
+        {
+            DateTime transactionDate = DateTime.Parse(transaction_date);
+
+            if (_db.some_model.FromSqlInterpolated($"select value from Prices where prod_id = {Convert.ToInt32(prod_id)} and dayfrom <= {transactionDate} and {transactionDate} <= dateto").ToList().FirstOrDefault() is null)
+            {
+                Clients.Caller.SendAsync("Message", "Отсутствует действующий ценник на заданную дату");
+            }
+            else if (/*Представление со складом*/true)
+            {
+                Clients.Caller.SendAsync("Message", "На складе нет товара в таком количестве");
+            }
+            else
+            {
+                Clients.Caller.SendAsync("Submit");
+            }
+        }
     }
 }

@@ -40,9 +40,14 @@ namespace Trading_company
             app.UseRouting();
             app.UseSession();
             app.MapHub<TradingCompanyHub>("/hub");
+
+            app.MapAreaControllerRoute(
+                name: "manager_area",
+                areaName: "Manager",
+                pattern: "{area=Manager}/{controller=Manager}/{action=SignUp}");
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Manager}/{action=SignUp}");
+                pattern: "{area:exists}/{controller=Manager}/{action=SignUp}");
 
             app.Run();
 

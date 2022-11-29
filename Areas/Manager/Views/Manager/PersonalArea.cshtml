@@ -1,0 +1,135 @@
+﻿@model Trading_company.Models.ManagerModel
+@{
+    ViewData["Title"] = "Личный кабинет";
+}
+
+<div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center">
+
+
+        @*ИНФОРМАЦИЯ О МЕНЕДЖЕРЕ*@
+        <div class="col-4">
+
+
+            @*Фото менеджера (ну типо)*@
+            <div class="row m-1 bg-secondary bg-opacity-50">
+                <img src="~/images/manager.png" asp-append-version="true" />
+            </div>
+
+
+            @*ФИО + ID манагера*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">ФИО менеджера</b>
+                <div>@Model.man_fullname#@Model.man_id</div>
+            </div>
+
+
+            @*Дата найма менеджера*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">Дата найма</b>
+                <div>@Model.hire_day</div>
+            </div>
+
+
+            @*ФИО + ID руководителя (если есть)*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">ФИО руководителя</b>
+                @if (Model.lead_id is null)
+                {
+                    <div>@Model.comments</div>
+                }
+                else
+                {
+                    <div>@Model.lead_fullname#@Model.lead_id</div>
+                }
+            </div>
+
+
+            @*Зарабатываемый менеджером процент с продаж*@
+            <div class="row m-1 bg-secondary bg-opacity-25">
+                <b class="bg-secondary bg-opacity-50">Зарабатываемый процент</b>
+                <div>@Model.percent%</div>
+            </div>
+
+
+            @*ВЫЙТИ ИЗ АККАУНТА*@
+            <div class="row m-1">
+                <form asp-controller="Manager" asp-action="Exit" class="d-flex justify-content-center">
+                    <button type="submit" class="btn bg-warning m-1">Выйти из аккаунта</button>
+                </form>
+            </div>
+
+
+            @*УДАЛИТЬ АККАУНТ*@
+            <div class="row m-1 d-flex justify-content-center">
+                <form asp-controller="Manager" asp-action="Delete" class="d-flex justify-content-center">
+                    <button type="submit" class="btn bg-danger m-1">Удалить аккаунт</button>
+                </form>
+            </div>
+
+
+        </div>
+
+
+        @*ДЕЙСТВИЯ, СОВЕРШАЕМЫЕ МЕНЕДЖЕРОМ*@
+        <div class="col-3 m-1 bg-opacity-25 bg-secondary">
+            <div class="d-flex justify-content-center bg-opacity-50 bg-secondary">
+                <b>Действия</b>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <form method="get" asp-area="Contract" asp-controller="Contract" asp-action="New">
+                    <button type="submit" class="btn bg-info m-1">Подписать контракт</button>
+                </form>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <form method="get" asp-area="Transaction" asp-controller="Transaction" asp-action="Buy">
+                    <button type="submit" class="btn bg-info m-1">Купить товары</button>
+                </form>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <form method="get" asp-area="Transaction" asp-controller="Transaction" asp-action="Sell">
+                    <button type="submit" class="btn bg-info m-1">Продать товары</button>
+                </form>
+            </div>
+
+        </div>
+
+
+        @*СТАТИСТИКА, К-РУЮ МАНАГЕР МОЖЕТ ПОСМОТРЕТЬ*@
+        <div class="col-3 m-1 bg-opacity-25 bg-secondary">
+            <div class="d-flex justify-content-center bg-secondary bg-opacity-50">
+                <b>Статистика</b>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <form method="get" asp-area="Contract" asp-controller="Contract" asp-action="List">
+                    <button type="submit" class="btn bg-info m-1">Список контрактов</button>
+                </form>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <form method="get" asp-area="Warehouse" asp-controller="Warehouse" asp-action="Show">
+                    <button type="submit" class="btn bg-info m-1">Склад</button>
+                </form>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <form method="get" asp-area="Transaction" asp-controller="Transaction" asp-action="List">
+                    <button type="submit" class="btn bg-info m-1">Статистика продаж</button>
+                </form>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <form method="get" asp-area="Cource" asp-controller="Cource" asp-action="List">
+                    <button type="submit" class="btn bg-info m-1">Курс валют</button>
+                </form>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
