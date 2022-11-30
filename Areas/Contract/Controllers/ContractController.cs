@@ -74,7 +74,7 @@ namespace Trading_company.Areas.Contract.Controllers
         /// <summary>
         /// Подписать новый контракт
         /// </summary>
-        /// <param name="contract">Контракт</param>
+        /// <param prod_name="contract">Контракт</param>
         [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult New(ContractModel contract)
@@ -111,7 +111,7 @@ namespace Trading_company.Areas.Contract.Controllers
         /// <summary>
         /// Удалить действующий контракт
         /// </summary>
-        /// <param name="id">Идентификатор контракта</param>
+        /// <param prod_name="id">Идентификатор контракта</param>
         [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult Delete(string id)

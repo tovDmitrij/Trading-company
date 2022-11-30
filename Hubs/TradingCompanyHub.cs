@@ -18,7 +18,7 @@ namespace Trading_company.Hubs
         /// <summary>
         /// Проверка перед регистрацией, что введённая почта ещё не занята
         /// </summary>
-        /// <param name="email">Адрес электронной почты</param>
+        /// <param prod_name="email">Адрес электронной почты</param>
         public void SignUpCheck(string email)
         {
             if (_db.managers_with_optional_info.FirstOrDefault(man => man.email == email) is not null)
@@ -34,8 +34,8 @@ namespace Trading_company.Hubs
         /// <summary>
         /// Проверка перед авторизацией, что существует менеджер с таким набором логина и пароля
         /// </summary>
-        /// <param name="email">Логин</param>
-        /// <param name="password">Пароль</param>
+        /// <param prod_name="email">Логин</param>
+        /// <param prod_name="password">Пароль</param>
         public void SignInCheck(string email, string password)
         {
             if (_db.managers_with_optional_info.FirstOrDefault(man => man.email == email && man.password == password) is null)
@@ -51,9 +51,9 @@ namespace Trading_company.Hubs
         /// <summary>
         /// Генерация чека 
         /// </summary>
-        /// <param name="prod_id">Идентификатор товара</param>
-        /// <param name="quantity">Количество товара</param>
-        /// <param name="transaction_date">Дата продажи товара</param>
+        /// <param prod_name="prod_id">Идентификатор товара</param>
+        /// <param prod_name="quantity">Количество товара</param>
+        /// <param prod_name="transaction_date">Дата продажи товара</param>
         public void GetCheck(string prod_id, string quantity, string transaction_date)
         {
             DateTime date = DateTime.Parse(transaction_date);
@@ -89,8 +89,8 @@ namespace Trading_company.Hubs
         /// <summary>
         /// Подтверждение транзакции (покупка товара)
         /// </summary>
-        /// <param name="prod_id">Идентификатор товара</param>
-        /// <param name="transaction_date">Дата совершения транзакции</param>
+        /// <param prod_name="prod_id">Идентификатор товара</param>
+        /// <param prod_name="transaction_date">Дата совершения транзакции</param>
         public void SubmitBuy(string prod_id, string transaction_date)
         {
             DateTime transactionDate = DateTime.Parse(transaction_date);
@@ -108,9 +108,9 @@ namespace Trading_company.Hubs
         /// <summary>
         /// Подтверждение транзакции (продажа товара)
         /// </summary>
-        /// <param name="prod_id">Идентификатор товара</param>
-        /// <param name="quantity">Количество товара</param>
-        /// <param name="transaction_date">Дата совершения транзакции</param>
+        /// <param prod_name="prod_id">Идентификатор товара</param>
+        /// <param prod_name="quantity">Количество товара</param>
+        /// <param prod_name="transaction_date">Дата совершения транзакции</param>
         public void SubmitSell(string prod_id, string quantity, string transaction_date)
         {
             DateTime transactionDate = DateTime.Parse(transaction_date);
@@ -119,13 +119,50 @@ namespace Trading_company.Hubs
             {
                 Clients.Caller.SendAsync("Message", "Отсутствует действующий ценник на заданную дату");
             }
-            else if (/*Представление со складом*/true)
+            else if (Convert.ToInt32(_db.some_model.FromSqlInterpolated($"select (select coalesce(Sum(Incoming.quantify),0) from Incoming left join Products on Incoming.prod_id = Products.prod_id where Products.prod_id = {Convert.ToInt32(prod_id)} and Incoming.Inc_Date <= {transactionDate}) - (select coalesce(Sum(Outgoing.quantify),0) from Outgoing left join Products on Outgoing.prod_id = Products.prod_id where Products.prod_id = {Convert.ToInt32(prod_id)} and Outgoing.Out_Date <= {transactionDate})").ToList().First().value) - Convert.ToInt32(quantity) < 0)
             {
-                Clients.Caller.SendAsync("Message", "На складе нет товара в таком количестве");
+                Clients.Caller.SendAsync("Message", "На складе нет (не будет) товара в заданном количестве");
             }
             else
             {
                 Clients.Caller.SendAsync("Submit");
+            }
+        }
+
+        /// <summary>
+        /// Отменить транзакцию продажи товара
+        /// </summary>
+        /// <param name="transaction_id">Идентификатор транзакции</param>
+        public void DeleteSellTransaction(string transaction_id)
+        {
+
+        }
+
+        /// <summary>
+        /// Отменить транзакцию покупки товара
+        /// </summary>
+        /// <param name="transaction_id">Идентификатор транзакции</param>
+        public void DeleteBuyTransaction(string transaction_id)
+        {
+
+        }
+
+        /// <summary>
+        /// Досрочное завершение контракта
+        /// </summary>
+        /// <param name="contract_id">Идентификатор контракта</param>
+        public void EndEarlyContract(string contract_id)
+        {
+            if (
+                _db.incoming_with_optional_info.FromSqlInterpolated($"select* from incoming_with_optional_info where contract_id = {Convert.ToInt32(contract_id)} and transaction_date > now()").ToList().Count() > 0
+                || 
+                _db.outgoing_with_optional_info.FromSqlInterpolated($"select* from outgoing_with_optional_info where contract_id = {Convert.ToInt32(contract_id)} and transaction_date > now()").ToList().Count() > 0)
+            {
+                Clients.Caller.SendAsync("Message", "Досрочное завершение контракта невозможно: существуют транзакции, к-рые ещё не были совершены");
+            }
+            else
+            {
+                Clients.Caller.SendAsync("Submit", contract_id);
             }
         }
     }

@@ -32,12 +32,19 @@ namespace Trading_company.Areas.Transaction.Models
         [Required]
         public int prod_id { get; set; }
 
-        public ProductModel(string group_name, int group_id, string prod_name, int prod_id)
+        /// <summary>
+        /// Краткое наименование валюты, в к-рой продаётся товар
+        /// </summary>
+        [Required]
+        public string shortname { get; set; }
+
+        public ProductModel(string group_name, int group_id, string prod_name, int prod_id, string shortname)
         {
             this.group_name = group_name;
             this.group_id = group_id;
             this.prod_name = prod_name;
             this.prod_id = prod_id;
+            this.shortname = shortname;
         }
 
         public ProductModel() { }

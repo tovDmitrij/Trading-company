@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Trading_company.Areas.Warehouse.Models.WarehouseModel>
+@{
+    ViewData["Title"] = "Склад";
+}
+
+<div class="col-12">
+    <div class="row m-1 bg-secondary bg-opacity-25">
+        <h1 class="d-flex justify-content-center">@ViewData["Title"]</h1>
+    </div>
+
+    <div class="row m-1 col-6 d-flex justify-content-center-start">
+        <table class="table table-bordered border-dark" style="text-align:center; vertical-align: middle;">
+            <thead class="table-light table-bordered border-dark">
+                <tr>
+                    <th class="col-3">Наименование товара</th>
+                    <th class="col-3">Категория товара</th>
+                    <th class="col-2">Количество товара</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach(var product in Model)
+                {
+                    string productState = "";
+                    if (product.prod_quantity > 0)
+                    {
+                        productState = "bg-success bg-opacity-50";
+                    }
+                    else if (product.prod_quantity == 0)
+                    {
+                        productState = "bg-warning bg-opacity-50";
+                    }
+                    <tr class=@productState>
+                        <td>@product.prod_name#@product.prod_id</td>
+                        <td>@product.group_name#@product.group_id</td>
+                        <td>@product.prod_quantity</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

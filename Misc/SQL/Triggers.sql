@@ -84,8 +84,8 @@ create or replace trigger insert_outgoing instead of insert on outgoing_with_opt
 create or replace function sell_product() returns trigger as
 	$$
 		begin
-			insert into Outgoing(prod_id, tax_id, contr_id, man_id, inc_date, quantify, cost)
-			values(new.Prod_ID, 1, GetContragentID(new.Contract_ID), GetManagerID(new.Contract_ID), new.Inc_Date, new.Quantity, CalculateTransactionCost(new.Prod_ID, new.Quantity, GetTaxValue(1), new.Inc_Date));
+			insert into Outgoing(prod_id, tax_id, contr_id, man_id, out_date, quantify, cost)
+			values(new.Prod_ID, 1, GetContragentID(new.Contract_ID), GetManagerID(new.Contract_ID), new.Transaction_Date, new.prod_Quantity, CalculateTransactionCost(new.Prod_ID, new.prod_Quantity, GetTaxValue(1), new.Transaction_Date));
 			
 			return new;
 		end;

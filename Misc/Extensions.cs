@@ -6,7 +6,7 @@ namespace Trading_company.Misc
         /// <summary>
         /// Метод, возвращающий значение куки из сессии по ключу
         /// </summary>
-        /// <param name="key">Ключ</param>
+        /// <param prod_name="key">Ключ</param>
         /// <returns>Значение ключа</returns>
         public static T? Get<T>(this ISession session, string key)
         {
@@ -17,8 +17,8 @@ namespace Trading_company.Misc
         /// <summary>
         /// Метод, к-рый устанавливает значение куки в сессии по ключу
         /// </summary>
-        /// <param name="key">Ключ</param>
-        /// <param name="value">Значение</param>
+        /// <param prod_name="key">Ключ</param>
+        /// <param prod_name="value">Значение</param>
         public static void Set<T>(this ISession session, string key, T value)
         {
             session.SetString(key, JsonSerializer.Serialize<T>(value));

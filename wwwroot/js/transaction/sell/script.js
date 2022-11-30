@@ -23,6 +23,8 @@ document.getElementById("acceptBtn").onclick = function () {
         return false;
     }
 
+    console.log(transaction_date.value);
+
     hubConnection.invoke("SubmitSell", prod_id.value, quantity.value, transaction_date.value);
 }
 

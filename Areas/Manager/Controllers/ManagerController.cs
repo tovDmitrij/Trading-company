@@ -69,7 +69,7 @@ namespace Trading_company.Areas.Manager.Controllers
         /// <summary>
         /// Регистрация менеджера
         /// </summary>
-        /// <param name="manager">Информация о менеджере</param>
+        /// <param prod_name="manager">Информация о менеджере</param>
         /// <returns>Редирект на профиль менеджера</returns>
         [Route("{controller}/{action}")]
         [HttpPost]
@@ -102,7 +102,7 @@ namespace Trading_company.Areas.Manager.Controllers
         /// <summary>
         /// Авторизация менеджера
         /// </summary>
-        /// <param name="manager">Информация о менеджере</param>
+        /// <param prod_name="manager">Информация о менеджере</param>
         /// <returns>Редирект на профиль менеджера</returns>
         [Route("{controller}/{action}")]
         [HttpPost]

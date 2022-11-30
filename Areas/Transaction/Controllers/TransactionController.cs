@@ -57,7 +57,19 @@ namespace Trading_company.Areas.Transaction.Controllers
                 return Redirect("~/Manager/SignIn");
             }
 
-            return View();
+            ViewData["Min_Date"] = DateTime.Now.ToString("yyyy-MM-dd");
+
+            var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
+            ManagerModel manager = _db.managers_with_optional_info.FirstOrDefault(man =>
+                man.email == managerInfo.email && man.password == managerInfo.password);
+
+            OutgoingViewModel ovm = new()
+            {
+                Contracts = _db.contracts_with_optional_info.FromSqlInterpolated($"select* from contracts_with_optional_info where man_id = {manager.man_id} and dayto >= {DateTime.Now}").ToList(),
+                Products = _db.products_with_optional_info.FromSqlInterpolated($"select* from products_with_optional_info").ToList()
+            };
+
+            return View(ovm);
         }
 
         /// <summary>
@@ -93,7 +105,7 @@ namespace Trading_company.Areas.Transaction.Controllers
         /// <summary>
         /// Покупка товара
         /// </summary>
-        /// <param name="transaction">Информация и транзакции</param>
+        /// <param prod_name="transaction">Информация и транзакции</param>
         [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult Buy(IncomingModel transaction)
@@ -116,7 +128,7 @@ namespace Trading_company.Areas.Transaction.Controllers
         /// <summary>
         /// Продажа товара
         /// </summary>
-        /// <param name="transaction">Информация и транзакции</param>
+        /// <param prod_name="transaction">Информация и транзакции</param>
         [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult Sell(OutgoingModel transaction)
@@ -139,7 +151,7 @@ namespace Trading_company.Areas.Transaction.Controllers
         /// <summary>
         /// Отменить транзакцию покупки товара
         /// </summary>
-        /// <param name="id">Идентификатор транзакции</param>
+        /// <param prod_name="id">Идентификатор транзакции</param>
         [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult DeleteBought(string id)
@@ -163,7 +175,7 @@ namespace Trading_company.Areas.Transaction.Controllers
         /// <summary>
         /// Отменить транзакцию продажи товара
         /// </summary>
-        /// <param name="id">Идентификатор транзакции</param>
+        /// <param prod_name="id">Идентификатор транзакции</param>
         [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult DeleteSold(string id)

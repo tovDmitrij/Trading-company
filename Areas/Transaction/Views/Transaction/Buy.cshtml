@@ -58,7 +58,7 @@
                                 </option>
                                 @foreach (var product in Model.Products)
                                 {
-                                    <option value="@product.prod_id">@product.group_name#@product.group_id - @product.prod_name#@product.prod_id</option>
+                                    <option value="@product.prod_id">@product.group_name#@product.group_id - @product.prod_name#@product.prod_id [@product.shortname]</option>
                                 }
                             </select>
                         </div>
