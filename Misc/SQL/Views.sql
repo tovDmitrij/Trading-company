@@ -44,9 +44,13 @@ create or replace view warehouse as
 		p.prod_id,
 		g.name group_name,
 		g.group_id,
-		(select coalesce(Sum(Incoming.quantify),0) from Incoming left join Products on Incoming.prod_id = Products.prod_id where Products.prod_id = p.prod_id and Incoming.Inc_Date <= now())
+		(select coalesce(Sum(Incoming.quantify),0) from Incoming 
+		 	left join Products on Incoming.prod_id = Products.prod_id 
+		 where Products.prod_id = p.prod_id and Incoming.Inc_Date <= now())
 		- 
-		(select coalesce(Sum(Outgoing.quantify),0) from Outgoing left join Products on Outgoing.prod_id = Products.prod_id where Products.prod_id = p.prod_id and Outgoing.Out_Date <= now()) prod_quantity
+		(select coalesce(Sum(Outgoing.quantify),0) from Outgoing 
+		 	left join Products on Outgoing.prod_id = Products.prod_id 
+		 where Products.prod_id = p.prod_id and Outgoing.Out_Date <= now()) prod_quantity
 	from Products p
 		left join Groups g on p.group_id = g.group_id
 	order by p.prod_id, g.group_id;
@@ -91,6 +95,14 @@ create or replace view outgoing_with_optional_info as
 		Outgoing.prod_id, 
 		Outgoing.quantify prod_quantity,
 		Outgoing.Quantify * Prices.Value * (
+			select coalesce(
+				(select value from cources
+				where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= Outgoing.Out_Date  and Outgoing.Out_Date <= dayto),
+				(select value from cources 
+				where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= now() and now() <= dayto)
+			)) 
+			-
+			Managers.percent * Outgoing.Quantify * Prices.Value * (
 			select coalesce(
 				(select value from cources
 				where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= Outgoing.Out_Date  and Outgoing.Out_Date <= dayto),
