@@ -51,7 +51,7 @@ namespace Trading_company.Models
         /// <summary>
         /// Пояснение к контракту, если оно есть
         /// </summary>
-        public string? comments { get; set; }
+        public string? comments { get; set; } = "---";
 
         public ContractModel(int id, string contr_fullname, int contr_id, string man_fullname, int man_id, DateTime dayfrom, DateTime dayto, string comments)
         {

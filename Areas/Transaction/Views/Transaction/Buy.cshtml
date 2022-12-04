@@ -19,6 +19,8 @@
                 <form id="transactionForm" asp-area="Transaction" asp-controller="Transaction" asp-action="Buy">
                     <div class="row m-1 bg-secondary bg-opacity-25">
 
+
+                        @*Список доступных контрактов*@
                         <b class="bg-secondary bg-opacity-50 required">Выберите контракт</b>
                         <div>
                             <select id="selectContract" style="width:100%;max-width:100%;" oninvalid="this.setCustomValidity('Пожалуйста, выберите контракт')" oninput="setCustomValidity('')" required class="m-1" asp-for="Transaction.contract_id">
@@ -41,6 +43,8 @@
                             </select>
                         </div>
 
+
+                        @*Список доступных товаров*@
                         <b class="bg-secondary bg-opacity-50 required">Выберите товар</b>
                         <div>
                             <select id="selectProdID" style="width:100%;max-width:100%;" oninvalid="this.setCustomValidity('Пожалуйста, выберите товар')" oninput="setCustomValidity('')" required class="m-1" asp-for="Transaction.prod_id">
@@ -63,11 +67,15 @@
                             </select>
                         </div>
 
+
+                        @*Кол-во покупаемого товара*@
                         <b class="bg-secondary bg-opacity-50 required">Количество товара</b>
                         <div>
                             <input id="inputQuantity" oninvalid="this.setCustomValidity('Пожалуйста, введите валидное количество товара')" oninput="setCustomValidity('')" required class="w-100 m-1" type="number" min="1" asp-for="Transaction.prod_quantity" />
                         </div>
 
+
+                        @*Желаемая дата транзакции*@
                         <b class="bg-secondary bg-opacity-50 required">Дата транзакции</b>
                         <div>
                             <input id="inputDate" oninvalid="this.setCustomValidity('Введите желаемую дату транзакции')" oninput="setCustomValidity('')" required class="m-1" type="date" min=@ViewData["Min_Date"] asp-for="Transaction.transaction_date" />
@@ -91,27 +99,28 @@
                 <div class="row m-1">
                     <b id="date_description" class="d-flex justify-content-start m-1 bg-secondaty bg-opacity-50"></b>
                     <table class="table table-bordered border-dark">
+                        <thead class="table-light table-bordered border-dark">
+                            <tr>
+                                <th class="col-2">Наим.позиции</th>
+                                <th class="col-3">Цена</th>
+                                <th class="col-3">Кол-во</th>
+                                <th class="col-4">Итог</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr>
-                                <th class="col-2 bg-secondary bg-opacity-50">Цена</th>
-                                <td class="col-9 bg-secondary bg-opacity-25">
-                                    <label id="checkCost" />
-                                </td>
-                                <td class="col-1 bg-secondary bg-opacity-25">руб.</td>
+                                <td><label id="checkName" /></td>
+                                <td><label id="checkPrice" /></td>
+                                <td><label id="checkQuantity" /></td>
+                                <td><label id="checkCost" /></td>
                             </tr>
                             <tr>
-                                <th class="col-2 bg-secondary bg-opacity-50">Налог(НДС)</th>
-                                <td class="bg-secondary bg-opacity-25">
-                                    <label id="checkTax" />
-                                </td>
-                                <td class="bg-secondary bg-opacity-25">руб.</td>
+                                <th class="table-light border-dark">Налог (НДС)</th>
+                                <td colspan=3><label id="checkTax" /></td>
                             </tr>
                             <tr>
-                                <th class="col-2 bg-secondary bg-opacity-50">Итог</th>
-                                <td class="bg-secondary bg-opacity-25">
-                                    <label id="checkTotalCost" />
-                                </td>
-                                <td class="bg-secondary bg-opacity-25">руб.</td>
+                                <th class="table-light border-dark"><h4>ИТОГ</h4></th>
+                                <td colspan="3"><label id="checkTotalCost" /></td>
                             </tr>
                         </tbody>
                     </table>
@@ -121,8 +130,10 @@
                 </div>
                 <h4 id="checkError" class="row m-1 text-light bg-dark" />
             </div>
+
+
         </div>
     </div>
 </div>
 
-<script type="text/javascript" src="~/js/transaction/buy/script.js"></script>
+<script type="text/javascript" src="~/js/transaction/buy/script.js?v=4"></script>

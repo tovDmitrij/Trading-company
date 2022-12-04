@@ -11,7 +11,8 @@
                 <h1 class="d-flex justify-content-center">@ViewData["Title"]</h1>
             </div>
 
-            @*Контрагент*@
+
+            @*Список доступных контрагентов*@
              <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">Контрагент</b>
                 <div>
@@ -48,10 +49,11 @@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50 required">Дата окончания</b>
                 <div>
-                    <input oninvalid="this.setCustomValidity('Контракт должен оформляться минимум на неделю: (@ViewData["Contract_MinDate"])')" oninput="setCustomValidity('')" required min=@ViewData["Contract_MinDate"] class="m-1" type="date" asp-for="Contract.dayto" value=@ViewData["Contract_Date"] />
+                    <input oninvalid="this.setCustomValidity('Контракт должен оформляться минимум на неделю: ((@ViewData["Contract_MinDate"] as DateTime).ToString("dd-MM-yyyy)")')" oninput="setCustomValidity('')" required min=@ViewData["Contract_MinDate"] class="m-1" type="date" asp-for="Contract.dayto" value=@ViewData["Contract_Date"] />
                 </div>
             </div>
             
+
             <div class="row m-3">
                 <input class="btn bg-secondary bg-opacity-50" type="submit" value="Подтвердить" />
             </div>

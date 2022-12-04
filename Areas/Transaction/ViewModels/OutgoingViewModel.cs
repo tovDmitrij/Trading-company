@@ -1,6 +1,5 @@
 ﻿using Trading_company.Areas.Transaction.Models;
 using Trading_company.Models;
-
 namespace Trading_company.Areas.Transaction.ViewModels
 {
     /// <summary>

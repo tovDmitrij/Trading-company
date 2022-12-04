@@ -13,6 +13,7 @@
     </div>
 
     <div class="col">
+
         <table class="table table-bordered border-dark" style="text-align:center; vertical-align: middle;">
             <thead class="table-light table-bordered border-dark">
                 <tr>
@@ -23,77 +24,87 @@
                     <th class="col-2">Наименование товара</th>
                     <th class="col-1">Количество товара</th>
                     <th class="col-2">Заплачено/заработано предприятием без учёта налогов (руб.)</th>
-                    <th class="col-1">Заработано менеджером</th>
+                    <th class="col-1">Заработано менеджером (руб.)</th>
                     <th class="col-1">Налоги (руб.)</th>
                     <th class="col-1">Возм. действия</th>
                 </tr>
             </thead>
 
             <tbody>
-                <form asp-area="Transaction" asp-controller="Transaction" asp-action="DeleteBought">
-                    @foreach (var transaction in Model.purchaseTransactions)
+                @foreach (var transaction in Model.PurchaseTransactions)
+                {
+                    string transactionType = "";
+                    if (transaction.transaction_date <= DateTime.Now)
                     {
-                        string transactionType = "";
-                        if (transaction.transaction_date <= DateTime.Now)
-                        {
-                            transactionType = "bg-success bg-opacity-50";
-                        }
-
-                        <tr class=@transactionType>
-                            <td>Покупка</td>
-                            <td>@transaction.transaction_id</td>
-                            <td>@transaction.transaction_date.ToString("dd-MM-yyyy")</td>
-                            <td>@transaction.contract_id</td>
-                            <td>@transaction.prod_name#@transaction.prod_id</td>
-                            <td>@transaction.prod_quantity</td>
-                            <td>@transaction.transaction_paid.ToString("0.00")</td>
-                            <td>---</td>
-                            <td>@transaction.cost.ToString("0.00")</td>
-                            @switch (transaction.transaction_date > DateTime.Now)
-                            {
-                                case true:
-                                    <td><button name="id" value=@transaction.transaction_id type="submit" class="btn bg-danger">Отменить</button></td>
-                                    break;
-                                case false:
-                                    <td>---</td>
-                                    break;
-                            }
-                        </tr>
+                        transactionType = "bg-success bg-opacity-50";
                     }
-                </form>
 
-                <form asp-area="Transaction" asp-controller="Transaction" asp-action="DeleteSold">
-                    @foreach (var transaction in Model.sellTransactions)
-                    {
-                        string transactionType = "";
-                        if (transaction.transaction_date <= DateTime.Now)
+                    <tr class=@transactionType>
+                        <td>Покупка</td>
+                        <td>@transaction.transaction_id</td>
+                        <td>@transaction.transaction_date.ToString("dd-MM-yyyy")</td>
+                        <td>@transaction.contract_id</td>
+                        <td>@transaction.prod_name#@transaction.prod_id</td>
+                        <td>@transaction.prod_quantity</td>
+                        <td>@transaction.transaction_paid.ToString("0.00")</td>
+                        <td>---</td>
+                        <td>@transaction.cost.ToString("0.00")</td>
+                        @switch (transaction.transaction_date > DateTime.Now)
                         {
-                            transactionType = "bg-success bg-opacity-50";
+                            case true:
+                                <form id="TransactionBuy-@transaction.transaction_id" asp-area="Transaction" asp-controller="Transaction" asp-action="DeleteBought">
+                                    <td>
+                                        <input name="transaction_id" type="hidden" asp-for="PurchaseTransaction.transaction_id" value=@transaction.transaction_id />
+                                        <button onclick="CancelBuyTransaction(this.value)" value=@transaction.transaction_id type="button" class="btn bg-danger">Отменить</button>
+                                    </td>
+                                </form>
+                                break;
+                            case false:
+                                <td>---</td>
+                                break;
                         }
-
-                        <tr class=@transactionType>
-                            <td>Продажа</td>
-                            <td>@transaction.transaction_id</td>
-                            <td>@transaction.transaction_date.ToString("dd-MM-yyyy")</td>
-                            <td>@transaction.contract_id</td>
-                            <td>@transaction.prod_name#@transaction.prod_id</td>
-                            <td>@transaction.prod_quantity</td>
-                            <td>@transaction.transaction_earn.ToString("0.00")</td>
-                            <td>@transaction.manager_earn.ToString("0.00")</td>
-                            <td>@transaction.cost.ToString("0.00")</td>
-                            @switch (transaction.transaction_date > DateTime.Now)
-                            {
-                                case true:
-                                    <td><button name="id" value=@transaction.transaction_id type="submit" class="btn bg-danger">Отменить</button></td>
-                                    break;
-                                case false:
-                                    <td>---</td>
-                                    break;
-                            }
                     </tr>
+                }
+
+                @foreach (var transaction in Model.SellTransactions)
+                {
+                    string transactionType = "";
+                    if (transaction.transaction_date <= DateTime.Now)
+                    {
+                        transactionType = "bg-success bg-opacity-50";
                     }
-                </form>
+
+                    <tr class=@transactionType>
+                        <td>Продажа</td>
+                        <td>@transaction.transaction_id</td>
+                        <td>@transaction.transaction_date.ToString("dd-MM-yyyy")</td>
+                        <td>@transaction.contract_id</td>
+                        <td>@transaction.prod_name#@transaction.prod_id</td>
+                        <td>@transaction.prod_quantity</td>
+                        <td>@transaction.transaction_earn.ToString("0.00")</td>
+                        <td>@transaction.manager_earn.ToString("0.00")</td>
+                        <td>@transaction.cost.ToString("0.00")</td>
+                        @switch (transaction.transaction_date > DateTime.Now)
+                        {
+                            case true:
+                                <form id="TransactionSell-@transaction.transaction_id" asp-area="Transaction" asp-controller="Transaction" asp-action="DeleteSold">
+                                    <td>
+                                        <input name="transaction_id" type="hidden" asp-for="SellTransaction.transaction_id" value=@transaction.transaction_id />
+                                        <button onclick="CancelSellTransaction(this.value)" value=@transaction.transaction_id type="button" class="btn bg-danger">Отменить</button>
+                                    </td>
+                                </form>
+                                break;
+                            case false:
+                                <td>---</td>
+                                break;
+                        }
+                    </tr>
+                }
             </tbody>
         </table>
+
+        <h4 id="Message" class="row m-1 text-light bg-dark" />
     </div>
 </div>
+
+<script type="text/javascript" src="~/js/transaction/list/script.js?v=2"></script>

@@ -23,7 +23,7 @@ document.getElementById("acceptBtn").onclick = function () {
         return false;
     }
 
-    hubConnection.invoke("SubmitBuy", prod_id.value, transaction_date.value);
+    hubConnection.invoke("SubmitBuy", prod_id.value, transaction_date.value, contract_id.value);
 }
 
 document.getElementById("checkBtn").onclick = function () {
@@ -47,18 +47,30 @@ document.getElementById("checkBtn").onclick = function () {
     hubConnection.invoke("GetCheck", prod_id.value, quantity.value, transaction_date.value);
 }
 
-hubConnection.on("GiveCheck", function (cost, tax, totalCost, date_description = "") {
-    document.getElementById("checkCost").innerHTML = cost;
-    document.getElementById("checkTax").innerHTML = tax;
-    document.getElementById("checkTotalCost").innerHTML = totalCost;
-    document.getElementById("checkError").innerHTML = "";
+hubConnection.on("GiveCheck", function (price, cost, tax, totalCost, date_description = "") {
+    productList = document.getElementById("selectProdID");
+    productSelectedIndex = productList.value;
+
+    document.getElementById("checkName").innerHTML = productList[productSelectedIndex].text;
+    document.getElementById("checkPrice").innerHTML = price + " руб.";
+    document.getElementById("checkQuantity").innerHTML = document.getElementById("inputQuantity").value;
+    document.getElementById("checkCost").innerHTML = cost + " руб.";
+    document.getElementById("checkTax").innerHTML = tax + " руб.";
+    document.getElementById("checkTotalCost").innerHTML = totalCost + " руб.";
+
     document.getElementById("date_description").innerHTML = date_description;
+    document.getElementById("checkError").innerHTML = "";
 });
 
 hubConnection.on("CheckError", function (err) {
+    document.getElementById("checkName").innerHTML = "---";
+    document.getElementById("checkPrice").innerHTML = "---";
+    document.getElementById("checkQuantity").innerHTML = "---";
     document.getElementById("checkCost").innerHTML = "---";
     document.getElementById("checkTax").innerHTML = "---";
     document.getElementById("checkTotalCost").innerHTML = "---";
+    document.getElementById("date_description").innerHTML = "---";
+
     document.getElementById("checkError").innerHTML = err;
 });
 

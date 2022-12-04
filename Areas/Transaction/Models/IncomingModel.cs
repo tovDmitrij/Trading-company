@@ -43,7 +43,7 @@ namespace Trading_company.Areas.Transaction.Models
         public int prod_quantity { get; set; }
 
         /// <summary>
-        /// Потрачено на транзакцию
+        /// Потрачено на транзакцию (без учёта налогов)
         /// </summary>
         public double transaction_paid { get; set; }
 

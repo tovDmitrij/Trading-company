@@ -62,7 +62,12 @@ namespace Trading_company.Areas.Contract.Controllers
 
             var contractList = _db.contracts_with_optional_info.FromSql($"select* from contracts_with_optional_info where man_id = {manager.man_id}");
 
-            return View(contractList);
+            ContractViewModel cvm = new()
+            {
+                Contracts = contractList.ToList()
+            };
+
+            return View(cvm);
         }
 
         #endregion
@@ -74,7 +79,7 @@ namespace Trading_company.Areas.Contract.Controllers
         /// <summary>
         /// Подписать новый контракт
         /// </summary>
-        /// <param prod_name="contract">Контракт</param>
+        /// <param name="contract">Информация о новом контракте</param>
         [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult New(ContractModel contract)
@@ -96,34 +101,27 @@ namespace Trading_company.Areas.Contract.Controllers
                 _db.contracts_with_optional_info.Add(contract);
                 _db.SaveChanges();
             }
-            catch (Exception ex)
-            {
-                /*
-                Единственная ошибка, которая здесь возникает - column id is null.
-                Проблема в том, что данный атрибут имеет PK и автоинкрементится в БД и, соответственно, не может быть nullable.
-                Это EntityFramework выделывается. 
-                 */
-            }
+            catch (Exception ex) { }
 
             return Redirect("~/Contract/List");
         }
 
         /// <summary>
-        /// Удалить действующий контракт
+        /// Обновить действующий контракт
         /// </summary>
-        /// <param prod_name="id">Идентификатор контракта</param>
+        /// <param name="contract">Обновляемый контракт</param>
         [Route("{controller}/{action}")]
         [HttpPost]
-        public IActionResult Delete(string id)
+        public IActionResult Update(ContractModel contract)
         {
             if (!HttpContext.Session.Keys.Contains("manager"))
             {
                 return Redirect("~/Manager/SignIn");
             }
 
-            var contract = _db.contracts_with_optional_info.FirstOrDefault(contr => contr.id == Convert.ToInt32(id));
-            contract.dayto = DateTime.Now;
-            contract.comments = "Завершён досрочно менеджером";
+            var currentContract = _db.contracts_with_optional_info.FirstOrDefault(contr => contr.id == contract.id);
+            currentContract.comments = $"Менеджер сдвинул срок окончания контракта с даты {currentContract.dayto.ToString("dd-MM-yyyy")} на дату {contract.dayto.ToString("dd-MM-yyyy")}";
+            currentContract.dayto = contract.dayto;
             _db.SaveChanges();
 
             return Redirect("~/Contract/List");

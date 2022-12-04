@@ -69,8 +69,7 @@ namespace Trading_company.Areas.Manager.Controllers
         /// <summary>
         /// Регистрация менеджера
         /// </summary>
-        /// <param prod_name="manager">Информация о менеджере</param>
-        /// <returns>Редирект на профиль менеджера</returns>
+        /// <param name="manager">Информация о менеджере</param>
         [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult SignUp(ManagerModel manager)
@@ -86,14 +85,7 @@ namespace Trading_company.Areas.Manager.Controllers
                 _db.managers_with_optional_info.Add(manager);
                 _db.SaveChanges();
             }
-            catch (Exception ex)
-            {
-                /*
-                Единственная ошибка, которая здесь возникает - column man_id is null.
-                Проблема в том, что данный атрибут имеет PK и автоинкрементится в БД и, соответственно, не может быть nullable.
-                Это EntityFramework выделывается.
-                 */
-            }
+            catch (Exception ex) { }
 
             HttpContext.Session.Set("manager", manager);
             return Redirect("~/Manager/PersonalArea");
@@ -102,8 +94,7 @@ namespace Trading_company.Areas.Manager.Controllers
         /// <summary>
         /// Авторизация менеджера
         /// </summary>
-        /// <param prod_name="manager">Информация о менеджере</param>
-        /// <returns>Редирект на профиль менеджера</returns>
+        /// <param name="manager">Информация о менеджере</param>
         [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult SignIn(ManagerModel manager)
@@ -125,7 +116,6 @@ namespace Trading_company.Areas.Manager.Controllers
         /// <summary>
         /// Удалить аккаунт менеджера
         /// </summary>
-        /// <returns></returns>
         [Route("{controller}/{action}")]
         public IActionResult Delete()
         {

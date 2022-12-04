@@ -1,80 +1,89 @@
-﻿@model IEnumerable<ContractModel>
+﻿@model Trading_company.Areas.Contract.ViewModels.ContractViewModel
 @{
     ViewData["Title"] = "Список контрактов";
 }
 
 <div class="col-12">
-    <form id="contractForm" asp-controller="Contract" asp-action="Delete">
-        <div class="row m-1 bg-secondary bg-opacity-25">
-            <h1 class="d-flex justify-content-center">@ViewData["Title"]</h1>
+    <div class="row m-1 bg-secondary bg-opacity-25">
+        <h1 class="d-flex justify-content-center">@ViewData["Title"]</h1>
+    </div>
+        <div class="col">
+        
+
+        @*Фильтры сортировки для таблицы контрактов*@
+        <div class="row m-1">
+            <input type="text" id="textFilter" onkeyup="searchContract(this, contractsTable, 1)" placeholder="Введите ФИО и/или идентификатор контрагента...">
         </div>
-         <div class="col">
+        
+        <div class="row m-1">
+            <label><input type='checkbox' onclick='return filter_type(this);' id="checkboxFilter" name='filter' value=@DateTime.Now.ToString("dd-MM-yyyy") /> Действующие контракты</label>
+        </div>
+        
 
-            <div class="row m-1">
-                <input type="text" id="textFilter" onkeyup="searchContract(this, contractsTable, 1)" placeholder="Введите ФИО и/или идентификатор контрагента...">
-            </div>
-
-            <div class="row m-1">
-                <label><input type='checkbox' onclick='return filter_type(this);' id="checkboxFilter" name='filter' value=@DateTime.Now.ToString("dd-MM-yyyy") /> Действующие контракты</label>
-            </div>
-
-            <div class="row m-1">
-                <table id="contractsTable" class="table table-bordered border-dark" style="text-align:center; vertical-align: middle;">
-                    <thead class="table-light table-bordered border-dark">
-                        <tr>
-                            <th class="col-1" rowspan="2">ID</th>
-                            <th class="col-3" rowspan="2">Контрагент</th>
-                            <th colspan="2">Срок</th>
-                            <th class="col-5" rowspan="2">Комментарии</th>
-                            <th class="col-1" rowspan="2">Возможные действия</th>
-                        </tr>
-                        <tr>
-                            <th class="col-1">Дата подписания</th>
-                            <th class="col-1">Дата окончания</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @{
-                            if (Model.Count() == 0)
-                            {
-                                <tr>
-                                    <td colspan="6">Отсутствуют контракты</td>
-                                </tr>
-                            }
-                        }
-                        @foreach (var contract in Model)
+        @*Таблица со всеми контрактами менеджера*@
+        <div class="row m-1">
+            <table id="contractsTable" class="table table-bordered border-dark" style="text-align:center; vertical-align: middle;">
+                <thead class="table-light table-bordered border-dark">
+                    <tr>
+                        <th class="col-1" rowspan="2">ID</th>
+                        <th class="col-3" rowspan="2">Контрагент</th>
+                        <th colspan="2">Срок</th>
+                        <th class="col-5" rowspan="2">Комментарии</th>
+                        <th class="col-1" rowspan="2">Возможные действия</th>
+                    </tr>
+                    <tr>
+                        <th class="col-1">Дата подписания</th>
+                        <th class="col-1">Дата окончания</th>
+                    </tr>
+                </thead>
+        
+                <tbody>
+                    @{
+                        if (Model.Contracts.Count() == 0)
                         {
-                            if (contract.dayto < DateTime.Now)
+                            <tr>
+                                <td colspan="6">Отсутствуют контракты</td>
+                            </tr>
+                        }
+                    }
+                    @foreach (var contract in Model.Contracts)
+                    {
+                        string classTr = "";
+                        if (contract.dayto < DateTime.Now)
+                        {
+                            classTr = "bg-danger bg-opacity-50";
+                        }
+                        <tr class=@classTr>
+                            <td>@contract.id</td>
+                            <td>@contract.contr_fullname#@contract.contr_id</td>
+                            <td>@contract.dayfrom.ToString("dd-MM-yyyy")</td>
+                            <td>@contract.dayto.ToString("dd-MM-yyyy")</td>
+                            <td>@contract.comments</td>
+                            @if (contract.dayto >= DateTime.Now)
                             {
-                                <tr class="bg-danger bg-opacity-50">
-                                    <td>@contract.id</td>
-                                    <td>@contract.contr_fullname#@contract.contr_id</td>
-                                    <td>@contract.dayfrom.ToString("dd-MM-yyyy")</td>
-                                    <td>@contract.dayto.ToString("dd-MM-yyyy")</td>
-                                    <td>@contract.comments</td>
-                                    <td>---</td>
-                                </tr>
+                                <td>
+                                    <div class="m-1 bg-secondary bg-opacity-25">
+                                        <b>Сдвинуть срок окончания</b>
+                                        <form id="contractForm-@contract.id" asp-controller="Contract" asp-action="Update">
+                                            <input name="dayto" asp-for="Contract.dayto" id="dateValue-@contract.id" oninvalid="this.setCustomValidity('Контракт не может быть сдвинут на заданный срок')" oninput="setCustomValidity('')" required min=@contract.dayfrom.AddDays(7).ToString("yyyy-MM-dd") max="@contract.dayto.ToString("yyyy-MM-dd")" class="m-1" type="date" />
+                                            <input name="id" asp-for="Contract.id" type="hidden" value=@contract.id />
+                                            <button onclick="EndContract(this.value)" type="button" class="m-1 btn bg-warning bg-opacity-50" value=@contract.id>Подтвердить</button>
+                                        </form>
+                                    </div>
+                                </td>
                             }
                             else
                             {
-                                <tr>
-                                    <td>@contract.id</td>
-                                    <td>@contract.contr_fullname#@contract.contr_id</td>
-                                    <td>@contract.dayfrom.ToString("dd-MM-yyyy")</td>
-                                    <td>@contract.dayto.ToString("dd-MM-yyyy")</td>
-                                    <td>---</td>
-                                    <td><button id="acceptBtn" onclick="EndContract(this.value)" type="button" class="btn bg-warning bg-opacity-50" name="id" value=@contract.id>Завершить</button></td>
-                                </tr>
+                                <td>---</td>
                             }
-                        }
-                    </tbody>
-                </table>
-                <h4 id="Message" class="row m-1 text-light bg-dark" />
-            </div>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <h4 id="Message" class="row m-1 text-light bg-dark" />
         </div>
-    </form>
-
+    </div>
+        
 </div>
 
 <script type="text/javascript" src="~/js/contract/list/script.js"></script>

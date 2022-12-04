@@ -1,5 +1,4 @@
 ﻿using Trading_company.Areas.Transaction.Models;
-
 namespace Trading_company.Areas.Transaction.ViewModels
 {
     /// <summary>
@@ -8,13 +7,23 @@ namespace Trading_company.Areas.Transaction.ViewModels
     public sealed class TransactionViewModel
     {
         /// <summary>
+        /// Текущая транзакция на покупку
+        /// </summary>
+        public IncomingModel PurchaseTransaction { get; set; }
+
+        /// <summary>
+        /// Текущая транзакция на продажу
+        /// </summary>
+        public OutgoingModel SellTransaction { get; set; }
+
+        /// <summary>
         /// Список покупок менеджера
         /// </summary>
-        public List<IncomingModel> purchaseTransactions { get; set; } = new();
+        public List<IncomingModel> PurchaseTransactions { get; set; } = new();
 
         /// <summary>
         /// Список продаж менеджера
         /// </summary>
-        public List<OutgoingModel> sellTransactions { get; set; } = new();
+        public List<OutgoingModel> SellTransactions { get; set; } = new();
     }
 }

@@ -19,6 +19,8 @@
                 <form id="transactionForm" asp-area="Transaction" asp-controller="Transaction" asp-action="Sell">
                     <div class="row m-1 bg-secondary bg-opacity-25">
 
+
+                        @*Список доступных контрактов*@
                         <b class="bg-secondary bg-opacity-50 required">Выберите контракт</b>
                         <div>
                             <select id="selectContract" style="width:100%;max-width:100%;" oninvalid="this.setCustomValidity('Пожалуйста, выберите контракт')" oninput="setCustomValidity('')" required class="m-1" asp-for="Transaction.contract_id">
@@ -41,6 +43,8 @@
                             </select>
                         </div>
 
+
+                        @*Список доступных товаров*@
                         <b class="bg-secondary bg-opacity-50 required">Выберите товар</b>
                         <div>
                             <select id="selectProdID" style="width:100%;max-width:100%;" oninvalid="this.setCustomValidity('Пожалуйста, выберите товар')" oninput="setCustomValidity('')" required class="m-1" asp-for="Transaction.prod_id">
@@ -63,11 +67,15 @@
                             </select>
                         </div>
 
+
+                        @*Кол-во продаваемого товара*@
                         <b class="bg-secondary bg-opacity-50 required">Количество товара</b>
                         <div>
                             <input id="inputQuantity" oninvalid="this.setCustomValidity('Пожалуйста, введите валидное количество товара')" oninput="setCustomValidity('')" required class="w-100 m-1" type="number" min="1" asp-for="Transaction.prod_quantity" />
                         </div>
 
+
+                        @*Желаемая дата продажи*@
                         <b class="bg-secondary bg-opacity-50 required">Дата транзакции</b>
                         <div>
                             <input id="inputDate" oninvalid="this.setCustomValidity('Введите желаемую дату транзакции')" oninput="setCustomValidity('')" required class="m-1" type="date" min=@ViewData["Min_Date"] asp-for="Transaction.transaction_date" />

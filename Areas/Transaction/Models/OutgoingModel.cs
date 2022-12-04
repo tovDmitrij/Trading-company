@@ -43,12 +43,12 @@ namespace Trading_company.Areas.Transaction.Models
         public int prod_quantity { get; set; }
 
         /// <summary>
-        /// Потрачено на транзакцию
+        /// Потрачено на транзакцию (без учёта налогов)
         /// </summary>
         public double transaction_earn { get; set; }
 
         /// <summary>
-        /// Сколько менеджер заработал за совершённую транзакцию
+        /// Сколько менеджер заработал за совершённую транзакцию (без учёта налогов)
         /// </summary>
         public double manager_earn { get; set; }
 

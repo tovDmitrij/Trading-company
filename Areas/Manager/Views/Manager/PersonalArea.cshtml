@@ -48,6 +48,7 @@
             @*Зарабатываемый менеджером процент с продаж*@
             <div class="row m-1 bg-secondary bg-opacity-25">
                 <b class="bg-secondary bg-opacity-50">Зарабатываемый процент</b>
+                @{Model.percent *= 100;}
                 <div>@Model.percent%</div>
             </div>
 

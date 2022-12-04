@@ -54,21 +54,25 @@ create or replace view warehouse as
 
 create or replace view incoming_with_optional_info as
 	select distinct Incoming.inc_id transaction_id,
-		(select c.id from Contracts c where c.contr_id = Incoming.contr_id and c.man_id = Incoming.man_id and Incoming.Inc_Date <= c.dayto limit 1) contract_id,
+		(select c.id from Contracts c where c.contr_id = Incoming.contr_id and c.man_id = Incoming.man_id and Incoming.Inc_Date < c.dayto limit 1) contract_id,
 		Incoming.inc_date transaction_date, 
 		Products.name prod_name,
 		Incoming.prod_id, 
 		Incoming.quantify prod_quantity,
 		Incoming.Quantify * Prices.Value * (
-			select coalesce(value,(
-				select value from cources where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= now() and now() <= dayto)) 
-			from cources 
-			where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= Incoming.Inc_Date and Incoming.Inc_Date <= dayto) transaction_paid,
+			select coalesce(
+				(select value from cources
+				where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= Incoming.Inc_Date and Incoming.Inc_Date <= dayto),
+				(select value from cources 
+				where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= now() and now() <= dayto)
+			)) transaction_paid,
 		Incoming.cost * (
-			select coalesce(value,(
-				select value from cources where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= now() and now() <= dayto))
-			from cources 
-			where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= Incoming.Inc_Date and Incoming.Inc_Date <= dayto) cost
+			select coalesce(
+				(select value from cources
+				where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= Incoming.Inc_Date  and Incoming.Inc_Date <= dayto),
+				(select value from cources 
+				where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= now() and now() <= dayto)
+			)) cost
 	from Currencies
 		right join Prices on Currencies.cur_id = Prices.cur_id
 		right join Products on Prices.Prod_ID = Products.Prod_ID
@@ -77,30 +81,36 @@ create or replace view incoming_with_optional_info as
 		right join Contracts on Managers.man_id = Contracts.man_id
 		left join Contragents on Contracts.contr_id = Contragents.contr_id
 	where Prices.DayFrom <= Incoming.Inc_Date and Incoming.Inc_Date <= Prices.DateTo;
-	
+
 
 create or replace view outgoing_with_optional_info as
 	select distinct Outgoing.out_id transaction_id,
-		(select c.id from Contracts c where c.contr_id = Outgoing.contr_id and c.man_id = Outgoing.man_id and Outgoing.out_date <= c.dayto limit 1) contract_id,
+		(select c.id from Contracts c where c.contr_id = Outgoing.contr_id and c.man_id = Outgoing.man_id and Outgoing.out_date < c.dayto limit 1) contract_id,
 		Outgoing.out_date transaction_date, 
 		Products.name prod_name,
 		Outgoing.prod_id, 
 		Outgoing.quantify prod_quantity,
 		Outgoing.Quantify * Prices.Value * (
-			select coalesce(value,(
-				select value from cources where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= now() and now() <= dayto)) 
-			from cources 
-			where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= Outgoing.out_date and Outgoing.out_date <= dayto) transaction_earn,
+			select coalesce(
+				(select value from cources
+				where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= Outgoing.Out_Date  and Outgoing.Out_Date <= dayto),
+				(select value from cources 
+				where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= now() and now() <= dayto)
+			)) transaction_earn,
 		Managers.percent * Outgoing.Quantify * Prices.Value * (
-			select coalesce(value,(
-				select value from cources where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= now() and now() <= dayto)) 
-			from cources 
-			where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= Outgoing.out_date and Outgoing.out_date <= dayto) manager_earn,
+			select coalesce(
+				(select value from cources
+				where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= Outgoing.Out_Date  and Outgoing.Out_Date <= dayto),
+				(select value from cources 
+				where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= now() and now() <= dayto)
+			)) manager_earn,
 		Outgoing.cost * (
-			select coalesce(value,(
-				select value from cources where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= now() and now() <= dayto)) 
-			from cources 
-			where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= Outgoing.out_date and Outgoing.out_date <= dayto) cost
+			select coalesce(
+				(select value from cources
+				where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= Outgoing.Out_Date  and Outgoing.Out_Date <= dayto),
+				(select value from cources 
+				where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom <= now() and now() <= dayto)
+			)) cost
 	from Currencies
 		right join Prices on Currencies.cur_id = Prices.cur_id
 		right join Products on Prices.Prod_ID = Products.Prod_ID

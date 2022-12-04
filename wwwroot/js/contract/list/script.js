@@ -1,27 +1,24 @@
 ﻿const hubConnection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
 
 function EndContract(contract_id) {
-    //const contract_id = document.getElementById("acceptBtn").value;
+    const contract_date = document.getElementById("dateValue-" + contract_id);
 
-    hubConnection.invoke("EndEarlyContract", contract_id)
+    if (!contract_date.checkValidity()) {
+        contract_date.reportValidity();
+        return false;
+    }
+
+    hubConnection.invoke("EndEarlyContract", contract_id, contract_date.value);
 }
 
 hubConnection.on("Message", function (err) {
     document.getElementById("Message").innerHTML = err;
 });
 
-hubConnection.on("Submit", function (contract_id) {
-    var contractForm = document.getElementById("contractForm");
+hubConnection.on("Submit", function (contract_id, contract_date) {
+    var contractForm = document.getElementById("contractForm-" + contract_id);
 
-    var newInput = document.createElement("button");
-    newInput.setAttribute("type", "submit");
-    newInput.setAttribute("name", "id")
-    newInput.setAttribute("id", "contract_id");
-    newInput.setAttribute("value", contract_id);
-    newInput.setAttribute("class", "btn");
-
-    contractForm.appendChild(newInput);
-    newInput.click();
+    contractForm.submit();
 });
 
 hubConnection.start()

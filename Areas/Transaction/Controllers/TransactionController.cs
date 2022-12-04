@@ -89,8 +89,8 @@ namespace Trading_company.Areas.Transaction.Controllers
 
             TransactionViewModel tvm = new()
             {
-                purchaseTransactions = _db.incoming_with_optional_info.FromSqlInterpolated($"select i.* from incoming_with_optional_info i left join Contracts c on i.contract_id = c.id where c.man_id = {manager.man_id}").ToList(),
-                sellTransactions = _db.outgoing_with_optional_info.FromSqlInterpolated($"select o.* from outgoing_with_optional_info o left join Contracts c on o.contract_id = c.id where c.man_id = {manager.man_id}").ToList()
+                PurchaseTransactions = _db.incoming_with_optional_info.FromSqlInterpolated($"select i.* from incoming_with_optional_info i left join Contracts c on i.contract_id = c.id where c.man_id = {manager.man_id}").ToList(),
+                SellTransactions = _db.outgoing_with_optional_info.FromSqlInterpolated($"select o.* from outgoing_with_optional_info o left join Contracts c on o.contract_id = c.id where c.man_id = {manager.man_id}").ToList()
             };
 
             return View(tvm);
@@ -105,7 +105,7 @@ namespace Trading_company.Areas.Transaction.Controllers
         /// <summary>
         /// Покупка товара
         /// </summary>
-        /// <param prod_name="transaction">Информация и транзакции</param>
+        /// <param name="transaction">Информация и транзакции</param>
         [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult Buy(IncomingModel transaction)
@@ -128,7 +128,7 @@ namespace Trading_company.Areas.Transaction.Controllers
         /// <summary>
         /// Продажа товара
         /// </summary>
-        /// <param prod_name="transaction">Информация и транзакции</param>
+        /// <param name="transaction">Информация и транзакции</param>
         [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult Sell(OutgoingModel transaction)
@@ -151,20 +151,21 @@ namespace Trading_company.Areas.Transaction.Controllers
         /// <summary>
         /// Отменить транзакцию покупки товара
         /// </summary>
-        /// <param prod_name="id">Идентификатор транзакции</param>
+        /// <param name="transaction">Отменяемая транзакция</param>
         [Route("{controller}/{action}")]
         [HttpPost]
-        public IActionResult DeleteBought(string id)
+        public IActionResult DeleteBought(IncomingModel transaction)
         {
             if (!HttpContext.Session.Keys.Contains("manager"))
             {
                 return Redirect("~/Manager/SignIn");
             }
 
-            var transaction = _db.incoming_with_optional_info.FirstOrDefault(trans => trans.transaction_id == Convert.ToInt32(id));
+            var currentTransaction = _db.incoming_with_optional_info.FirstOrDefault(trans => trans.transaction_id == transaction.transaction_id);
+
             try
             {
-                _db.incoming_with_optional_info.Remove(transaction);
+                _db.incoming_with_optional_info.Remove(currentTransaction);
                 _db.SaveChanges();
             }
             catch (Exception ex) { }
@@ -175,31 +176,31 @@ namespace Trading_company.Areas.Transaction.Controllers
         /// <summary>
         /// Отменить транзакцию продажи товара
         /// </summary>
-        /// <param prod_name="id">Идентификатор транзакции</param>
+        /// <param name="transaction">Отменяемая транзакция</param>
         [Route("{controller}/{action}")]
         [HttpPost]
-        public IActionResult DeleteSold(string id)
+        public IActionResult DeleteSold(OutgoingModel transaction)
         {
             if (!HttpContext.Session.Keys.Contains("manager"))
             {
                 return Redirect("~/Manager/SignIn");
             }
 
-            var transaction = _db.outgoing_with_optional_info.FirstOrDefault(trans => trans.transaction_id == Convert.ToInt32(id));
+            var currentTransaction = _db.outgoing_with_optional_info.FirstOrDefault(trans => trans.transaction_id == transaction.transaction_id);
 
             try
             {
-                _db.outgoing_with_optional_info.Remove(transaction);
+                _db.outgoing_with_optional_info.Remove(currentTransaction);
                 _db.SaveChanges();
             }
             catch (Exception ex) { }
 
-            return List();
+            return Redirect("~/Transaction/List");
         }
 
         #endregion
 
 
-
+        
     }
 }
