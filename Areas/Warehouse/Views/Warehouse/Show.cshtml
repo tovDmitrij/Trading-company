@@ -18,36 +18,53 @@
     </div>
 
 
-    @*Таблица склада*@
-    <div style="max-height: 800px; overflow-x: hidden; overflow-y: auto;" class="row m-1 col-6 d-flex justify-content-center-start">
-        <table id="warehouseTable" class="table table-bordered border-dark" style="text-align:center; vertical-align: middle;">
-            <thead class="table-light table-bordered border-dark">
-                <tr>
-                    <th class="col-3">Наименование товара</th>
-                    <th class="col-3">Категория товара</th>
-                    <th class="col-2">Количество товара</th>
-                </tr>
-            </thead>
+    <div class="row">
 
-            <tbody>
-                @foreach(var product in Model)
-                {
-                    string productState = "";
-                    if (product.prod_quantity > 0)
-                    {
-                        productState = "bg-success bg-opacity-50";
-                    }
-                    else if (product.prod_quantity == 0)
-                    {
-                        productState = "bg-warning bg-opacity-50";
-                    }
-                    <tr class=@productState>
-                        <td>@product.prod_name#@product.prod_id</td>
-                        <td>@product.group_name#@product.group_id</td>
-                        <td>@product.prod_quantity</td>
+
+        @*Таблица склада*@
+        <div style="max-height: 800px; overflow-x: hidden; overflow-y: auto;" class="col-6">
+            <table id="warehouseTable" class="table table-bordered border-dark" style="text-align:center; vertical-align: middle;">
+                <thead class="table-light table-bordered border-dark">
+                    <tr>
+                        <th class="col-3">Наименование товара</th>
+                        <th class="col-3">Категория товара</th>
+                        <th class="col-2">Количество товара</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+
+                <tbody>
+                    @foreach(var product in Model)
+                    {
+                        string productState = "";
+                        if (product.prod_quantity > 0)
+                        {
+                            productState = "bg-success bg-opacity-50";
+                        }
+                        else if (product.prod_quantity == 0)
+                        {
+                            productState = "bg-warning bg-opacity-50";
+                        }
+                        <tr class=@productState>
+                            <td>@product.prod_name#@product.prod_id</td>
+                            <td>@product.group_name#@product.group_id</td>
+                            <td>@product.prod_quantity</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+
+        @*Диаграмма с остатками товара на складе*@
+        <div class="col-6">
+            <div class="row">
+                <canvas id="myCanvas"></canvas>
+            </div>
+            <div class="row" id="myLegend"></div>
+        </div>
+
+
     </div>
 </div>
+
+<script type="text/javascript" src="~/js/warehouse/script.js"></script>
