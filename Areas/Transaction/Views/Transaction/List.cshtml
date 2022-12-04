@@ -8,20 +8,28 @@
         <h1 class="d-flex justify-content-center">@ViewData["Title"]</h1>
     </div>
 
+
+    @*Фильтры сортировки для таблицы транзакций*@
     <div class="row m-1">
-        *Радиобатоны на фильтрацию*
+        <input type="text" id="textFilter" onkeyup="searchByText(this, transactionTable, 3)" placeholder="Введите наименование и/или идентификатор товара...">
+    </div>
+    <div class="row m-1">
+        <input type="text" id="textFilter" onkeyup="searchByText(this, transactionTable, 2)" placeholder="Введите идентификатор контракта...">
+    </div>
+    <div class="row m-1">
+        <label><input type='checkbox' onclick='return searchByCheckBox(1, "transactionTable");' id="checkboxFilter" name='filter' value=@DateTime.Now.ToString("dd-MM-yyyy") /> Запланированные транзакции</label>
     </div>
 
-    <div class="col">
 
-        <table class="table table-bordered border-dark" style="text-align:center; vertical-align: middle;">
+    @*Таблица транзакций*@
+    <div style="max-height: 800px; overflow-x: hidden; overflow-y: auto;" class="col">
+        <table id="transactionTable" class="table table-bordered border-dark" style="text-align:center; vertical-align: middle;">
             <thead class="table-light table-bordered border-dark">
                 <tr>
                     <th class="col-1">Тип транзакции</th>
-                    <th class="col-1">ID транзакции</th>
                     <th class="col-1">Дата транзакции</th>
                     <th class="col-1">ID контракта</th>
-                    <th class="col-2">Наименование товара</th>
+                    <th class="col-3">Наименование товара</th>
                     <th class="col-1">Количество товара</th>
                     <th class="col-2">Заплачено/заработано предприятием без учёта налогов (руб.)</th>
                     <th class="col-1">Заработано менеджером (руб.)</th>
@@ -40,8 +48,7 @@
                     }
 
                     <tr class=@transactionType>
-                        <td>Покупка</td>
-                        <td>@transaction.transaction_id</td>
+                        <td>Покупка#@transaction.transaction_id</td>
                         <td>@transaction.transaction_date.ToString("dd-MM-yyyy")</td>
                         <td>@transaction.contract_id</td>
                         <td>@transaction.prod_name#@transaction.prod_id</td>
@@ -53,10 +60,10 @@
                         {
                             case true:
                                 <form id="TransactionBuy-@transaction.transaction_id" asp-area="Transaction" asp-controller="Transaction" asp-action="DeleteBought">
-                                    <td>
-                                        <input name="transaction_id" type="hidden" asp-for="PurchaseTransaction.transaction_id" value=@transaction.transaction_id />
-                                        <button onclick="CancelBuyTransaction(this.value)" value=@transaction.transaction_id type="button" class="btn bg-danger">Отменить</button>
-                                    </td>
+                                <td>
+                                    <input name="transaction_id" type="hidden" asp-for="PurchaseTransaction.transaction_id" value=@transaction.transaction_id />
+                                    <button onclick="CancelBuyTransaction(this.value)" value=@transaction.transaction_id type="button" class="btn bg-danger">Отменить</button>
+                                </td>
                                 </form>
                                 break;
                             case false:
@@ -75,8 +82,7 @@
                     }
 
                     <tr class=@transactionType>
-                        <td>Продажа</td>
-                        <td>@transaction.transaction_id</td>
+                        <td>Продажа#@transaction.transaction_id</td>
                         <td>@transaction.transaction_date.ToString("dd-MM-yyyy")</td>
                         <td>@transaction.contract_id</td>
                         <td>@transaction.prod_name#@transaction.prod_id</td>
@@ -88,10 +94,10 @@
                         {
                             case true:
                                 <form id="TransactionSell-@transaction.transaction_id" asp-area="Transaction" asp-controller="Transaction" asp-action="DeleteSold">
-                                    <td>
-                                        <input name="transaction_id" type="hidden" asp-for="SellTransaction.transaction_id" value=@transaction.transaction_id />
-                                        <button onclick="CancelSellTransaction(this.value)" value=@transaction.transaction_id type="button" class="btn bg-danger">Отменить</button>
-                                    </td>
+                                <td>
+                                    <input name="transaction_id" type="hidden" asp-for="SellTransaction.transaction_id" value=@transaction.transaction_id />
+                                    <button onclick="CancelSellTransaction(this.value)" value=@transaction.transaction_id type="button" class="btn bg-danger">Отменить</button>
+                                </td>
                                 </form>
                                 break;
                             case false:
@@ -102,9 +108,10 @@
                 }
             </tbody>
         </table>
-
         <h4 id="Message" class="row m-1 text-light bg-dark" />
     </div>
+
+
 </div>
 
 <script type="text/javascript" src="~/js/transaction/list/script.js?v=2"></script>

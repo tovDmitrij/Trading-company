@@ -12,16 +12,16 @@
 
         @*Фильтры сортировки для таблицы контрактов*@
         <div class="row m-1">
-            <input type="text" id="textFilter" onkeyup="searchContract(this, contractsTable, 1)" placeholder="Введите ФИО и/или идентификатор контрагента...">
+            <input type="text" id="textFilter" onkeyup="searchByText(this, contractsTable, 1)" placeholder="Введите ФИО и/или идентификатор контрагента...">
         </div>
         
         <div class="row m-1">
-            <label><input type='checkbox' onclick='return filter_type(this);' id="checkboxFilter" name='filter' value=@DateTime.Now.ToString("dd-MM-yyyy") /> Действующие контракты</label>
+            <label><input type='checkbox' onclick='return searchByCheckBox(3, "contractsTable");' id="checkboxFilter" name='filter' value=@DateTime.Now.ToString("dd-MM-yyyy") /> Действующие контракты</label>
         </div>
         
 
         @*Таблица со всеми контрактами менеджера*@
-        <div class="row m-1">
+        <div style="max-height: 800px; overflow-x: hidden; overflow-y: auto;" class="row m-1">
             <table id="contractsTable" class="table table-bordered border-dark" style="text-align:center; vertical-align: middle;">
                 <thead class="table-light table-bordered border-dark">
                     <tr>
@@ -36,7 +36,6 @@
                         <th class="col-1">Дата окончания</th>
                     </tr>
                 </thead>
-        
                 <tbody>
                     @{
                         if (Model.Contracts.Count() == 0)
@@ -63,9 +62,9 @@
                             {
                                 <td>
                                     <div class="m-1 bg-secondary bg-opacity-25">
-                                        <b>Сдвинуть срок окончания</b>
+                                        <b class="m-1">Сдвинуть срок окончания</b>
                                         <form id="contractForm-@contract.id" asp-controller="Contract" asp-action="Update">
-                                            <input name="dayto" asp-for="Contract.dayto" id="dateValue-@contract.id" oninvalid="this.setCustomValidity('Контракт не может быть сдвинут на заданный срок')" oninput="setCustomValidity('')" required min=@contract.dayfrom.AddDays(7).ToString("yyyy-MM-dd") max="@contract.dayto.ToString("yyyy-MM-dd")" class="m-1" type="date" />
+                                            <input name="dayto" asp-for="Contract.dayto" id="dateValue-@contract.id" oninvalid="this.setCustomValidity('Контракт не может быть сдвинут на заданный срок')" oninput="setCustomValidity('')" required min=@contract.dayfrom.AddDays(7).ToString("yyyy-MM-dd") class="m-1" type="date" />
                                             <input name="id" asp-for="Contract.id" type="hidden" value=@contract.id />
                                             <button onclick="EndContract(this.value)" type="button" class="m-1 btn bg-warning bg-opacity-50" value=@contract.id>Подтвердить</button>
                                         </form>

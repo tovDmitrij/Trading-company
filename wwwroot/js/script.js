@@ -1,6 +1,9 @@
 ﻿//#region Поиск чего-либо по поисковой строке (основано на https://www.w3schools.com/howto/howto_js_filter_table.asp)
-function searchContract(input, table, index) {
-    document.getElementById("checkboxFilter").checked = false;
+function searchByText(input, table, index) {
+    var chckBx = document.getElementById("checkboxFilter");
+    if (chckBx != null) {
+        chckBx.checked = false;
+    }
 
     var filter, tr, td, i, j;
     filter = input.value.toUpperCase();
@@ -20,8 +23,8 @@ function searchContract(input, table, index) {
 }
 //#endregion
 
-//#region Фильтрация списка по чекбоксу (основано на https://codepen.io/carl_was_here/pen/QoGRBp)
-function filter_type(box) {
+//#region Фильтрация списка по дате (чекбокс) (основано на https://codepen.io/carl_was_here/pen/QoGRBp)
+function searchByCheckBox(index, table) {
     document.getElementById("textFilter").value = "";
 
     var cbs = document.getElementsByTagName('input');
@@ -35,11 +38,13 @@ function filter_type(box) {
             }
         }
     }
+
+    var tableName = "#" + table + " tr";
     if (all_checked_types.length > 0) {
-        $('#contractsTable tr').each(function (i, row) {
+        $(tableName).each(function (i, row) {
             var $tds = $(this).find('td')
             if ($tds.length) {
-                var type = $tds[3].innerText;
+                var type = $tds[index].innerText;
                 var [day, month, year] = type.split('-');
                 var comparableDate = new Date(+year, +month - 1, +day);
 
@@ -56,7 +61,7 @@ function filter_type(box) {
         });
     }
     else {
-        $('#contractsTable tr').each(function (i, row) {
+        $(tableName).each(function (i, row) {
             var $tds = $(this).find('td'),
                 type = $tds.eq(2).text();
             $(this).show();

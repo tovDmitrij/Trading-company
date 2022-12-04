@@ -8,8 +8,19 @@
         <h1 class="d-flex justify-content-center">@ViewData["Title"]</h1>
     </div>
 
-    <div class="row m-1 col-6 d-flex justify-content-center-start">
-        <table class="table table-bordered border-dark" style="text-align:center; vertical-align: middle;">
+
+    @*Фильтры сортировки для таблицы склада*@
+    <div class="row m-1">
+        <input type="text" id="textFilter" onkeyup="searchByText(this, warehouseTable, 0)" placeholder="Введите наименование и/или идентификатор товара...">
+    </div>
+    <div class="row m-1">
+        <input type="text" id="textFilter" onkeyup="searchByText(this, warehouseTable, 1)" placeholder="Введите наименование и/или идентификатор категории товаров...">
+    </div>
+
+
+    @*Таблица склада*@
+    <div style="max-height: 800px; overflow-x: hidden; overflow-y: auto;" class="row m-1 col-6 d-flex justify-content-center-start">
+        <table id="warehouseTable" class="table table-bordered border-dark" style="text-align:center; vertical-align: middle;">
             <thead class="table-light table-bordered border-dark">
                 <tr>
                     <th class="col-3">Наименование товара</th>
