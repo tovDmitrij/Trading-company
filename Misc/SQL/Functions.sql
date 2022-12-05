@@ -1,13 +1,7 @@
-create or replace function GetProductQuantity(prodID integer) returns integer as
+create or replace function RandomBetween(low int, high int) returns numeric(5,2) as
 	$$
-		declare
-			amount integer;
 		begin
-			select Sum(Incoming.Quantify) - Sum(Outgoing.Quantify) into amount from Incoming
-				left join Products on Incoming.Prod_ID = Products.Prod_ID
-				right join Outgoing on Outgoing.Prod_ID = Products.Prod_ID
-			where Products.Prod_ID = prodID;
-			return amount;
+		   return random() * (high - low + 1) + low;
 		end;
 	$$ language plpgsql;
 

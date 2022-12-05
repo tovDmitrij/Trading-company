@@ -57,6 +57,34 @@ namespace Trading_company.Hubs
 
 
 
+        #region Оформление контракта
+            
+        /// <summary>
+        /// Проверка при подписании контракта, что на заданную дату у конкретного контрагента будет действующий банковский аккаунт
+        /// </summary>
+        /// <param name="contragent_id">Идентификатор контрагента</param>
+        /// <param name="contract_dayto">Предполагаемая дата завершения контракта</param>
+        public void CheckBankAccount(string contragent_id, string contract_dayto)
+        {
+            DateTime contractDayTo = DateTime.Parse(contract_dayto);
+            int contragentID = Convert.ToInt32(contragent_id);
+
+            var existedBankAccount = _db.accounts.FirstOrDefault(account => account.contr_id == contragentID && account.dayto > contractDayTo);
+
+            if (existedBankAccount is null)
+            {
+                Clients.Caller.SendAsync("Message", "На заданную дату у контрагента не будет действующего банковского аккаунта");
+            }
+            else
+            {
+                Clients.Caller.SendAsync("Submit");
+            }
+        }
+
+        #endregion
+
+
+
         #region Оформление транзакции
 
         /// <summary>

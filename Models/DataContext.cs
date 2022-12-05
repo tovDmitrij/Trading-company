@@ -15,6 +15,11 @@ namespace Trading_company.Models
         public DbSet<ContragentModel> contragents { get; set; }
 
         /// <summary>
+        /// Таблица с банковскими аккаунтами контрагентов
+        /// </summary>
+        public DbSet<BankAccountModel> accounts { get; set; }
+
+        /// <summary>
         /// Представление с менеджерами с дополнительной информацией
         /// </summary>
         public DbSet<ManagerModel> managers_with_optional_info { get; set; }
