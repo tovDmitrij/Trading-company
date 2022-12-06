@@ -2,7 +2,7 @@
 namespace Trading_company.Models
 {
     /// <summary>
-    /// Модель для различных рассчётов
+    /// Модель для различных расчётов
     /// </summary>
     [Keyless]
     public class SomeModel

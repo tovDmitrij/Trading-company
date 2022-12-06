@@ -26,6 +26,20 @@ create or replace view contracts_with_optional_Info as
 	order by Contracts.id;
 
 
+create or replace view prices_with_optional_info as
+	select Products.name product_name, Products.prod_id product_id, Prices.dayfrom price_dayfrom, Prices.dateto price_dayto, Prices.value * (
+		select coalesce(
+			(select value from cources
+			 where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom < Prices.dateto and Prices.dateto <= dayto),
+			(select value from cources 
+			 where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom < now() and now() <= dayto))
+		) price_value
+	from Products
+		left join Prices on Products.prod_id = Prices.prod_id
+		left join Currencies on Prices.cur_id = Currencies.cur_id
+	order by Products.name, Prices.dateto
+	
+
 create or replace view products_with_optional_info as
 	select distinct g.name group_name, 
 		g.group_id,

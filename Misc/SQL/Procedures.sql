@@ -1,7 +1,18 @@
---call add_new_cource_value(3,1);
---call add_new_cource_value(2,1);
---call add_new_cource_value(3,2);
-create or replace procedure add_new_cource_value(curIDFrom integer, curIDTo integer) as
+--call UpdateCources();
+create or replace procedure UpdateCources() as
+	$$
+		declare
+			CurrenciesList cursor for
+				select cur_id from Currencies where cur_id != 1 order by cur_id;
+		begin
+			for cource in CurrenciesList loop
+				call add_new_cource_value(cource.cur_id);
+			end loop;
+		end;
+	$$ language plpgsql;
+
+
+create or replace procedure add_new_cource_value(curIDFrom integer) as
 	$$
 		declare
 			courceValue numeric(5,2) := -1;
@@ -10,16 +21,16 @@ create or replace procedure add_new_cource_value(curIDFrom integer, curIDTo inte
 		begin
 			while courceValue < 0 loop
 				select Sum(value)/Count(*) into courceValue from Cources
-				where cur_idfrom = curIDFrom and cur_idto = curIDTo;
+				where cur_idfrom = curIDFrom and cur_idto = 1;
 				
 				courceValue = courceValue + RandomBetween(-2,2);
 			end loop;
 			
 			insert into Cources
-			values(curIDFrom, curIDTo, dayFrom, dayTo, courceValue);
+			values(curIDFrom, 1, dayFrom, dayTo, courceValue);
 			
 			insert into Cources
-			values(curIDTo, curIDFrom, dayFrom, dayTo, 1.0 / courceValue);
+			values(1, curIDFrom, dayFrom, dayTo, 1.0 / courceValue);
 		end;
 	$$ language plpgsql;
 

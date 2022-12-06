@@ -1,6 +1,6 @@
-﻿@model IEnumerable<Trading_company.Areas.Course.Models.CourseModel>
+﻿@model IEnumerable<Trading_company.Areas.Price.Models.PriceModel>
 @{
-    ViewData["Title"] = "Курс валют";
+    ViewData["Title"] = "Цены товаров";
 }
 
 <div class="col-12">
@@ -9,14 +9,14 @@
     </div>
 
 
-    @*Список доступных валют для отрисовки*@
+    @*Список доступных товаров для просмотра цен*@
     <div class="row m-1 bg-secondary bg-opacity-25">
-        <select id="cur_idfrom" onchange="GetCourseValues(this.value)" required oninvalid="this.setCustomValidity('Пожалуйста, выберите конвертируемую валюту')" oninput="setCustomValidity('')">
+        <select id="cur_idfrom" onchange="GetPriceValues(this.value)" required oninvalid="this.setCustomValidity('Пожалуйста, выберите товар')" oninput="setCustomValidity('')">
             <option value="">
                 @{
                     if (Model.Count() == 0)
                     {
-                        <div>Отсутствуют доступные валюты</div>
+                        <div>Отсутствуют доступные товары</div>
                     }
                     else
                     {
@@ -24,27 +24,27 @@
                     }
                 }
             </option>
-            @foreach(var course in Model)
+            @foreach (var product in Model)
             {
-                <option value="@course.cur_idfrom">@course.cur_namefrom#@course.cur_idfrom</option>
+                <option value="@product.product_id">@product.product_name#@product.product_id</option>
             }
         </select>
     </div>
 
 
-    @*Отрисовка таблицы курса валюты*@
+    @*Отрисовка таблицы цен*@
     <div style="max-height: 800px; overflow-x: hidden; overflow-y: auto;" class="row m-1">
         <table id="contractsTable" class="table table-bordered border-dark" style="text-align:center; vertical-align: middle;">
             <thead class="table-light table-bordered border-dark">
                 <tr>
-                    <th class="col-3">Конвертируемая валюта</th>
-                    <th class="col-5">Срок окончания курса</th>
+                    <th class="col-4">Товар</th>
+                    <th class="col-2">Начало действия ценника</th>
+                    <th class="col-2">Окончание действия ценника</th>
                     <th class="col-2">Значение</th>
                     <th class="col-2">Изменение</th>
                 </tr>
             </thead>
-            <tbody id="courseBodyTable">
-
+            <tbody id="priceBodyTable">
             </tbody>
         </table>
         <h4 id="Message" class="row m-1 text-light bg-dark" />
@@ -54,4 +54,4 @@
 </div>
 
 <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-base.min.js"></script>
-<script type="text/javascript" src="~/js/course/script.js?v=4"></script>
+<script type="text/javascript" src="~/js/price/script.js?v=3"></script>

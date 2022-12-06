@@ -21,18 +21,18 @@ function formatDate(date) {
 const hubConnection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
 
 hubConnection.on("Message", function (err) {
-    $("#courseBodyTable").empty();
+    $("#priceBodyTable").empty();
     document.getElementById("Message").innerHTML = err;
 });
 
-hubConnection.on("Submit", function (courseValueList) {
-    $("#courseBodyTable").empty();
+hubConnection.on("Submit", function (priceList) {
+    $("#priceBodyTable").empty();
     document.getElementById("Message").innerHTML = "";
 
-    for (var i = 0; i < courseValueList.length; i++) {
+    for (var i = 0; i < priceList.length; i++) {
         var dValue = 0;
         if (i != 0) {
-            dValue = courseValueList[i]["value"] - courseValueList[i - 1]["value"];
+            dValue = priceList[i]["price_value"] - priceList[i - 1]["price_value"];
         }
         else {
             dValue = 0;
@@ -51,21 +51,22 @@ hubConnection.on("Submit", function (courseValueList) {
         }
 
         var currentTR = '<tr>\
-                            <td>'+ courseValueList[i]["cur_namefrom"] +' -> '+ courseValueList[i]["cur_nameto"] +'</td>\
-                            <td>'+ formatDate(new Date(courseValueList[i]["dayto"])) +'</td>\
-                            <td>'+ courseValueList[i]["value"] +' (руб.)</td>\
+                            <td>'+ priceList[i]["product_name"] +'#'+ priceList[i]["product_id"] +'</td>\
+                            <td>'+ formatDate(new Date(priceList[i]["price_dayfrom"])) +'</td>\
+                            <td>'+ formatDate(new Date(priceList[i]["price_dayto"])) + '</td>\
+                            <td>'+ Number((priceList[i]["price_value"]).toFixed(2)) +' (руб.)</td>\
                             <td>\
-                                <div class="row">\
-                                    <div class="col-6 d-flex justify-content-end">\
+                                <div style="text-align: center;" class="row">\
+                                    <div style="text-align: right; display: inline-block;" class="col-6">\
                                         <img width="15px" height="15px" src="/images/tendentions/'+ trend.toString() +'" />\
                                     </div>\
-                                    <div class="col-6 d-flex justify-content-start">\
+                                    <div style="text-align: left; display: inline-block;" class="col-6">\
                                         '+ Math.abs(Number((dValue).toFixed(2))) +' (руб.)\
                                     </div>\
                                 </div>\
                             </td>\
                         </tr>';
-        $('#courseBodyTable').append(currentTR);
+        $('#priceBodyTable').append(currentTR);
     }
 });
 
@@ -78,10 +79,10 @@ hubConnection.start()
 
 
 
-//#region Получение курса выбранной валюты за последние 14 дней
+//#region Получение курса выбранной валюты за последний месяц
 
-function GetCourseValues(courseID) {
-    hubConnection.invoke("GetCourseValues", courseID);
+function GetPriceValues(courseID) {
+    hubConnection.invoke("GetPriceValues", courseID);
 }
 
 //#endregion

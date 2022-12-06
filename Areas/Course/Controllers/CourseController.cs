@@ -14,10 +14,11 @@ namespace Trading_company.Areas.Course.Controllers
         public CourseController(DataContext context) => _db = context;
 
 
+
         #region Страницы
 
         /// <summary>
-        /// Отобразить график с курсами валют
+        /// Отобразить таблицу с курсами валют
         /// </summary>
         [Route("{controller}/{action}")]
         public IActionResult Show()
@@ -27,7 +28,7 @@ namespace Trading_company.Areas.Course.Controllers
                 return Redirect("~/Manager/SignIn");
             }
 
-            var courseList = _db.course_with_optional_info.FromSqlInterpolated($"select distinct cur_namefrom, cur_idfrom, cur_nameto, cur_idto, now() dayfrom, now() dayto, 0 value from course_with_optional_info where cur_idto = 1 and cur_idfrom != 1 and dayto >= {DateTime.Now.AddDays(-14)} order by cur_idfrom").ToList();
+            var courseList = _db.course_with_optional_info.FromSqlInterpolated($"select distinct cur_namefrom, cur_idfrom, cur_nameto, cur_idto, now() dayfrom, now() dayto, 0 value from course_with_optional_info where cur_idto = 1 and cur_idfrom != 1 order by cur_idfrom").ToList();
 
             return View(courseList);
         }

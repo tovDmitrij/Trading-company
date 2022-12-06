@@ -23,14 +23,17 @@
                 <a class="navbar-brand"><img width="50px" src="~/images/logo.png" /> Торговое предприятие "Изумруд"</a>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
+                        <li>
                             <a class="nav-link text-dark" asp-area="Manager" asp-controller="Manager" asp-action="SignUp">Регистрация</a>
                         </li>
-                        <li class="nav-item">
+                        <li>
                             <a class="nav-link text-dark" asp-area="Manager" asp-controller="Manager" asp-action="SignIn">Авторизация</a>
                         </li>
-                        <li class="nav-item">
+                        <li>
                             <a class="nav-link text-dark" asp-area="Manager" asp-controller="Manager" asp-action="PersonalArea">ЛК</a>
+                        </li>
+                        <li>
+                            <a class="nav-link text-dark" asp-controller="About" asp-action="About">Инструкция к работе</a>
                         </li>
                     </ul>
                 </div>
@@ -46,10 +49,10 @@
     </div>
 
 
-    <footer class="border-top footer text-muted d-flex justify-content-center">
-        <div class="container">
-            <p>&copy; 2022 - Trading Company - Created by Dmitry Kuzmin</p>
-            <p><a href="https://github.com/tovDmitrij/Trading-company">GitHub repository</a></p>
+    <footer class="border-top footer text-muted">
+        <div class="col-12">
+            <div class="row m-1 d-flex justify-content-center">&copy; 2022 - Trading Company - Created by Dmitry Kuzmin</div>
+            <div class="row m-1"><a class="d-flex justify-content-center" href="https://github.com/tovDmitrij/Trading-company">GitHub repository</a></div>
         </div>
     </footer>
 

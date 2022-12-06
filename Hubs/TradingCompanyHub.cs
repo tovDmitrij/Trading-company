@@ -69,7 +69,7 @@ namespace Trading_company.Hubs
         {
             DateTime date = DateTime.Parse(transaction_date);
 
-            var dbPrice = _db.some_model.FromSqlInterpolated($"select pc.value * (select value from cources where cur_idfrom = crc.cur_id and cur_idto = 1 and dayfrom < {DateTime.Now} and {DateTime.Now} <= dayto) cost from Products pd left join Prices pc on pd.prod_id = pc.prod_id left join Currencies crc on pc.cur_id = crc.cur_id left join Course cr on crc.cur_id = cr.cur_idfrom where pd.prod_id = {Convert.ToInt32(prod_id)} and pc.dayfrom < {date} and  pc.dateto >= {date}").ToList().FirstOrDefault();
+            var dbPrice = _db.some_model.FromSqlInterpolated($"select pc.value * (select value from cources where cur_idfrom = crc.cur_id and cur_idto = 1 and dayfrom < {DateTime.Now} and {DateTime.Now} <= dayto) cost from Products pd left join Prices pc on pd.prod_id = pc.prod_id left join Currencies crc on pc.cur_id = crc.cur_id left join Cources cr on crc.cur_id = cr.cur_idfrom where pd.prod_id = {Convert.ToInt32(prod_id)} and pc.dayfrom < {date} and  pc.dateto >= {date}").ToList().FirstOrDefault();
 
             if (dbPrice is null)
             {
@@ -237,6 +237,7 @@ namespace Trading_company.Hubs
         {
             DateTime contractDate = DateTime.Parse(contract_date);
             int contractID = Convert.ToInt32(contract_id);
+            int contragentID = _db.contracts_with_optional_info.FirstOrDefault(contract => contract.id == contractID).contr_id;
 
             if (
                 _db.incoming_with_optional_info.FromSqlInterpolated($"select* from incoming_with_optional_info where contract_id = {contractID} and transaction_date > {contractDate}").ToList().Count() > 0
@@ -244,6 +245,10 @@ namespace Trading_company.Hubs
                 _db.outgoing_with_optional_info.FromSqlInterpolated($"select* from outgoing_with_optional_info where contract_id = {contractID} and transaction_date > {contractDate}").ToList().Count() > 0)
             {
                 Clients.Caller.SendAsync("Message", "Сдвинуть срок контракта на заданную дату невозможно: существуют транзакции, к-рые ещё не были совершены после заданной даты");
+            }
+            else if (_db.accounts.FirstOrDefault(account => account.contr_id == contragentID && account.dayto > contractDate) is null)
+            {
+                Clients.Caller.SendAsync("Message", "На заданную дату у контрагента не будет действующего банковского аккаунта");
             }
             else
             {
@@ -260,7 +265,7 @@ namespace Trading_company.Hubs
         /// <summary>
         /// Получение значений курса валют за последние 14 дней
         /// </summary>
-        /// <param name="courseID"></param>
+        /// <param name="courseID">Идентификатор корвертируемого курса</param>
         public void GetCourseValues(string courseID)
         {
             if (courseID is null || courseID == "")
@@ -274,6 +279,32 @@ namespace Trading_company.Hubs
                 var courseList = _db.course_with_optional_info.FromSqlInterpolated($"select * from course_with_optional_info where cur_idto = 1 and cur_idfrom = {course_id} and dayto >= {DateTime.Now.AddDays(-14)} order by dayto").ToList();
 
                 Clients.Caller.SendAsync("Submit", courseList);
+            }
+        }
+
+        #endregion
+
+
+
+        #region Взаимодействие с ценниками товаров
+
+        /// <summary>
+        /// Получение ценников выбранного товара за последний месяц
+        /// </summary>
+        /// <param name="prodID">Идентификатор выбранного товара</param>
+        public void GetPriceValues(string prodID)
+        {
+            if (prodID is null || prodID == "")
+            {
+                Clients.Caller.SendAsync("Message", "Выберите интересующий вас товар");
+            }
+            else
+            {
+                int product_id = Convert.ToInt32(prodID);
+
+                var priceList = _db.prices_with_optional_info.FromSqlInterpolated($"select* from prices_with_optional_info where product_id = {product_id} and price_dayto >= {DateTime.Now.AddDays(-31)}").ToList();
+
+                Clients.Caller.SendAsync("Submit", priceList);
             }
         }
 
