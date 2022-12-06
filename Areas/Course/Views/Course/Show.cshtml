@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Trading_company.Areas.Course.Models.CourseModel>
+@{
+    ViewData["Title"] = "Курс валют";
+}
+
+<div class="col-12">
+    <div class="row m-1 bg-secondary bg-opacity-25">
+        <h1 class="d-flex justify-content-center">@ViewData["Title"]</h1>
+    </div>
+
+
+    @*Список доступных валют для отрисовки*@
+    <div class="row m-1 bg-secondary bg-opacity-25">
+        <select id="cur_idfrom" onchange="GetCourseValues(this.value)" required oninvalid="this.setCustomValidity('Пожалуйста, выберите конвертируемую валюту')" oninput="setCustomValidity('')">
+            <option value="">
+                @{
+                    if (Model.Count() == 0)
+                    {
+                        <div>Отсутствуют доступные валюты</div>
+                    }
+                    else
+                    {
+                        <div>Выберите из доступных</div>
+                    }
+                }
+            </option>
+            @foreach(var course in Model)
+            {
+                <option value="@course.cur_idfrom">@course.cur_namefrom#@course.cur_idfrom</option>
+            }
+        </select>
+    </div>
+
+
+    @*Отрисовка таблицы курса валюты*@
+    <div style="max-height: 800px; overflow-x: hidden; overflow-y: auto;" class="row m-1">
+        <table id="contractsTable" class="table table-bordered border-dark" style="text-align:center; vertical-align: middle;">
+            <thead class="table-light table-bordered border-dark">
+                <tr>
+                    <th>Конвертируемая валюта</th>
+                    <th>Срок окончания курса</th>
+                    <th>Значение</th>
+                    <th>Изменение</th>
+                </tr>
+            </thead>
+            <tbody id="courseBodyTable">
+
+            </tbody>
+        </table>
+        <h4 id="Message" class="row m-1 text-light bg-dark" />
+    </div>
+
+
+</div>
+
+<script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-base.min.js"></script>
+<script type="text/javascript" src="~/js/course/script.js?v=3"></script>

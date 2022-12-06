@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-namespace Trading_company.Models
+namespace Trading_company.Areas.Contract.Models
 {
     /// <summary>
     /// Банковский аккаунт контрагента

@@ -18,12 +18,12 @@ namespace Trading_company.Hubs
 
 
 
-        #region Регистрация/авторизация менеджера
+        #region Взаимодействие с аккаунтом менеджера
 
         /// <summary>
         /// Проверка перед регистрацией, что введённая почта ещё не занята
         /// </summary>
-        /// <param prod_name="email">Адрес электронной почты</param>
+        /// <param name="email">Адрес электронной почты</param>
         public void SignUpCheck(string email)
         {
             if (_db.managers_with_optional_info.FirstOrDefault(man => man.email == email) is not null)
@@ -39,8 +39,8 @@ namespace Trading_company.Hubs
         /// <summary>
         /// Проверка перед авторизацией, что существует менеджер с таким набором логина и пароля
         /// </summary>
-        /// <param prod_name="email">Логин</param>
-        /// <param prod_name="password">Пароль</param>
+        /// <param name="email">Логин</param>
+        /// <param name="password">Пароль</param>
         public void SignInCheck(string email, string password)
         {
             if (_db.managers_with_optional_info.FirstOrDefault(man => man.email == email && man.password == password) is null)
@@ -57,47 +57,19 @@ namespace Trading_company.Hubs
 
 
 
-        #region Оформление контракта
-            
-        /// <summary>
-        /// Проверка при подписании контракта, что на заданную дату у конкретного контрагента будет действующий банковский аккаунт
-        /// </summary>
-        /// <param name="contragent_id">Идентификатор контрагента</param>
-        /// <param name="contract_dayto">Предполагаемая дата завершения контракта</param>
-        public void CheckBankAccount(string contragent_id, string contract_dayto)
-        {
-            DateTime contractDayTo = DateTime.Parse(contract_dayto);
-            int contragentID = Convert.ToInt32(contragent_id);
-
-            var existedBankAccount = _db.accounts.FirstOrDefault(account => account.contr_id == contragentID && account.dayto > contractDayTo);
-
-            if (existedBankAccount is null)
-            {
-                Clients.Caller.SendAsync("Message", "На заданную дату у контрагента не будет действующего банковского аккаунта");
-            }
-            else
-            {
-                Clients.Caller.SendAsync("Submit");
-            }
-        }
-
-        #endregion
-
-
-
-        #region Оформление транзакции
+        #region Взаимодействие с транзакциями
 
         /// <summary>
         /// Генерация чека 
         /// </summary>
-        /// <param prod_name="prod_id">Идентификатор товара</param>
-        /// <param prod_name="quantity">Количество товара</param>
-        /// <param prod_name="transaction_date">Дата продажи товара</param>
+        /// <param name="prod_id">Идентификатор товара</param>
+        /// <param name="quantity">Количество товара</param>
+        /// <param name="transaction_date">Дата продажи товара</param>
         public void GetCheck(string prod_id, string quantity, string transaction_date)
         {
             DateTime date = DateTime.Parse(transaction_date);
 
-            var dbPrice = _db.some_model.FromSqlInterpolated($"select pc.value * (select value from cources where cur_idfrom = crc.cur_id and cur_idto = 1 and dayfrom <= {DateTime.Now} and {DateTime.Now} <= dayto) cost from Products pd left join Prices pc on pd.prod_id = pc.prod_id left join Currencies crc on pc.cur_id = crc.cur_id left join Cources cr on crc.cur_id = cr.cur_idfrom where pd.prod_id = {Convert.ToInt32(prod_id)} and pc.dayfrom <= {date} and  pc.dateto >= {date}").ToList().FirstOrDefault();
+            var dbPrice = _db.some_model.FromSqlInterpolated($"select pc.value * (select value from cources where cur_idfrom = crc.cur_id and cur_idto = 1 and dayfrom < {DateTime.Now} and {DateTime.Now} <= dayto) cost from Products pd left join Prices pc on pd.prod_id = pc.prod_id left join Currencies crc on pc.cur_id = crc.cur_id left join Course cr on crc.cur_id = cr.cur_idfrom where pd.prod_id = {Convert.ToInt32(prod_id)} and pc.dayfrom < {date} and  pc.dateto >= {date}").ToList().FirstOrDefault();
 
             if (dbPrice is null)
             {
@@ -131,8 +103,8 @@ namespace Trading_company.Hubs
         /// <summary>
         /// Подтверждение транзакции (покупка товара)
         /// </summary>
-        /// <param prod_name="prod_id">Идентификатор товара</param>
-        /// <param prod_name="transaction_date">Дата совершения транзакции</param>
+        /// <param name="prod_id">Идентификатор товара</param>
+        /// <param name="transaction_date">Дата совершения транзакции</param>
         public void SubmitBuy(string prod_id, string transaction_date, string contract_id)
         {
             DateTime transactionDate = DateTime.Parse(transaction_date);
@@ -145,7 +117,7 @@ namespace Trading_company.Hubs
                 return;
             }
 
-            if (_db.some_model.FromSqlInterpolated($"select value from Prices where prod_id = {Convert.ToInt32(prod_id)} and dayfrom <= {transactionDate} and {transactionDate} <= dateto").ToList().FirstOrDefault() is null)
+            if (_db.some_model.FromSqlInterpolated($"select value from Prices where prod_id = {Convert.ToInt32(prod_id)} and dayfrom < {transactionDate} and {transactionDate} <= dateto").ToList().FirstOrDefault() is null)
             {
                 Clients.Caller.SendAsync("Message", "Отсутствует действующий ценник на заданную дату");
             }
@@ -158,9 +130,9 @@ namespace Trading_company.Hubs
         /// <summary>
         /// Подтверждение транзакции (продажа товара)
         /// </summary>
-        /// <param prod_name="prod_id">Идентификатор товара</param>
-        /// <param prod_name="quantity">Количество товара</param>
-        /// <param prod_name="transaction_date">Дата совершения транзакции</param>
+        /// <param name="prod_id">Идентификатор товара</param>
+        /// <param name="quantity">Количество товара</param>
+        /// <param name="transaction_date">Дата совершения транзакции</param>
         public void SubmitSell(string prod_id, string quantity, string transaction_date, string contract_id)
         {
             DateTime transactionDate = DateTime.Parse(transaction_date);
@@ -174,7 +146,7 @@ namespace Trading_company.Hubs
                 return;
             }
 
-            if (_db.some_model.FromSqlInterpolated($"select value from Prices where prod_id = {prodID} and dayfrom <= {transactionDate} and {transactionDate} <= dateto").ToList().FirstOrDefault() is null)
+            if (_db.some_model.FromSqlInterpolated($"select value from Prices where prod_id = {prodID} and dayfrom < {transactionDate} and {transactionDate} <= dateto").ToList().FirstOrDefault() is null)
             {
                 Clients.Caller.SendAsync("Message", "Отсутствует действующий ценник на заданную дату");
             }
@@ -235,6 +207,28 @@ namespace Trading_company.Hubs
         #region Взаимодействие с контрактами
 
         /// <summary>
+        /// Проверка при подписании контракта, что на заданную дату у конкретного контрагента будет действующий банковский аккаунт
+        /// </summary>
+        /// <param name="contragent_id">Идентификатор контрагента</param>
+        /// <param name="contract_dayto">Предполагаемая дата завершения контракта</param>
+        public void CheckBankAccount(string contragent_id, string contract_dayto)
+        {
+            DateTime contractDayTo = DateTime.Parse(contract_dayto);
+            int contragentID = Convert.ToInt32(contragent_id);
+
+            var existedBankAccount = _db.accounts.FirstOrDefault(account => account.contr_id == contragentID && account.dayto > contractDayTo);
+
+            if (existedBankAccount is null)
+            {
+                Clients.Caller.SendAsync("Message", "На заданную дату у контрагента не будет действующего банковского аккаунта");
+            }
+            else
+            {
+                Clients.Caller.SendAsync("Submit");
+            }
+        }
+
+        /// <summary>
         /// Досрочное завершение контракта
         /// </summary>
         /// <param name="contract_id">Идентификатор контракта</param>
@@ -245,15 +239,41 @@ namespace Trading_company.Hubs
             int contractID = Convert.ToInt32(contract_id);
 
             if (
-                _db.incoming_with_optional_info.FromSqlInterpolated($"select* from incoming_with_optional_info where contract_id = {contractID} and transaction_date >= {contractDate}").ToList().Count() > 0
+                _db.incoming_with_optional_info.FromSqlInterpolated($"select* from incoming_with_optional_info where contract_id = {contractID} and transaction_date > {contractDate}").ToList().Count() > 0
                 || 
-                _db.outgoing_with_optional_info.FromSqlInterpolated($"select* from outgoing_with_optional_info where contract_id = {contractID} and transaction_date >= {contractDate}").ToList().Count() > 0)
+                _db.outgoing_with_optional_info.FromSqlInterpolated($"select* from outgoing_with_optional_info where contract_id = {contractID} and transaction_date > {contractDate}").ToList().Count() > 0)
             {
                 Clients.Caller.SendAsync("Message", "Сдвинуть срок контракта на заданную дату невозможно: существуют транзакции, к-рые ещё не были совершены после заданной даты");
             }
             else
             {
                 Clients.Caller.SendAsync("Submit", contract_id, contract_date);
+            }
+        }
+
+        #endregion
+
+
+
+        #region Взаимодействие с курсами валют
+
+        /// <summary>
+        /// Получение значений курса валют за последние 14 дней
+        /// </summary>
+        /// <param name="courseID"></param>
+        public void GetCourseValues(string courseID)
+        {
+            if (courseID is null || courseID == "")
+            {
+                Clients.Caller.SendAsync("Message", "Выберите конвертируемую валюту");
+            }
+            else
+            {
+                int course_id = Convert.ToInt32(courseID);
+
+                var courseList = _db.course_with_optional_info.FromSqlInterpolated($"select * from course_with_optional_info where cur_idto = 1 and cur_idfrom = {course_id} and dayto >= {DateTime.Now.AddDays(-14)} order by dayto").ToList();
+
+                Clients.Caller.SendAsync("Submit", courseList);
             }
         }
 

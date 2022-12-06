@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Trading_company.Areas.Contract.Models;
+using Trading_company.Areas.Course.Models;
 using Trading_company.Areas.Transaction.Models;
 using Trading_company.Areas.Warehouse.Models;
 namespace Trading_company.Models
@@ -48,6 +49,11 @@ namespace Trading_company.Models
         /// Представление склада
         /// </summary>
         public DbSet<WarehouseModel> warehouse { get; set; }
+
+        /// <summary>
+        /// Представление курсов валют
+        /// </summary>
+        public DbSet<CourseModel> course_with_optional_info { get; set; }
 
         /// <summary>
         /// Прочие вычисления

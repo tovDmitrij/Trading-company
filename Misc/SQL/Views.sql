@@ -37,6 +37,22 @@ create or replace view products_with_optional_info as
 		right join Products p on p.prod_id = pr.prod_id
 		left join Groups g on p.group_id = g.group_id
 	order by g.group_id, p.prod_id;
+
+
+create or replace view course_with_optional_info as
+	select (
+		select cr.shortname from Currencies cr
+		where Cources.cur_idfrom = cr.cur_id
+	) cur_namefrom, Cources.cur_idfrom,
+	(
+		select cr.shortname from Currencies cr
+		where Cources.cur_idto = cr.cur_id
+	) cur_nameto, Cources.cur_idto,
+	Cources.dayfrom,
+	Cources.dayto,
+	Cources.value
+	from Currencies
+		left join Cources on Currencies.cur_id = Cources.cur_idfrom;
 	
 
 create or replace view warehouse as

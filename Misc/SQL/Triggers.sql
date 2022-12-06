@@ -1,25 +1,3 @@
-create or replace trigger insert_cource before insert on Cources for each row
-	execute procedure add_new_cource_value();
-create or replace function add_new_cource_value() returns trigger as
-	$$
-		begin
-			new.value = -1;
-			while new.value < 0 loop
-				select Sum(value)/Count(*) into new.value from Cources
-				where cur_idfrom = new.cur_idfrom and cur_idto = new.cur_idto;
-				
-				new.value = new.value + RandomBetween(-2,2);
-			end loop;
-			
-			
-			
-			new.dayfrom = now() - interval '14 days';
-			new.dayto = now() - interval '13 days';
-			return new;
-		end;
-	$$ language plpgsql;
-
-
 create or replace trigger insert_manager instead of insert on managers_with_optional_info for each row
 	execute procedure add_new_manager();
 create or replace function add_new_manager() returns trigger as 
