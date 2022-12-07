@@ -79,6 +79,7 @@ namespace Trading_company.Areas.Manager.Controllers
                 manager.comments = "Отсутствует руководитель";
             }
             manager.hire_day = DateTime.Now;
+            manager.percent /= 100;
 
             try
             {
