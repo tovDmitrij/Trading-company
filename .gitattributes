@@ -5,6 +5,7 @@
 *.cshtml linguist-language=HTML+Razor
 *.sql linguist-language=PLpgSQL
 About.cshtml linguist-detectable=false
+FullDB.sql linguist-detectable=false
 
 ###############################################################################
 # Set default behavior for command prompt diff.
