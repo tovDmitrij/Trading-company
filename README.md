@@ -34,6 +34,7 @@ Razor Pages
 ### :hammer_and_wrench: Бекэнд
 ```
 ASP.NET Core 7
+MVC
 ```
 ### :floppy_disk: База данных
 ```
