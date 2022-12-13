@@ -3,6 +3,7 @@
 ###############################################################################
 * text=auto
 *.cshtml linguist-language=HTML+Razor
+*.sql linguist-language=PLpgSQL
 About.cshtml linguist-detectable=false
 
 ###############################################################################
