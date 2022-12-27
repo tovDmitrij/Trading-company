@@ -1,3 +1,4 @@
+--Представление таблицы менеджеров, к-рое дополнительно отображает ФИО руководителя, если таковой имеется
 create or replace view managers_with_optional_info as
 	select m.fullname man_fullname, 
 		m.Man_ID, 
@@ -5,13 +6,13 @@ create or replace view managers_with_optional_info as
 		m.password, 
 		m.percent, 
 		m.hire_day, 
-		m.comments, 
-		m.d_id,
+		m.comments,
 		(select fullname from Managers where man_id = m.parent_id) lead_fullname, 
 		m.parent_id lead_id
 	from Managers m;
 	
 
+--Представление таблицы контрактов, к-рое дополнительно отображает ФИО контрагента и менеджера
 create or replace view contracts_with_optional_Info as
 	select Contracts.id, 
 		(select name from contragents where contr_id = Contracts.contr_id) contr_fullname, 
@@ -26,6 +27,7 @@ create or replace view contracts_with_optional_Info as
 	order by Contracts.id;
 
 
+--Представление таблицы товаров, к-рое переводит цену товара в рубль либо по сегодняшнему курсу, либо по курсу заданной даты
 create or replace view prices_with_optional_info as
 	select Products.name product_name, Products.prod_id product_id, Prices.dayfrom price_dayfrom, Prices.dateto price_dayto, Prices.value * (
 		select coalesce(
@@ -40,6 +42,7 @@ create or replace view prices_with_optional_info as
 	order by Products.name, Prices.dateto
 	
 
+--Представление таблицы товаров, к-рое дополнительно отображает информацию о группе товара
 create or replace view products_with_optional_info as
 	select distinct g.name group_name, 
 		g.group_id,
@@ -53,6 +56,7 @@ create or replace view products_with_optional_info as
 	order by g.group_id, p.prod_id;
 
 
+--Представление таблицы курсов валют, к-рое дополнительно отображает наименование курсов по их идентификаторам
 create or replace view course_with_optional_info as
 	select (
 		select cr.shortname from Currencies cr
@@ -69,6 +73,7 @@ create or replace view course_with_optional_info as
 		left join Cources on Currencies.cur_id = Cources.cur_idfrom;
 	
 
+--Представление таблиц Incoming и Outgoing, отображающее остатки товара на складе на текущий момент
 create or replace view warehouse as
 	select p.name prod_name,
 		p.prod_id,
@@ -86,6 +91,7 @@ create or replace view warehouse as
 	order by p.prod_id, g.group_id;
 
 
+--Представление таблицы Incoming, к-рое дополнительно переводит все стоимости в рубли
 create or replace view incoming_with_optional_info as
 	select distinct Incoming.inc_id transaction_id,
 		(select c.id from Contracts c where c.contr_id = Incoming.contr_id and c.man_id = Incoming.man_id and Incoming.Inc_Date < c.dayto limit 1) contract_id,
@@ -116,6 +122,7 @@ create or replace view incoming_with_optional_info as
 		left join Contragents on Contracts.contr_id = Contragents.contr_id;
 
 
+--Представление таблицы Outgoing, к-рое дополнительно переводит все стоимости в рубли
 create or replace view outgoing_with_optional_info as
 	select distinct Outgoing.out_id transaction_id,
 		(select c.id from Contracts c where c.contr_id = Outgoing.contr_id and c.man_id = Outgoing.man_id and Outgoing.out_date < c.dayto limit 1) contract_id,

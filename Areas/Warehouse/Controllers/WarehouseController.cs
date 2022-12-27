@@ -9,7 +9,9 @@ namespace Trading_company.Areas.Warehouse.Controllers
     /// Взаимодействие со складом
     /// </summary>
     [Area("Warehouse")]
-    public class WarehouseController : TradingCompanyController
+    [Controller]
+    [Route("Warehouse/{action}")]
+    public sealed class WarehouseController : TradingCompanyController
     {
         public WarehouseController(DataContext context) => _db = context;
 
@@ -20,7 +22,6 @@ namespace Trading_company.Areas.Warehouse.Controllers
         /// <summary>
         /// Отобразить склад
         /// </summary>
-        [Route("{controller}/{action}")]
         public IActionResult Show()
         {
             if (!HttpContext.Session.Keys.Contains("manager"))

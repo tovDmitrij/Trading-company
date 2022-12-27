@@ -8,6 +8,7 @@ namespace Trading_company.Areas.Course.Controllers
     /// Взаимодействие с курсами валют
     /// </summary>
     [Area("Course")]
+    [Route("Course/{action}")]
     [Controller]
     public sealed class CourseController : TradingCompanyController
     {
@@ -20,7 +21,6 @@ namespace Trading_company.Areas.Course.Controllers
         /// <summary>
         /// Отобразить таблицу с курсами валют
         /// </summary>
-        [Route("{controller}/{action}")]
         public IActionResult Show()
         {
             if (!HttpContext.Session.Keys.Contains("manager"))

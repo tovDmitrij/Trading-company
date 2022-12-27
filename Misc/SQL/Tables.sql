@@ -1,13 +1,20 @@
+--Таблица курсов валют
 create table Currencies(
     Cur_Id serial primary key,
     Name varchar(100),
     ShortName varchar(50)
 );
+
+
+--Таблица банков
 create table Banks(
     Bank_Id serial primary key,
     Name varchar(100),
     Address varchar(100)
 );
+
+
+--Таблица контрагентов, с к-рыми подписывают контракты менеджеры
 create table Contragents(
     Contr_Id serial primary key,
     Name varchar(100),
@@ -15,23 +22,26 @@ create table Contragents(
     Phone varchar(100),
     Comments varchar(150)
 );
-create table Dealers(
-    D_Id serial primary key,
-    Name varchar(100),
-    Percent numeric(3,2),
-    Comments varchar(150)
-);
+
+
+--Таблица групп товаров
 create table Groups(
     Group_Id serial primary key,
     Name varchar(100),
     Comments varchar(150)
 );
+
+
+--Таблица налогов на транзакции
 create table Taxes(
     Tax_Id serial primary key,
     Name varchar(100),
     Value numeric(3,2),
     Comments varchar(150)
 );
+
+
+--Таблица курсов валют
 create table Cources(
     Cur_IdFrom integer not null,
     Cur_IdTo integer not null,
@@ -42,6 +52,9 @@ create table Cources(
     foreign key(Cur_IdFrom) references Currencies(Cur_Id),
     foreign key(Cur_IdTo) references Currencies(Cur_Id)
 );
+
+
+--Таблица банковских аккаунтов контрагентов
 create table Accounts(
     Acc_Id serial primary key,
     Bank_Id integer,
@@ -51,20 +64,24 @@ create table Accounts(
     foreign key(Bank_Id) references Banks(Bank_Id),
     foreign key(Contr_Id) references Contragents(Contr_Id)
 );
+
+
+--Таблица менеджеров
 create table Managers(
     Man_Id serial primary key,
 	Email varchar(100),
 	Password varchar(300),
-    D_Id integer,
     FullName varchar(100),
     Percent numeric(3,2),
     Hire_Day timestamp,
     Comments varchar(100),
     Parent_Id integer,
 	unique(email),
-    foreign key(D_Id) references Dealers(D_Id),
     foreign key(Parent_Id) references Managers(Man_Id)
 );
+
+
+--Таблица контрактов между менеджерами и контрагентами
 create table Contracts(
 	ID serial primary key,
     Contr_Id integer not null,
@@ -75,6 +92,9 @@ create table Contracts(
     foreign key(Contr_Id) references Contragents(Contr_Id),
     foreign key(Man_Id) references Managers(Man_Id)
 );
+
+
+--Таблица товаров
 create table Products(
     Prod_Id serial primary key,
     Group_Id integer,
@@ -83,6 +103,9 @@ create table Products(
     Expire_Time date,
     foreign key(Group_Id) references Groups(Group_Id)
 );
+
+
+--Таблица цен на товары
 create table Prices(
     Prod_Id integer not null,
     DayFrom date not null,
@@ -93,6 +116,9 @@ create table Prices(
     foreign key(Prod_Id) references Products(Prod_Id),
     foreign key(Cur_Id) references Currencies(Cur_Id)
 );
+
+
+--Таблица продаж товаров
 create table Outgoing(
     Out_Id serial primary key,
     Prod_Id integer,
@@ -107,6 +133,9 @@ create table Outgoing(
     foreign key(Contr_Id) references Contragents(Contr_Id),
     foreign key(Man_Id) references Managers(Man_Id)
 );
+
+
+--Таблица покупок товаров
 create table Incoming(
     Inc_Id serial primary key,
     Prod_Id integer,

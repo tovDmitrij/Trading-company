@@ -45,9 +45,7 @@ namespace Trading_company
                 name: "manager_area",
                 areaName: "Manager",
                 pattern: "{area=Manager}/{controller=Manager}/{action=SignUp}");
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{area:exists}/{controller=Manager}/{action=SignUp}");
+            app.Map("/", () => Results.LocalRedirect("/About"));
 
             app.Run();
 

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 using Trading_company.Controllers;
 using Trading_company.Models;
 namespace Trading_company.Areas.Price.Controllers
@@ -10,7 +9,8 @@ namespace Trading_company.Areas.Price.Controllers
     /// </summary>
     [Area("Price")]
     [Controller]
-    public class PriceController : TradingCompanyController
+    [Route("Price/{action}")]
+    public sealed class PriceController : TradingCompanyController
     {
         public PriceController(DataContext context) => _db = context;
 
@@ -21,7 +21,6 @@ namespace Trading_company.Areas.Price.Controllers
         /// <summary>
         /// Отобразить таблицу с ценами на товары
         /// </summary>
-        [Route("{controller}/{action}")]
         public IActionResult List()
         {
             if (!HttpContext.Session.Keys.Contains("manager"))

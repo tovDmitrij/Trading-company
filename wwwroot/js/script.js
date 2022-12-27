@@ -23,6 +23,7 @@ function searchByText(input, table, index) {
 }
 //#endregion
 
+
 //#region Фильтрация списка по дате (чекбокс) (основано на https://codepen.io/carl_was_here/pen/QoGRBp)
 function searchByCheckBox(index, table) {
     document.getElementById("textFilter").value = "";

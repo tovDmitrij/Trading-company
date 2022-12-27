@@ -7,7 +7,7 @@ namespace Trading_company.Hubs
     /// <summary>
     /// Хаб для обработки различных запросов в режиме реального времени
     /// </summary>
-    public class TradingCompanyHub : Hub
+    public sealed class TradingCompanyHub : Hub
     {
         /// <summary>
         /// БД "Торговое предприятие

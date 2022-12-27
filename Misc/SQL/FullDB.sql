@@ -29,11 +29,6 @@ insert into Banks(name,address) values('Tinkoff', 'ул. Хуторская 2-я
 insert into Banks(name,address) values('Alpha-Bank', 'Some address');
 insert into Banks(name,address) values('Rosselhozbank', 'Some address');
 
-insert into Dealers(Name, Percent, Comments) values('Ситилинк', 0.22, 'Магазин электроники');
-insert into Dealers(Name, Percent) values('М-Видео', 0.2);
-insert into Dealers(Name, Percent) values('Пятерочка', 0.33);
-insert into Dealers(Name, Percent) values('Wildberries', 0.18);
-
 insert into Contragents(name,address,phone,comments) values('Балашов Илья Дамирович', 'Костромская область, город Дорохово, проезд Гагарина, 17', '+7(912)712-56-90', 'Физлицо');
 insert into Contragents(name,address,phone,comments) values('Блинов Максим Иванович', 'Читинская область, город Ступино, пер. Ломоносова, 77', '+7(915)212-52-40', 'Физлицо');
 insert into Contragents(name,address,phone,comments) values('Миронов Дмитрий Владиславович', 'Кемеровская область, город Ногинск, спуск Бухарестская, 14', '+7(911)762-16-12', 'Физлицо');

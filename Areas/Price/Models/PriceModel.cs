@@ -6,7 +6,7 @@ namespace Trading_company.Areas.Price.Models
     /// Товар со списком цен на него
     /// </summary>
     [Keyless]
-    public class PriceModel
+    public sealed class PriceModel
     {
         /// <summary>
         /// Наименование товара

@@ -1,5 +1,4 @@
-create or replace trigger insert_manager instead of insert on managers_with_optional_info for each row
-	execute procedure add_new_manager();
+--Триггер, добавляющий нового менеджера в БД
 create or replace function add_new_manager() returns trigger as 
 	$$
 		begin
@@ -9,10 +8,11 @@ create or replace function add_new_manager() returns trigger as
 			return new;
 		end;
 	$$ language plpgsql;
+create or replace trigger insert_manager instead of insert on managers_with_optional_info for each row
+	execute procedure add_new_manager();
 	
-	
-create or replace trigger delete_manager instead of delete on managers_with_optional_info for each row
-	execute procedure delete_current_manager();
+
+--Триггер, удаляющий аккаунт менеджера из БД
 create or replace function delete_current_manager() returns trigger as
 	$$
 		begin
@@ -26,10 +26,11 @@ create or replace function delete_current_manager() returns trigger as
 			return new;
 		end;
 	$$ language plpgsql;
+create or replace trigger delete_manager instead of delete on managers_with_optional_info for each row
+	execute procedure delete_current_manager();
 	
 	
-create or replace trigger insert_contract instead of insert on contracts_with_optional_info for each row
-	execute procedure add_new_contract();
+--Триггер, добавляющий новый контракт между менеджером и контрагентом в БД
 create or replace function add_new_contract() returns trigger as 
 	$$
 		begin
@@ -39,10 +40,11 @@ create or replace function add_new_contract() returns trigger as
 			return new;
 		end;
 	$$ language plpgsql;
+create or replace trigger insert_contract instead of insert on contracts_with_optional_info for each row
+	execute procedure add_new_contract();
 
 
-create or replace trigger update_contract instead of update on contracts_with_optional_info for each row
-	execute procedure update_current_contract();
+--Триггер, обновляющий дату существующего контракта
 create or replace function update_current_contract() returns trigger as
 	$$
 		begin
@@ -52,10 +54,11 @@ create or replace function update_current_contract() returns trigger as
 			return new;
 		end;
 	$$ language plpgsql;
+create or replace trigger update_contract instead of update on contracts_with_optional_info for each row
+	execute procedure update_current_contract();
 	
 
-create or replace trigger insert_incoming instead of insert on incoming_with_optional_info for each row
-	execute procedure buy_product();
+--Триггер, добавляющий новую транзакцию на покупку товара
 create or replace function buy_product() returns trigger as
 	$$
 		begin
@@ -65,10 +68,11 @@ create or replace function buy_product() returns trigger as
 			return new;
 		end;
 	$$ language plpgsql;
+create or replace trigger insert_incoming instead of insert on incoming_with_optional_info for each row
+	execute procedure buy_product();
 	
 	
-create or replace trigger delete_incoming instead of delete on incoming_with_optional_info for each row
-	execute procedure delete_transaction_buy();
+--Триггер, отменяющий запланированную транзакцию на покупку товара
 create or replace function delete_transaction_buy() returns trigger as
 	$$
 		begin
@@ -77,10 +81,11 @@ create or replace function delete_transaction_buy() returns trigger as
 			return new;
 		end;
 	$$ language plpgsql;
+create or replace trigger delete_incoming instead of delete on incoming_with_optional_info for each row
+	execute procedure delete_transaction_buy();
 
 
-create or replace trigger insert_outgoing instead of insert on outgoing_with_optional_info for each row
-	execute procedure sell_product();
+--Триггер, добавляющий новую транзакцию на продажу товара
 create or replace function sell_product() returns trigger as
 	$$
 		begin
@@ -90,10 +95,11 @@ create or replace function sell_product() returns trigger as
 			return new;
 		end;
 	$$ language plpgsql;
+create or replace trigger insert_outgoing instead of insert on outgoing_with_optional_info for each row
+	execute procedure sell_product();
 	
 
-create or replace trigger delete_outgoing instead of delete on outgoing_with_optional_info for each row
-	execute procedure delete_transaction_sell();
+--Триггер, отменяющий транзакцию на продажу товара
 create or replace function delete_transaction_sell() returns trigger as
 	$$
 		begin
@@ -102,3 +108,5 @@ create or replace function delete_transaction_sell() returns trigger as
 			return new;
 		end;
 	$$ language plpgsql;
+create or replace trigger delete_outgoing instead of delete on outgoing_with_optional_info for each row
+	execute procedure delete_transaction_sell();

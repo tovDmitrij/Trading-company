@@ -4,7 +4,7 @@ namespace Trading_company.Areas.Contract.Models
     /// <summary>
     /// Банковский аккаунт контрагента
     /// </summary>
-    public class BankAccountModel
+    public sealed class BankAccountModel
     {
         /// <summary>
         /// Идентификатор банковского аккаунта

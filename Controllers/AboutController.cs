@@ -2,15 +2,15 @@
 namespace Trading_company.Controllers
 {
     /// <summary>
-    /// Почти подробная информация о проекте
+    /// Почти подробная информация о проекте (без осмотра кода проекта)
     /// </summary>
     [Controller]
-    public class AboutController : Controller
+    [Route("About")]
+    public sealed class AboutController : Controller
     {
         /// <summary>
-        /// Отобразить инфомарцию о проекте.
+        /// Отобразить информацию о проекте.
         /// </summary>
-        [Route("About")]
         public IActionResult About() => View();
     }
 }

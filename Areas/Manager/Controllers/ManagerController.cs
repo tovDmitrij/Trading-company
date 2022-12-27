@@ -11,6 +11,7 @@ namespace Trading_company.Areas.Manager.Controllers
     /// </summary>
     [Area("Manager")]
     [Controller]
+    [Route("Manager/{action}")]
     public sealed class ManagerController : TradingCompanyController
     {
         public ManagerController(DataContext dbContext) => _db = dbContext;
@@ -22,8 +23,6 @@ namespace Trading_company.Areas.Manager.Controllers
         /// <summary>
         /// Страница с регистрацией менеджера
         /// </summary>
-        [Route("")]
-        [Route("{controller}/{action}")]
         public IActionResult SignUp()
         {
             var freeLeaders = _db.managers_with_optional_info.FromSql(
@@ -39,13 +38,11 @@ namespace Trading_company.Areas.Manager.Controllers
         /// <summary>
         /// Страница с авторизацией менеджера
         /// </summary>
-        [Route("{controller}/{action}")]
         public IActionResult SignIn() => View();
 
         /// <summary>
         /// Личный кабинет менеджера
         /// </summary>
-        [Route("{controller}/{action}")]
         public IActionResult PersonalArea()
         {
             if (!HttpContext.Session.Keys.Contains("manager"))
@@ -70,7 +67,6 @@ namespace Trading_company.Areas.Manager.Controllers
         /// Регистрация менеджера
         /// </summary>
         /// <param name="manager">Информация о менеджере</param>
-        [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult SignUp(ManagerModel manager)
         {
@@ -96,7 +92,6 @@ namespace Trading_company.Areas.Manager.Controllers
         /// Авторизация менеджера
         /// </summary>
         /// <param name="manager">Информация о менеджере</param>
-        [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult SignIn(ManagerModel manager)
         {
@@ -107,7 +102,6 @@ namespace Trading_company.Areas.Manager.Controllers
         /// <summary>
         /// Выход из аккаунта менеджера
         /// </summary>
-        [Route("{controller}/{action}")]
         public IActionResult Exit()
         {
             HttpContext.Session.Clear();
@@ -117,7 +111,6 @@ namespace Trading_company.Areas.Manager.Controllers
         /// <summary>
         /// Удалить аккаунт менеджера
         /// </summary>
-        [Route("{controller}/{action}")]
         public IActionResult Delete()
         {
             var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");

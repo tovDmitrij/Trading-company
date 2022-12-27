@@ -12,6 +12,7 @@ namespace Trading_company.Areas.Transaction.Controllers
     /// </summary>
     [Area("Transaction")]
     [Controller]
+    [Route("Transaction/{action}")]
     public sealed class TransactionController : TradingCompanyController
     {
         public TransactionController(DataContext context) => _db = context;
@@ -23,7 +24,6 @@ namespace Trading_company.Areas.Transaction.Controllers
         /// <summary>
         /// Покупка товара
         /// </summary>
-        [Route("{controller}/{action}")]
         public IActionResult Buy()
         {
             if (!HttpContext.Session.Keys.Contains("manager"))
@@ -49,7 +49,6 @@ namespace Trading_company.Areas.Transaction.Controllers
         /// <summary>
         /// Продажа товара
         /// </summary>
-        [Route("{controller}/{action}")]
         public IActionResult Sell()
         {
             if (!HttpContext.Session.Keys.Contains("manager"))
@@ -75,7 +74,6 @@ namespace Trading_company.Areas.Transaction.Controllers
         /// <summary>
         /// Список транзакций
         /// </summary>
-        [Route("{controller}/{action}")]
         public IActionResult List()
         {
             if (!HttpContext.Session.Keys.Contains("manager"))
@@ -106,7 +104,6 @@ namespace Trading_company.Areas.Transaction.Controllers
         /// Покупка товара
         /// </summary>
         /// <param name="transaction">Информация и транзакции</param>
-        [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult Buy(IncomingModel transaction)
         {
@@ -129,7 +126,6 @@ namespace Trading_company.Areas.Transaction.Controllers
         /// Продажа товара
         /// </summary>
         /// <param name="transaction">Информация и транзакции</param>
-        [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult Sell(OutgoingModel transaction)
         {
@@ -152,7 +148,6 @@ namespace Trading_company.Areas.Transaction.Controllers
         /// Отменить транзакцию покупки товара
         /// </summary>
         /// <param name="transaction">Отменяемая транзакция</param>
-        [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult DeleteBought(IncomingModel transaction)
         {
@@ -177,7 +172,6 @@ namespace Trading_company.Areas.Transaction.Controllers
         /// Отменить транзакцию продажи товара
         /// </summary>
         /// <param name="transaction">Отменяемая транзакция</param>
-        [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult DeleteSold(OutgoingModel transaction)
         {

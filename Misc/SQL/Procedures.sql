@@ -1,4 +1,5 @@
 --call UpdateCources();
+--Процедуры, обновляющие значения всех курсов валют
 create or replace procedure UpdateCources() as
 	$$
 		declare
@@ -10,8 +11,6 @@ create or replace procedure UpdateCources() as
 			end loop;
 		end;
 	$$ language plpgsql;
-	
-	
 create or replace procedure add_new_cource_value(curIDFrom integer) as
 	$$
 		declare
@@ -36,6 +35,7 @@ create or replace procedure add_new_cource_value(curIDFrom integer) as
 
 
 --call UpdatePrices();
+--Процедуры, обновляющие ценники у всех товаров
 create or replace procedure UpdatePrices() as
 	$$
 		declare
@@ -47,8 +47,6 @@ create or replace procedure UpdatePrices() as
 			end loop;
 		end;
 	$$ language plpgsql;
-	
-	
 create or replace procedure add_new_price_value(prodID integer) as
 	$$
 		declare

@@ -11,6 +11,7 @@ namespace Trading_company.Areas.Contract.Controllers
     /// </summary>
     [Area("Contract")]
     [Controller]
+    [Route("Contract/{action}")]
     public sealed class ContractController : TradingCompanyController
     {
         public ContractController(DataContext context) => _db = context;
@@ -22,7 +23,6 @@ namespace Trading_company.Areas.Contract.Controllers
         /// <summary>
         /// Подписать новый контракт
         /// </summary>
-        [Route("{controller}/{action}")]
         public IActionResult New()
         {
             if (!HttpContext.Session.Keys.Contains("manager"))
@@ -48,7 +48,6 @@ namespace Trading_company.Areas.Contract.Controllers
         /// <summary>
         /// Посмотреть список контрактов
         /// </summary>
-        [Route("{controller}/{action}")]
         public IActionResult List()
         {
             if (!HttpContext.Session.Keys.Contains("manager"))
@@ -80,7 +79,6 @@ namespace Trading_company.Areas.Contract.Controllers
         /// Подписать новый контракт
         /// </summary>
         /// <param name="contract">Информация о новом контракте</param>
-        [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult New(ContractModel contract)
         {
@@ -110,7 +108,6 @@ namespace Trading_company.Areas.Contract.Controllers
         /// Обновить действующий контракт
         /// </summary>
         /// <param name="contract">Обновляемый контракт</param>
-        [Route("{controller}/{action}")]
         [HttpPost]
         public IActionResult Update(ContractModel contract)
         {
