@@ -1,11 +1,11 @@
-﻿//#region Поиск чего-либо по поисковой строке (основано на https://www.w3schools.com/howto/howto_js_filter_table.asp)
+﻿//#region Поиск чего-либо по поисковой строке
 function searchByText(input, table, index) {
     var chckBx = document.getElementById("checkboxFilter");
     if (chckBx != null) {
         chckBx.checked = false;
     }
 
-    var filter, tr, td, i, j;
+    var filter, tr, td, i;
     filter = input.value.toUpperCase();
     tr = table.getElementsByTagName("tr");
 
@@ -24,7 +24,7 @@ function searchByText(input, table, index) {
 //#endregion
 
 
-//#region Фильтрация списка по дате (чекбокс) (основано на https://codepen.io/carl_was_here/pen/QoGRBp)
+//#region Фильтрация списка по дате (чекбокс)
 function searchByCheckBox(index, table) {
     document.getElementById("textFilter").value = "";
 

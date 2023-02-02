@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Trading_company.Areas.Course.Models;
 using Trading_company.Controllers;
 using Trading_company.Models;
 namespace Trading_company.Areas.Course.Controllers
@@ -28,7 +29,11 @@ namespace Trading_company.Areas.Course.Controllers
                 return Redirect("~/Manager/SignIn");
             }
 
-            var courseList = _db.course_with_optional_info.FromSqlInterpolated($"select distinct cur_namefrom, cur_idfrom, cur_nameto, cur_idto, now() dayfrom, now() dayto, 0 value from course_with_optional_info where cur_idto = 1 and cur_idfrom != 1 order by cur_idfrom").ToList();
+            var courseList = _db.course_with_optional_info
+                .Where(x => x.cur_idto == 1 && x.cur_idfrom != 1)
+                .OrderBy(x => x.cur_idfrom)
+                .ToList()
+                .DistinctBy(x => x.cur_namefrom);
 
             return View(courseList);
         }

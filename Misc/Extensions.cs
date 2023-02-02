@@ -11,7 +11,7 @@ namespace Trading_company.Misc
         public static T? Get<T>(this ISession session, string key)
         {
             string? value = session.GetString(key);
-            return value == null ? default(T) : JsonSerializer.Deserialize<T>(value);
+            return value == null ? default : JsonSerializer.Deserialize<T>(value);
         }
 
         /// <summary>

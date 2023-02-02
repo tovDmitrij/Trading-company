@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Trading_company.Areas.Price.Models;
 using Trading_company.Controllers;
 using Trading_company.Models;
 namespace Trading_company.Areas.Price.Controllers
@@ -28,7 +29,11 @@ namespace Trading_company.Areas.Price.Controllers
                 return Redirect("~/Manager/SignIn");
             }
 
-            var priceList = _db.prices_with_optional_info.FromSqlInterpolated($"select distinct product_name, product_id, now() price_dayfrom, now() price_dayto, 0 price_value from prices_with_optional_info order by product_name").ToList();
+            var priceList = _db.prices_with_optional_info
+                .Select(x => x)
+                .OrderBy(x => x.product_name)
+                .ToList()
+                .DistinctBy(x => x.product_name);
 
             return View(priceList);
         }

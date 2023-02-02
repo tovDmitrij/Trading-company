@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Trading_company.Areas.Transaction.Models;
+using Trading_company.Misc;
 using Trading_company.Models;
 namespace Trading_company.Hubs
 {
@@ -26,7 +27,7 @@ namespace Trading_company.Hubs
         /// <param name="email">Адрес электронной почты</param>
         public void SignUpCheck(string email)
         {
-            if (_db.managers_with_optional_info.FirstOrDefault(man => man.email == email) is not null)
+            if (_db.managers_with_optional_info.FirstOrDefault(x => x.email == email) is not null)
             {
                 Clients.Caller.SendAsync("Message", "Почта уже занята другим пользователем");
             }
@@ -43,7 +44,7 @@ namespace Trading_company.Hubs
         /// <param name="password">Пароль</param>
         public void SignInCheck(string email, string password)
         {
-            if (_db.managers_with_optional_info.FirstOrDefault(man => man.email == email && man.password == password) is null)
+            if (_db.managers_with_optional_info.FirstOrDefault(x => x.email == email && x.password == Security.HashPassword(password)) is null)
             {
                 Clients.Caller.SendAsync("Message", "Менеджера с такой почтой и паролем не существует");
             }
@@ -69,7 +70,10 @@ namespace Trading_company.Hubs
         {
             DateTime date = DateTime.Parse(transaction_date);
 
-            var dbPrice = _db.some_model.FromSqlInterpolated($"select pc.value * (select value from cources where cur_idfrom = crc.cur_id and cur_idto = 1 and dayfrom < {DateTime.Now} and {DateTime.Now} <= dayto) cost from Products pd left join Prices pc on pd.prod_id = pc.prod_id left join Currencies crc on pc.cur_id = crc.cur_id left join Cources cr on crc.cur_id = cr.cur_idfrom where pd.prod_id = {Convert.ToInt32(prod_id)} and pc.dayfrom < {date} and  pc.dateto >= {date}").ToList().FirstOrDefault();
+            var dbPrice = _db.some_model
+                .FromSqlInterpolated($"select pc.value * (select value from cources where cur_idfrom = crc.cur_id and cur_idto = 1 and dayfrom < {DateTime.Now} and {DateTime.Now} <= dayto) cost from Products pd left join Prices pc on pd.prod_id = pc.prod_id left join Currencies crc on pc.cur_id = crc.cur_id left join Cources cr on crc.cur_id = cr.cur_idfrom where pd.prod_id = {Convert.ToInt32(prod_id)} and pc.dayfrom <= {date} and  pc.dateto >= {date}")
+                .ToList()
+                .FirstOrDefault();
 
             if (dbPrice is null)
             {
@@ -84,7 +88,9 @@ namespace Trading_company.Hubs
             double cost = price * Convert.ToInt32(quantity);
 
             //Сколько заберут налоги
-            double tax = _db.some_model.FromSqlInterpolated($"select value from Taxes where Tax_Id = 1").ToList()[0].value * cost;
+            double tax = _db.some_model
+                .FromSqlInterpolated($"select value from Taxes where Tax_Id = 1")
+                .ToList()[0].value * cost;
 
             //Стоимость + налоги
             double totalCost = cost + tax;
@@ -111,13 +117,13 @@ namespace Trading_company.Hubs
             int prodID = Convert.ToInt32(prod_id);
             int contractID = Convert.ToInt32(contract_id);
 
-            if (_db.contracts_with_optional_info.FirstOrDefault(contract => contract.id == contractID && contract.dayto > transactionDate) is null)
+            if (_db.contracts_with_optional_info.FirstOrDefault(x => x.id == contractID && x.dayto > transactionDate) is null)
             {
                 Clients.Caller.SendAsync("Message", "На момент продажи контракт будет просрочен");
                 return;
             }
 
-            if (_db.some_model.FromSqlInterpolated($"select value from Prices where prod_id = {Convert.ToInt32(prod_id)} and dayfrom < {transactionDate} and {transactionDate} <= dateto").ToList().FirstOrDefault() is null)
+            if (_db.some_model.FromSqlInterpolated($"select value from Prices where prod_id = {Convert.ToInt32(prod_id)} and dayfrom <= {transactionDate} and {transactionDate} <= dateto").FirstOrDefault() is null)
             {
                 Clients.Caller.SendAsync("Message", "Отсутствует действующий ценник на заданную дату");
             }
@@ -140,13 +146,13 @@ namespace Trading_company.Hubs
             int contractID = Convert.ToInt32(contract_id);
             int prodQuantity = Convert.ToInt32(quantity);
 
-            if (_db.contracts_with_optional_info.FirstOrDefault(contract => contract.id == contractID && contract.dayto > transactionDate) is null)
+            if (_db.contracts_with_optional_info.FirstOrDefault(x => x.id == contractID && x.dayto > transactionDate) is null)
             {
                 Clients.Caller.SendAsync("Message", "На момент продажи контракт будет просрочен");
                 return;
             }
 
-            if (_db.some_model.FromSqlInterpolated($"select value from Prices where prod_id = {prodID} and dayfrom < {transactionDate} and {transactionDate} <= dateto").ToList().FirstOrDefault() is null)
+            if (_db.some_model.FromSqlInterpolated($"select value from Prices where prod_id = {prodID} and dayfrom <= {transactionDate} and {transactionDate} <= dateto").FirstOrDefault() is null)
             {
                 Clients.Caller.SendAsync("Message", "Отсутствует действующий ценник на заданную дату");
             }
@@ -166,9 +172,7 @@ namespace Trading_company.Hubs
         /// <param name="transaction_id">Идентификатор транзакции</param>
         public void DeleteSellTransaction(string transaction_id)
         {
-            int transactionID = Convert.ToInt32(transaction_id);
-
-            OutgoingModel outgoingModel = _db.outgoing_with_optional_info.First(transaction => transaction.transaction_id == transactionID);
+            OutgoingModel outgoingModel = _db.outgoing_with_optional_info.First(x => x.transaction_id == Convert.ToInt32(transaction_id));
             
             if (_db.some_model.FromSqlInterpolated($"select coalesce((select Sum(prod_quantity) from Incoming_With_Optional_Info where prod_id = {outgoingModel.prod_id}),0) - coalesce((select Sum(prod_quantity) from Outgoing_With_Optional_Info where transaction_id != {outgoingModel.transaction_id} and prod_id = {outgoingModel.prod_id}),0)").ToList().First().value < 0)
             {
@@ -186,9 +190,7 @@ namespace Trading_company.Hubs
         /// <param name="transaction_id">Идентификатор транзакции</param>
         public void DeleteBuyTransaction(string transaction_id)
         {
-            int transactionID = Convert.ToInt32(transaction_id);
-
-            IncomingModel incomingModel = _db.incoming_with_optional_info.First(transaction => transaction.transaction_id == transactionID);
+            IncomingModel incomingModel = _db.incoming_with_optional_info.First(x => x.transaction_id == Convert.ToInt32(transaction_id));
 
             if (_db.some_model.FromSqlInterpolated($"select coalesce((select Sum(prod_quantity) from Incoming_With_Optional_Info where transaction_id != {incomingModel.transaction_id} and prod_id = {incomingModel.prod_id}),0) - coalesce((select Sum(prod_quantity) from Outgoing_With_Optional_Info where prod_id = {incomingModel.prod_id}),0)").ToList().First().value < 0)
             {
@@ -213,10 +215,8 @@ namespace Trading_company.Hubs
         /// <param name="contract_dayto">Предполагаемая дата завершения контракта</param>
         public void CheckBankAccount(string contragent_id, string contract_dayto)
         {
-            DateTime contractDayTo = DateTime.Parse(contract_dayto);
-            int contragentID = Convert.ToInt32(contragent_id);
-
-            var existedBankAccount = _db.accounts.FirstOrDefault(account => account.contr_id == contragentID && account.dayto > contractDayTo);
+            var existedBankAccount = _db.accounts
+                .FirstOrDefault(x => x.contr_id == Convert.ToInt32(contragent_id) && x.dayto > DateTime.Parse(contract_dayto));
 
             if (existedBankAccount is null)
             {
@@ -237,16 +237,22 @@ namespace Trading_company.Hubs
         {
             DateTime contractDate = DateTime.Parse(contract_date);
             int contractID = Convert.ToInt32(contract_id);
-            int contragentID = _db.contracts_with_optional_info.FirstOrDefault(contract => contract.id == contractID).contr_id;
+            int contragentID = _db.contracts_with_optional_info
+                .FirstOrDefault(x => x.id == contractID).contr_id;
 
             if (
-                _db.incoming_with_optional_info.FromSqlInterpolated($"select* from incoming_with_optional_info where contract_id = {contractID} and transaction_date > {contractDate}").ToList().Count() > 0
+                _db.incoming_with_optional_info
+                    .Where(x => x.contract_id == contractID && x.transaction_date > contractDate)
+                    .Any()
                 || 
-                _db.outgoing_with_optional_info.FromSqlInterpolated($"select* from outgoing_with_optional_info where contract_id = {contractID} and transaction_date > {contractDate}").ToList().Count() > 0)
+                _db.outgoing_with_optional_info
+                    .Where(x => x.contract_id == contractID && x.transaction_date > contractDate)
+                    .Any()
+            )
             {
                 Clients.Caller.SendAsync("Message", "Сдвинуть срок контракта на заданную дату невозможно: существуют транзакции, к-рые ещё не были совершены после заданной даты");
             }
-            else if (_db.accounts.FirstOrDefault(account => account.contr_id == contragentID && account.dayto > contractDate) is null)
+            else if (_db.accounts.FirstOrDefault(x => x.contr_id == contragentID && x.dayto > contractDate) is null)
             {
                 Clients.Caller.SendAsync("Message", "На заданную дату у контрагента не будет действующего банковского аккаунта");
             }
@@ -274,10 +280,11 @@ namespace Trading_company.Hubs
             }
             else
             {
-                int course_id = Convert.ToInt32(courseID);
-
-                var courseList = _db.course_with_optional_info.FromSqlInterpolated($"select * from course_with_optional_info where cur_idto = 1 and cur_idfrom = {course_id} and dayto >= {DateTime.Now.AddDays(-14)} order by dayto").ToList();
-
+                var courseList = _db.course_with_optional_info
+                    .Where(x => x.cur_idto == 1 && x.cur_idfrom == Convert.ToInt32(courseID) && x.dayto >= DateTime.Now.AddDays(-14))
+                    .OrderBy(x => x.dayto)
+                    .ToList();
+                
                 Clients.Caller.SendAsync("Submit", courseList);
             }
         }
@@ -300,9 +307,9 @@ namespace Trading_company.Hubs
             }
             else
             {
-                int product_id = Convert.ToInt32(prodID);
-
-                var priceList = _db.prices_with_optional_info.FromSqlInterpolated($"select* from prices_with_optional_info where product_id = {product_id} and price_dayto >= {DateTime.Now.AddDays(-31)}").ToList();
+                var priceList = _db.prices_with_optional_info
+                    .Where(x => x.product_id == Convert.ToInt32(prodID) && x.price_dayto >= DateTime.Now.AddDays(-31))
+                    .ToList();
 
                 Clients.Caller.SendAsync("Submit", priceList);
             }

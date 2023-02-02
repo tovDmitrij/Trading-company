@@ -99,7 +99,7 @@ create or replace view incoming_with_optional_info as
 		Products.name prod_name,
 		Incoming.prod_id, 
 		Incoming.quantify prod_quantity,
-		Incoming.Quantify * (select p.value from Prices p where p.prod_id = Prices.prod_id and p.dayfrom < Incoming.Inc_Date and Incoming.Inc_Date <= p.dateto) * (
+		Incoming.Quantify * (select p.value from Prices p where p.prod_id = Prices.prod_id and p.dayfrom <= Incoming.Inc_Date and Incoming.Inc_Date <= p.dateto) * (
 			select coalesce(
 				(select value from cources
 				 where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom < Incoming.Inc_Date and Incoming.Inc_Date <= dayto),
@@ -130,7 +130,7 @@ create or replace view outgoing_with_optional_info as
 		Products.name prod_name,
 		Outgoing.prod_id, 
 		Outgoing.quantify prod_quantity,
-		Outgoing.Quantify * (select p.value from Prices p where p.prod_id = Prices.prod_id and p.dayfrom < Outgoing.Out_Date and Outgoing.Out_Date <= p.dateto) * (
+		Outgoing.Quantify * (select p.value from Prices p where p.prod_id = Prices.prod_id and p.dayfrom <= Outgoing.Out_Date and Outgoing.Out_Date <= p.dateto) * (
 			select coalesce(
 				(select value from cources
 				 where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom < Outgoing.Out_Date  and Outgoing.Out_Date <= dayto),
@@ -138,14 +138,14 @@ create or replace view outgoing_with_optional_info as
 				 where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom < now() and now() <= dayto)
 			)) 
 			-
-			Managers.percent * Outgoing.Quantify * (select p.value from Prices p where p.prod_id = Prices.prod_id and p.dayfrom < Outgoing.Out_Date and Outgoing.Out_Date <= p.dateto) * (
+			Managers.percent * Outgoing.Quantify * (select p.value from Prices p where p.prod_id = Prices.prod_id and p.dayfrom <= Outgoing.Out_Date and Outgoing.Out_Date <= p.dateto) * (
 			select coalesce(
 				(select value from cources
 				 where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom < Outgoing.Out_Date  and Outgoing.Out_Date <= dayto),
 				(select value from cources 
 				 where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom < now() and now() <= dayto)
 			)) transaction_earn,
-		Managers.percent * Outgoing.Quantify * (select p.value from Prices p where p.prod_id = Prices.prod_id and p.dayfrom < Outgoing.Out_Date and Outgoing.Out_Date <= p.dateto) * (
+		Managers.percent * Outgoing.Quantify * (select p.value from Prices p where p.prod_id = Prices.prod_id and p.dayfrom <= Outgoing.Out_Date and Outgoing.Out_Date <= p.dateto) * (
 			select coalesce(
 				(select value from cources
 				 where cur_idfrom = Currencies.cur_id and cur_idto = 1 and dayfrom < Outgoing.Out_Date  and Outgoing.Out_Date <= dayto),

@@ -31,13 +31,15 @@ namespace Trading_company.Areas.Contract.Controllers
             }
 
             var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
-            ManagerModel currentManager = _db.managers_with_optional_info.FirstOrDefault(man =>
-                man.email == managerInfo.email && man.password == managerInfo.password);
+            ManagerModel currentManager = _db.managers_with_optional_info
+                .FirstOrDefault(x => x.email == managerInfo.email && x.password == Security.HashPassword(managerInfo.password));
 
             ContractViewModel cvm = new()
             {
-                Contragents = _db.contragents.FromSqlInterpolated(
-                $"select * from Contragents except select cg.* from Contracts cr left join Contragents cg on cr.Contr_ID = cg.Contr_ID where cr.man_id = {currentManager.man_id} and cr.dayto >= now()").OrderBy(contragent => contragent.contr_id).ToList()
+                Contragents = _db.contragents
+                    .FromSqlInterpolated($"select * from Contragents except select cg.* from Contracts cr left join Contragents cg on cr.Contr_ID = cg.Contr_ID where cr.man_id = {currentManager.man_id} and cr.dayto >= now()")
+                    .OrderBy(x => x.contr_id)
+                    .ToList()
             };
 
             ViewData["Contract_MinDate"] = DateTime.Now.AddDays(7).ToString("yyyy-MM-dd");
@@ -56,14 +58,14 @@ namespace Trading_company.Areas.Contract.Controllers
             }
 
             var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
-            ManagerModel manager = _db.managers_with_optional_info.FirstOrDefault(man =>
-                man.email == managerInfo.email && man.password == managerInfo.password);
-
-            var contractList = _db.contracts_with_optional_info.FromSql($"select* from contracts_with_optional_info where man_id = {manager.man_id}");
+            ManagerModel manager = _db.managers_with_optional_info
+                .FirstOrDefault(x => x.email == managerInfo.email && x.password == Security.HashPassword(managerInfo.password));
 
             ContractViewModel cvm = new()
             {
-                Contracts = contractList.ToList()
+                Contracts = _db.contracts_with_optional_info
+                    .Where(x => x.man_id == manager.man_id)
+                    .ToList()
             };
 
             return View(cvm);
@@ -88,8 +90,8 @@ namespace Trading_company.Areas.Contract.Controllers
             }
 
             var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
-            ManagerModel currentManager = _db.managers_with_optional_info.FirstOrDefault(man =>
-                man.email == managerInfo.email && man.password == managerInfo.password);
+            ManagerModel currentManager = _db.managers_with_optional_info
+                .FirstOrDefault(x => x.email == managerInfo.email && x.password == Security.HashPassword(managerInfo.password));
 
             contract.man_id = currentManager.man_id;
             contract.dayfrom = DateTime.Now;
@@ -116,9 +118,13 @@ namespace Trading_company.Areas.Contract.Controllers
                 return Redirect("~/Manager/SignIn");
             }
 
-            var currentContract = _db.contracts_with_optional_info.FirstOrDefault(contr => contr.id == contract.id);
-            currentContract.comments = $"Менеджер сдвинул срок окончания контракта с даты {currentContract.dayto.ToString("dd-MM-yyyy")} на дату {contract.dayto.ToString("dd-MM-yyyy")}";
+            var currentContract = _db.contracts_with_optional_info
+                .FirstOrDefault(x => x.id == contract.id);
+
+            currentContract.comments = $"Менеджер сдвинул срок окончания контракта с даты {currentContract.dayto:dd-MM-yyyy} на дату {contract.dayto:dd-MM-yyyy}";
+
             currentContract.dayto = contract.dayto;
+
             _db.SaveChanges();
 
             return Redirect("~/Contract/List");

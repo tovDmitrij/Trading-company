@@ -29,7 +29,9 @@ namespace Trading_company.Areas.Warehouse.Controllers
                 return Redirect("~/Manager/SignIn");
             }
 
-            List<WarehouseModel> productList = _db.warehouse.FromSqlInterpolated($"select* from warehouse").ToList();
+            var productList = _db.warehouse
+                .Select(x => x);
+
             return View(productList);
         }
 

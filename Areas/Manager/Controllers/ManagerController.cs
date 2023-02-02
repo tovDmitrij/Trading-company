@@ -51,8 +51,8 @@ namespace Trading_company.Areas.Manager.Controllers
             }
 
             var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
-            ManagerModel manager = _db.managers_with_optional_info.FirstOrDefault(man =>
-                man.email == managerInfo.email && man.password == managerInfo.password);
+            ManagerModel manager = _db.managers_with_optional_info
+                .FirstOrDefault(x => x.email == managerInfo.email && x.password == Security.HashPassword(managerInfo.password));
 
             return View(manager);
         }
@@ -76,6 +76,7 @@ namespace Trading_company.Areas.Manager.Controllers
             }
             manager.hire_day = DateTime.Now;
             manager.percent /= 100;
+            manager.password = Security.HashPassword(manager.password);
 
             try
             {
@@ -114,8 +115,8 @@ namespace Trading_company.Areas.Manager.Controllers
         public IActionResult Delete()
         {
             var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
-            ManagerModel manager = _db.managers_with_optional_info.FirstOrDefault(man =>
-                man.email == managerInfo.email && man.password == managerInfo.password);
+            ManagerModel manager = _db.managers_with_optional_info
+                .FirstOrDefault(x => x.email == managerInfo.email && x.password == Security.HashPassword(managerInfo.password));
 
             try
             {

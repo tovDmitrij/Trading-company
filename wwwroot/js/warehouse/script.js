@@ -1,4 +1,4 @@
-﻿//#region JS-код, необходимый для отрисовки диаграммы (основано на https://code.tutsplus.com/ru/tutorials/how-to-draw-a-pie-chart-and-doughnut-chart-using-javascript-and-html5-canvas--cms-27197)
+﻿//#region JS-код, необходимый для отрисовки диаграммы
 
 
 //Генерация случайного цвета для некоторой части диаграммы
@@ -20,7 +20,6 @@ var productGroupList = {};
 var warehouseList = document.getElementById('warehouseTable');
 for (i = 1; i < warehouseList.rows.length; i++) {
     var currentProduct = warehouseList.rows.item(i).cells;
-
     var productGroup = currentProduct.item(1).innerHTML;
     var productQuantity = Number(currentProduct.item(2).innerHTML);
     productGroupList["" + productGroup] = (productGroupList[productGroup] || 0) + productQuantity;

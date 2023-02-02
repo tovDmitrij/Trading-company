@@ -34,13 +34,17 @@ namespace Trading_company.Areas.Transaction.Controllers
             ViewData["Min_Date"] = DateTime.Now.ToString("yyyy-MM-dd");
 
             var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
-            ManagerModel manager = _db.managers_with_optional_info.FirstOrDefault(man =>
-                man.email == managerInfo.email && man.password == managerInfo.password);
+            ManagerModel manager = _db.managers_with_optional_info
+                .FirstOrDefault(x => x.email == managerInfo.email && x.password == Security.HashPassword(managerInfo.password));
 
             IncomingViewModel ivm = new()
             {
-                Contracts = _db.contracts_with_optional_info.FromSqlInterpolated($"select* from contracts_with_optional_info where man_id = {manager.man_id} and dayto >= {DateTime.Now}").ToList(),
-                Products = _db.products_with_optional_info.FromSqlInterpolated($"select* from products_with_optional_info").ToList()
+                Contracts = _db.contracts_with_optional_info
+                    .Where(x => x.man_id == manager.man_id && x.dayto >= DateTime.Now)
+                    .ToList(),
+                Products = _db.products_with_optional_info
+                    .Select(x => x)
+                    .ToList()
             };
 
             return View(ivm);
@@ -59,13 +63,17 @@ namespace Trading_company.Areas.Transaction.Controllers
             ViewData["Min_Date"] = DateTime.Now.ToString("yyyy-MM-dd");
 
             var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
-            ManagerModel manager = _db.managers_with_optional_info.FirstOrDefault(man =>
-                man.email == managerInfo.email && man.password == managerInfo.password);
+            ManagerModel manager = _db.managers_with_optional_info
+                .FirstOrDefault(x => x.email == managerInfo.email && x.password == Security.HashPassword(managerInfo.password));
 
             OutgoingViewModel ovm = new()
             {
-                Contracts = _db.contracts_with_optional_info.FromSqlInterpolated($"select* from contracts_with_optional_info where man_id = {manager.man_id} and dayto >= {DateTime.Now}").ToList(),
-                Products = _db.products_with_optional_info.FromSqlInterpolated($"select* from products_with_optional_info").ToList()
+                Contracts = _db.contracts_with_optional_info
+                    .Where(x => x.man_id == manager.man_id && x.dayto >= DateTime.Now)
+                    .ToList(),
+                Products = _db.products_with_optional_info
+                    .Select(x => x)
+                    .ToList()
             };
 
             return View(ovm);
@@ -82,13 +90,19 @@ namespace Trading_company.Areas.Transaction.Controllers
             }
 
             var managerInfo = HttpContext.Session.Get<ManagerModel>("manager");
-            ManagerModel manager = _db.managers_with_optional_info.FirstOrDefault(man =>
-                man.email == managerInfo.email && man.password == managerInfo.password);
+            ManagerModel manager = _db.managers_with_optional_info
+                .FirstOrDefault(x => x.email == managerInfo.email && x.password == Security.HashPassword(managerInfo.password));
 
             TransactionViewModel tvm = new()
             {
-                PurchaseTransactions = _db.incoming_with_optional_info.FromSqlInterpolated($"select i.* from incoming_with_optional_info i left join Contracts c on i.contract_id = c.id where c.man_id = {manager.man_id}").OrderBy(transaction => transaction.transaction_date).ToList(),
-                SellTransactions = _db.outgoing_with_optional_info.FromSqlInterpolated($"select o.* from outgoing_with_optional_info o left join Contracts c on o.contract_id = c.id where c.man_id = {manager.man_id}").OrderBy(transaction => transaction.transaction_date).ToList()
+                PurchaseTransactions = _db.incoming_with_optional_info
+                    .FromSqlInterpolated($"select i.* from incoming_with_optional_info i left join Contracts c on i.contract_id = c.id where c.man_id = {manager.man_id}")
+                    .OrderBy(transaction => transaction.transaction_date)
+                    .ToList(),
+                SellTransactions = _db.outgoing_with_optional_info
+                    .FromSqlInterpolated($"select o.* from outgoing_with_optional_info o left join Contracts c on o.contract_id = c.id where c.man_id = {manager.man_id}")
+                    .OrderBy(transaction => transaction.transaction_date)
+                    .ToList()
             };
 
             return View(tvm);
@@ -156,7 +170,8 @@ namespace Trading_company.Areas.Transaction.Controllers
                 return Redirect("~/Manager/SignIn");
             }
 
-            var currentTransaction = _db.incoming_with_optional_info.FirstOrDefault(trans => trans.transaction_id == transaction.transaction_id);
+            var currentTransaction = _db.incoming_with_optional_info
+                .FirstOrDefault(x => x.transaction_id == transaction.transaction_id);
 
             try
             {
@@ -180,7 +195,8 @@ namespace Trading_company.Areas.Transaction.Controllers
                 return Redirect("~/Manager/SignIn");
             }
 
-            var currentTransaction = _db.outgoing_with_optional_info.FirstOrDefault(trans => trans.transaction_id == transaction.transaction_id);
+            var currentTransaction = _db.outgoing_with_optional_info
+                .FirstOrDefault(x => x.transaction_id == transaction.transaction_id);
 
             try
             {
